@@ -1,0 +1,26 @@
+/* Button.module.css */
+
+
+.paper {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+.image {
+    margin: 0;
+}
+.form {
+    margin: 0;
+    height: 400;
+    display: block;
+    
+}
+.topBox {
+    height: '40%';
+    width: '100%';
+    background-color: blue;
+}
+.bottomBox {
+    height: '60%';
+    width: '100%';
+    background-color: red;
+}

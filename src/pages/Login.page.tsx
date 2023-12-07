@@ -22,9 +22,11 @@ import { useState } from 'react';
 import splash from '../assets/splash.png';
 import classes from './Login.module.css';
 import { loginRequestSchema } from '../handlers/schemaHandler';
+import { loginMutation } from '../handlers/networkHook';
 
 export function LoginPage() {
   const [shouldRemember, toggleRem] = useState<boolean>(false);
+  const loginVM = loginMutation();
   const form = useForm({
     initialValues: {
       username: '',
@@ -47,7 +49,11 @@ export function LoginPage() {
                   <Text>It's great to have you back</Text>
                 </Stack>
                 <Stack mt="md">
-                  <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                  <form
+                    onSubmit={form.onSubmit((values) =>
+                      loginVM.mutate({ username: values.username, password: values.password })
+                    )}
+                  >
                     <TextInput label="Username" mb="sm" {...form.getInputProps('username')} />
                     <PasswordInput label="Password" mb="sm" {...form.getInputProps('password')} />
                     <Group justify="space-between">

@@ -15,6 +15,7 @@ import {
   Center,
   Anchor,
   Checkbox,
+  LoadingOverlay,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -34,9 +35,11 @@ export function LoginPage() {
     },
 
     validate: zodResolver(loginRequestSchema),
+    validateInputOnChange: true,
   });
   return (
-    <Container fluid>
+    <Container pos="relative" fluid>
+      <LoadingOverlay visible={loginVM.isPending} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
       <Paper shadow="md" withBorder p="xl" className={classes.paper}>
         <Grid>
           <GridCol span={6}>
@@ -46,14 +49,14 @@ export function LoginPage() {
                   <Title order={3} size="h1">
                     Welcome back to Saving group
                   </Title>
-                  <Text>It's great to have you back</Text>
+                  <Text>It is great to have you back</Text>
                 </Stack>
-                <Stack mt="md">
-                  <form
-                    onSubmit={form.onSubmit((values) =>
+                <form
+                  onSubmit={form.onSubmit((values) =>
                       loginVM.mutate({ username: values.username, password: values.password })
                     )}
-                  >
+                >
+                <Stack mt="md">
                     <TextInput label="Username" mb="sm" {...form.getInputProps('username')} />
                     <PasswordInput label="Password" mb="sm" {...form.getInputProps('password')} />
                     <Group justify="space-between">
@@ -67,12 +70,12 @@ export function LoginPage() {
                         Forgot password?
                       </Anchor>
                     </Group>
-                  </form>
                 </Stack>
-                <Group grow>
-                  <Button variant="filled"> Login </Button>
+                <Group mt="xs" grow>
+                  <Button disabled={!form.isValid()} type="submit" variant="filled"> Login </Button>
                   <Button variant="outline"> Create account </Button>
                 </Group>
+                </form>
                 <Center mt="md">
                   <Stack align="center" gap="xs">
                     <Text>Or login with </Text>

@@ -20,6 +20,7 @@ import {
 import { useForm } from '@mantine/form';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import splash from '../assets/splash.png';
 import classes from './Login.module.css';
 import { loginRequestSchema } from '../handlers/schemaHandler';
@@ -27,6 +28,7 @@ import { loginMutation } from '../handlers/networkHook';
 
 export function LoginPage() {
   const [shouldRemember, toggleRem] = useState<boolean>(false);
+  const navigate = useNavigate();
   const loginVM = loginMutation();
   const form = useForm({
     initialValues: {
@@ -39,7 +41,11 @@ export function LoginPage() {
   });
   return (
     <Container pos="relative" fluid>
-      <LoadingOverlay visible={loginVM.isPending} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+      <LoadingOverlay
+        visible={loginVM.isPending}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+      />
       <Paper shadow="md" withBorder p="xl" className={classes.paper}>
         <Grid>
           <GridCol span={6}>
@@ -53,10 +59,10 @@ export function LoginPage() {
                 </Stack>
                 <form
                   onSubmit={form.onSubmit((values) =>
-                      loginVM.mutate({ username: values.username, password: values.password })
-                    )}
+                    loginVM.mutate({ username: values.username, password: values.password })
+                  )}
                 >
-                <Stack mt="md">
+                  <Stack mt="md">
                     <TextInput label="Username" mb="sm" {...form.getInputProps('username')} />
                     <PasswordInput label="Password" mb="sm" {...form.getInputProps('password')} />
                     <Group justify="space-between">
@@ -70,11 +76,15 @@ export function LoginPage() {
                         Forgot password?
                       </Anchor>
                     </Group>
-                </Stack>
-                <Group mt="xs" grow>
-                  <Button disabled={!form.isValid()} type="submit" variant="filled"> Login </Button>
-                  <Button variant="outline"> Create account </Button>
-                </Group>
+                  </Stack>
+                  <Group mt="xs" grow>
+                    <Button disabled={!form.isValid()} type="submit" variant="filled">
+                      LOGIN
+                    </Button>
+                      <Button variant="outline" onClick={() => navigate({ to: '/register' })}>
+                        CREATE ACCOUNT
+                      </Button>
+                  </Group>
                 </form>
                 <Center mt="md">
                   <Stack align="center" gap="xs">

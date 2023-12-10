@@ -24,7 +24,7 @@
     "@mantine/form": "^7.2.2",
     "@mantine/hooks": "7.2.2",
     "@tanstack/react-query": "^5.10.0",
-    "@tanstack/react-router": "^0.0.1-beta.215",
+    "@tanstack/react-router": "0.0.1-beta.248",
     "axios": "^1.6.2",
     "dayjs": "^1.11.10",
     "jotai": "^2.6.0",

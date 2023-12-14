@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import splash from '../assets/splash.png';
 import classes from './Login.module.css';
@@ -30,6 +30,12 @@ export function LoginPage() {
   const [shouldRemember, toggleRem] = useState<boolean>(false);
   const navigate = useNavigate();
   const loginVM = loginMutation();
+
+  useEffect(() => {
+    if (loginVM.isSuccess) {
+      navigate({ to: '/register' });
+    }
+  }, [loginVM.isSuccess]);
   const form = useForm({
     initialValues: {
       username: '',

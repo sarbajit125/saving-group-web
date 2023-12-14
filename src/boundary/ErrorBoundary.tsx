@@ -29,7 +29,9 @@ class ErrorBoundary extends Component<Props, State> {
             justifyContent: 'center',
             alignItems: 'center',
             textAlign: 'center',
-            minHeight: '100vh',
+            minHeight: '500',
+            width: '100%',
+            backgroundColor: 'red',
           }}
         >
           <img src={errorImg} alt="Error boundary" width="100%" height="100%" />

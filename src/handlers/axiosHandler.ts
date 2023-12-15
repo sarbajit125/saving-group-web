@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
 
 export const axiosInstance = axios.create({
-    baseURL: 'http://172.17.128.1:3000',
+    baseURL: 'http://localhost:3000',
 });
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const { method, url, headers } = config;

@@ -15,12 +15,15 @@ import {
   LoadingOverlay,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import splash from '../assets/splash.png';
 import classes from './Login.module.css';
 import { registerUISchema } from '../handlers/schemaHandler';
 import { registerMutation } from '../handlers/networkHook';
 
 export function RegisterPage() {
+  const navigate = useNavigate();
   const form = useForm({
     initialValues: {
       username: '',
@@ -33,6 +36,12 @@ export function RegisterPage() {
     validateInputOnChange: true,
   });
   const registerVM = registerMutation();
+
+  useEffect(() => {
+    if (registerVM.isSuccess) {
+      navigate({ to: '/login' });
+    }
+  }, [registerVM.isSuccess]);
   return (
     <Container pos="relative" fluid>
       <LoadingOverlay
@@ -75,7 +84,10 @@ export function RegisterPage() {
                     />
                   </Stack>
                   <Group mt="xs" grow>
-                    <Button variant="outline"> LOGIN </Button>
+                    <Button variant="outline" onClick={() => navigate({ to: '/login' })}>
+                      {' '}
+                      LOGIN{' '}
+                    </Button>
                     <Button disabled={!form.isValid()} type="submit" variant="filled">
                       CREATE ACCOUNT
                     </Button>

@@ -25,14 +25,15 @@ import splash from '../assets/splash.png';
 import classes from './Login.module.css';
 import { loginRequestSchema } from '../handlers/schemaHandler';
 import { loginMutation } from '../handlers/networkHook';
-
+import { useAuthStore } from '../store/authStore';
 export function LoginPage() {
   const [shouldRemember, toggleRem] = useState<boolean>(false);
   const navigate = useNavigate();
   const loginVM = loginMutation();
-
+  const authStore = useAuthStore();
   useEffect(() => {
     if (loginVM.isSuccess) {
+      authStore.setBearerToken(loginVM.data.access_token);
       navigate({ to: '/register' });
     }
   }, [loginVM.isSuccess]);

@@ -3,15 +3,12 @@ import { toast } from 'react-toastify';
 
 import { LoginRequestType, RegisterRequestType } from './schemaHandler';
 import { loginUser, registerUser } from './axiosHandler';
-import { useAuthStore } from '../store/authStore';
 
 export const loginMutation = () =>
   useMutation({
     mutationKey: ['user/login'],
     mutationFn: (request: LoginRequestType) => loginUser(request),
     onSuccess(data) {
-      const setToken = useAuthStore((state) => state.setBearerToken);
-      setToken(data.access_token);
       toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
     },
   });

@@ -16,7 +16,7 @@ const meta: Meta<typeof RecentTransactionTable> = {
 const recentTable: RecentTransactionRowProps[] = [
     {
         amount: 280,
-        currenySymbol: 'INR',
+        currencySymbol: 'INR',
         date: new Date(),
         isCredit: false,
         serviceCode: 'BILLPAY',
@@ -25,7 +25,7 @@ const recentTable: RecentTransactionRowProps[] = [
     },
     {
         amount: 1200,
-        currenySymbol: 'INR',
+        currencySymbol: 'INR',
         date: new Date(),
         isCredit: true,
         serviceCode: 'CASHIN',
@@ -34,7 +34,7 @@ const recentTable: RecentTransactionRowProps[] = [
     },
     {
         amount: 480,
-        currenySymbol: 'INR',
+        currencySymbol: 'INR',
         date: new Date(),
         isCredit: false,
         serviceCode: '',
@@ -43,7 +43,7 @@ const recentTable: RecentTransactionRowProps[] = [
     },
     {
         amount: 500,
-        currenySymbol: 'INR',
+        currencySymbol: 'INR',
         date: new Date(),
         isCredit: true,
         serviceCode: 'CASHIN',
@@ -52,7 +52,7 @@ const recentTable: RecentTransactionRowProps[] = [
     },
     {
         amount: 100,
-        currenySymbol: 'INR',
+        currencySymbol: 'INR',
         date: new Date(),
         isCredit: false,
         serviceCode: 'BILLPAY',

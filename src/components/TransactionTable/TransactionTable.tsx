@@ -6,7 +6,7 @@ import { StatusType, formattedCurrency } from '../../constants/coreLibrary';
 
 function RecentTransactionTable({ items }: RecentTransactionTableProps) {
   const setIconView = (icon: JSX.Element, bgColor: ColorDao): JSX.Element => (
-    <Center bg={bgColor} style={{ borderRadius: '6px' }} >
+    <Center bg={bgColor} style={{ borderRadius: '6px' }}>
       {icon}
     </Center>
   );
@@ -68,7 +68,7 @@ function RecentTransactionTable({ items }: RecentTransactionTableProps) {
                     color: item.isCredit ? ColorDao.primaryColor : ColorDao.negativeColor,
                   }}
                 >
-                  {getAmountText(item.isCredit, item.currenySymbol, item.amount)}
+                  {getAmountText(item.isCredit, item.currencySymbol, item.amount)}
                 </Text>
               </Group>
             </Table.Td>
@@ -91,6 +91,6 @@ export interface RecentTransactionRowProps {
   isCredit: boolean;
   title: string;
   date: Date;
-  currenySymbol: string;
+  currencySymbol: string;
   amount: number;
 }

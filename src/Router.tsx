@@ -45,7 +45,7 @@ const userRoute = new Route({
   path: 'user',
   beforeLoad: async (opts) => {
     console.log(opts.context.isAuthValidated);
-    if (!opts.context.isAuth) {
+    if (!opts.context.isAuthValidated) {
       throw redirect({
         to: '/login',
         search: {

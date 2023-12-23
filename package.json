@@ -19,6 +19,7 @@
     "storybook:build": "storybook build"
   },
   "dependencies": {
+    "@mantine/carousel": "^7.2.2",
     "@mantine/core": "7.2.2",
     "@mantine/dates": "^7.2.2",
     "@mantine/form": "^7.2.2",
@@ -26,10 +27,13 @@
     "@tanstack/react-query": "^5.10.0",
     "@tanstack/react-router": "0.0.1-beta.248",
     "axios": "^1.6.2",
+    "chart.js": "^4.4.1",
     "dayjs": "^1.11.10",
+    "embla-carousel-react": "^8.0.0-rc17",
     "jotai": "^2.6.0",
     "mantine-form-zod-resolver": "^1.0.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.18.0",
@@ -38,6 +42,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
     "@storybook/addon-essentials": "^7.5.2",
     "@storybook/addon-interactions": "^7.5.2",
     "@storybook/addon-links": "^7.5.2",

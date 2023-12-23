@@ -25,3 +25,8 @@ export default RootSuccessResponse;
 export interface loginSuccessResp extends RootSuccessResponse {
     access_token: string,
 }
+
+export interface BannerDao {
+    url: string,
+    action: string,
+}

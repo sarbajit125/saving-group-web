@@ -43,8 +43,8 @@ const userRoute = new Route({
   id: 'authenticated',
   getParentRoute: () => rootRoute,
   path: 'user',
-  beforeLoad: async (opts) => {
-    console.log(opts.context.isAuthValidated);
+  beforeLoad: (opts) => {
+   // console.log(opts.context.isAuthValidated);
     if (!opts.context.isAuthValidated) {
       throw redirect({
         to: '/login',
@@ -81,6 +81,7 @@ const router = new Router({
 });
 export function AppRouter() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  console.log(isAuthenticated);
   return (
     <RouterProvider
       router={router}

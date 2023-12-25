@@ -6,7 +6,7 @@ import { StatusType, formattedCurrency } from '../../constants/coreLibrary';
 
 function RecentTransactionTable({ items }: RecentTransactionTableProps) {
   const setIconView = (icon: JSX.Element, bgColor: ColorDao): JSX.Element => (
-    <Center bg={bgColor} style={{ borderRadius: '6px' }}>
+    <Center style={{ borderRadius: '6px', backgroundColor: bgColor }}>
       {icon}
     </Center>
   );
@@ -16,17 +16,17 @@ function RecentTransactionTable({ items }: RecentTransactionTableProps) {
       case 'BILLPAY':
         return setIconView(
           <LiaFileInvoiceDollarSolid color={ColorDao.cyanColor} fontSize="3em" style={{ padding: 5 }} />,
-          ColorDao.cyanColor
+          ColorDao.cyanBGColor
         );
       case 'CASHIN':
         return setIconView(
           <RiMoneyEuroBoxLine color={ColorDao.goldColor} fontSize="3em" style={{ padding: 5 }} />,
-          ColorDao.goldColor
+          ColorDao.goldBGColor
         );
       default:
         return setIconView(
           <RiBillLine color={ColorDao.primaryColor} fontSize="3em" style={{ padding: 5 }} />,
-          ColorDao.primaryColor
+          ColorDao.primaryBGColor
         );
     }
   };

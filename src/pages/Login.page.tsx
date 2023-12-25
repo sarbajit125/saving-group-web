@@ -35,9 +35,11 @@ export function LoginPage() {
   useEffect(() => {
     if (loginVM.isSuccess) {
       authStore.setBearerToken(loginVM.data.access_token);
-      navigate({ to: '/user/home' });
     }
   }, [loginVM.isSuccess]);
+  useEffect(() => {
+    authStore.isAuthenticated ? navigate({ to: '/user/home' }) : null;
+  }, [authStore.isAuthenticated]);
   const form = useForm({
     initialValues: {
       username: '',

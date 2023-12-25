@@ -1,35 +1,35 @@
 import { Carousel } from '@mantine/carousel';
-import { Button, Paper } from '@mantine/core';
+import { Image, Card, Text } from '@mantine/core';
 import { BannerDao } from '../../models/responseModels';
-import classes from './DashboardBanners.module.css';
 
 function DashboardBanners(props: DashboardBannersProps) {
-    const openInNewTab = (url: string) => {
-        window.open(url, '_blank', 'noreferrer');
-      };
   return (
-    <Carousel
-      withIndicators
-      loop
-      dragFree
-      height={200}
-      slideSize={{ base: '100%', sm: '50%' }}
-      slideGap={{ base: 'xl', sm: 2 }}
-      align="start"
-    >
+    <Carousel withIndicators w="100%" dragFree slideSize="100%" align="center" mt="md" p="md">
       {props.rows.map((item) => (
         <Carousel.Slide key={item.url}>
-          <Paper
-            shadow="md"
-            p="xl"
-            radius="md"
-            style={{
-              backgroundImage: `url(${item.url})`,
-            }}
-            className={classes.card}
+          <Card
+            shadow="sm"
+            padding="xl"
+            component="a"
+            href={item.action}
+            target="_blank"
           >
-            <Button variant="white" color="dark" onClick={() => (openInNewTab(item.action))}>Read more</Button>
-          </Paper>
+            <Card.Section>
+              <Image
+                src={item.url}
+                h={160}
+                alt="No way!"
+              />
+            </Card.Section>
+
+            <Text fw={500} size="lg" mt="md">
+              You&apos;ve won a million dollars in cash!
+            </Text>
+
+            <Text mt="xs" c="dimmed" size="sm">
+              Please click anywhere on this card to claim your reward, this is not a fraud, trust us
+            </Text>
+          </Card>
         </Carousel.Slide>
       ))}
     </Carousel>

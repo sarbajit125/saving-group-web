@@ -1,4 +1,4 @@
-import { Card, CardSection, Title, Box, Text, Group } from '@mantine/core';
+import { Card, CardSection, Box, Text, Group } from '@mantine/core';
 import { ServiceCardsDao } from '../../models/uiModels';
 import { ColorDao } from '../../constants/colorConstant';
 
@@ -6,10 +6,10 @@ function WelcomeCard({ name, serviceList, serviceTapped }: WelcomeCardProps) {
   return (
     <Box mt="md" mb="md">
       <Box mt="sm" p="md">
-        <Title c={ColorDao.primaryColor}> Welcome back {name}</Title>
+        <Text c={ColorDao.primaryColor}> Welcome back {name}</Text>
       </Box>
       <Box mt="sm">
-        <Group>
+        <Group grow wrap="nowrap">
           {serviceList.map((item) => (
             <Card
               shadow="sm"
@@ -20,6 +20,7 @@ function WelcomeCard({ name, serviceList, serviceTapped }: WelcomeCardProps) {
               mr="md"
               style={{ backgroundColor: item.bgColor ?? 'white' }}
               onClick={() => serviceTapped(item.serviceCode)}
+              key={item.serviceCode}
             >
               <CardSection p="md">{item.icon}</CardSection>
               <Text c={item.textColor ?? 'black'} fw={500} size="sm">

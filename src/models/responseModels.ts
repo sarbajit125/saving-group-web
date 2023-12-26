@@ -30,3 +30,9 @@ export interface BannerDao {
     url: string,
     action: string,
 }
+
+export interface GroupItemResponse {
+    groupCode: string,
+    groupName: string,
+    role: string,
+}

@@ -7,3 +7,17 @@ export interface ServiceCardsDao {
     bgColor?: ColorDao,
     textColor?: string,
 }
+
+export enum GroupRoles {
+    Gold = 'GOLD',
+    Silver = 'SILVER',
+    Regular = 'REGULAR'
+}
+
+export interface GroupItemUIDao {
+    groupCode: string,
+    groupName: string,
+    role: GroupRoles,
+    groupImage: string | null,
+    memberCount: number
+}

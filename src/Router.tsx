@@ -13,6 +13,7 @@ import { RegisterPage } from './pages/Register.page';
 import { NotFoundPage } from './pages/NotFound.page';
 import { HomePage } from './pages/Home.page';
 import { useAuthStore } from './store/authStore';
+import GroupList from './pages/GroupList.page';
 
 // Create a root route
 const rootRoute = rootRouteWithContext<RouterAuthContext>()({
@@ -21,7 +22,7 @@ const rootRoute = rootRouteWithContext<RouterAuthContext>()({
     return (
       <>
         <Outlet />
-        {isAuthenticated ? <Navigate to="/user/home" /> : <Navigate to="/login" />}
+        {isAuthenticated ? <Navigate to="/user/home" /> : <Navigate to="/lobby" />}
       </>
     );
   },
@@ -61,6 +62,11 @@ const homeRoute = new Route({
   path: 'home',
   component: HomePage,
 });
+const lobbyRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: 'lobby',
+  component: GroupList,
+});
 const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => rootRoute,
   component: NotFoundPage,
@@ -69,6 +75,7 @@ const notFoundRoute = new NotFoundRoute({
 const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
+  lobbyRoute,
   userRoute.addChildren([homeRoute]),
 ]);
 // Create the router using your route tree

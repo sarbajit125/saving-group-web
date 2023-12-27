@@ -21,3 +21,10 @@ export interface GroupItemUIDao {
     groupImage: string | null,
     memberCount: number
 }
+
+export interface InviteItemUIDao {
+    groupCode: string,
+    groupName: string,
+    invitedBy: string,
+    groupImage: string | null,
+}

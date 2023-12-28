@@ -1,4 +1,4 @@
-import { Box, Stack, Center, Group, Text, Divider } from '@mantine/core';
+import { Box, Stack, Center, Group, Text } from '@mantine/core';
 import { Link } from '@tanstack/react-router';
 import { TbPlaystationTriangle } from 'react-icons/tb';
 import { FiHome } from 'react-icons/fi';
@@ -37,7 +37,8 @@ function SideNavBar(props: SideNavbarProps) {
     </Link>
   );
   return (
-    <Stack p="md">
+    <Group h="100vh" style={{ alignItems: 'flex-start' }} p="md">
+      <Stack>
       <Center h={100}>
         <Group>
           <TbPlaystationTriangle fontSize="2em" />
@@ -46,9 +47,19 @@ function SideNavBar(props: SideNavbarProps) {
       </Center>
       <Box>
         <Stack p="md">{props.navlinks.map((item) => createItemforNav(item))}</Stack>
-        <Divider orientation="vertical" />
       </Box>
-    </Stack>
+      </Stack>
+      <Box
+        style={{
+          backgroundColor: ColorDao.greyColor,
+          alignSelf: 'stretch',
+          padding: 2,
+          margin: 5,
+          borderRadius: 6,
+        }}
+      />
+    </Group>
+
   );
 }
 

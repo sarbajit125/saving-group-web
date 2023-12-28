@@ -82,18 +82,7 @@ function GroupList() {
   return (
     <Grid>
       <GridCol span={2}>
-        <Group h="100vh" style={{alignItems: 'flex-start'}}>
         <SideNavBar title="Olith Banking" navlinks={navLinksArr} />
-        <Box
-          style={{
-          backgroundColor: ColorDao.greyColor,
-          alignSelf: 'stretch',
-          padding: 2,
-          margin: 5,
-          borderRadius: 6,
-        }}
-        />
-        </Group>
       </GridCol>
       <GridCol span={6}>
         <Group p="md" mt="xl" mr="md" ml="md" justify="space-between">

@@ -28,3 +28,21 @@ export interface InviteItemUIDao {
     invitedBy: string,
     groupImage: string | null,
 }
+
+export enum GoalCategoryFilter {
+    ALL_GOAL = 'ALL-GOAL',
+    ONGOING = 'ONGOING-GOAL',
+    COMPLETED = 'COMPLETED-GOAL',
+}
+export interface GoalCategoryItem {
+    name: string,
+    id: GoalCategoryFilter
+}
+
+export interface GoalItemDao {
+    id: string,
+    name: string,
+    amount: number,
+    isCompleted: boolean
+
+}

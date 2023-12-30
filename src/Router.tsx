@@ -14,6 +14,7 @@ import { NotFoundPage } from './pages/NotFound.page';
 import { HomePage } from './pages/Home.page';
 import { useAuthStore } from './store/authStore';
 import GroupList from './pages/GroupList.page';
+import GroupDashboard from './pages/GroupDashbord.page';
 
 // Create a root route
 const rootRoute = rootRouteWithContext<RouterAuthContext>()({
@@ -22,7 +23,11 @@ const rootRoute = rootRouteWithContext<RouterAuthContext>()({
     return (
       <>
         <Outlet />
-        {isAuthenticated ? <Navigate to="/user/home" /> : <Navigate to="/lobby" />}
+        {isAuthenticated ? (
+          <Navigate to="/user/home" />
+        ) : (
+          <Navigate to="/user/dashboard/$groupId" params={{ groupId: '1234' }} />
+        )}
       </>
     );
   },
@@ -39,13 +44,19 @@ const registerRoute = new Route({
   path: '/register',
   component: RegisterPage,
 });
+// Group dashboard route
+export const dashboardRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/user/dashboard/$groupId',
+  component: GroupDashboard,
+});
 // authenticated route
 const userRoute = new Route({
   id: 'authenticated',
   getParentRoute: () => rootRoute,
   path: 'user',
   beforeLoad: (opts) => {
-   // console.log(opts.context.isAuthValidated);
+    // console.log(opts.context.isAuthValidated);
     if (!opts.context.isAuthValidated) {
       throw redirect({
         to: '/login',
@@ -76,6 +87,7 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
   lobbyRoute,
+  dashboardRoute,
   userRoute.addChildren([homeRoute]),
 ]);
 // Create the router using your route tree
@@ -89,12 +101,7 @@ const router = new Router({
 export function AppRouter() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   console.log(isAuthenticated);
-  return (
-    <RouterProvider
-      router={router}
-      context={{ isAuthValidated: isAuthenticated }}
-    />
-  );
+  return <RouterProvider router={router} context={{ isAuthValidated: isAuthenticated }} />;
 }
 
 declare module '@tanstack/react-router' {
@@ -105,5 +112,5 @@ declare module '@tanstack/react-router' {
 }
 
 export interface RouterAuthContext {
-  isAuthValidated: boolean
+  isAuthValidated: boolean;
 }

@@ -4,6 +4,11 @@ export enum StatusType {
     pending = 'PENDING'
 }
 
+export enum DateFormatConstants {
+    dashboard = 'DD MMM YY',
+
+}
+
 export const formattedCurrency = (currencySymbol: string, amount: number): string => {
     // format number to Indian rupee
 const rupee = new Intl.NumberFormat('en-IN', {

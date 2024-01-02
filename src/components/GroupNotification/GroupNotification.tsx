@@ -1,10 +1,10 @@
 import { Box, Button, Divider, Group, Stack, Text } from '@mantine/core';
-import React from 'react';
 import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 import { FaHandshake, FaHandshakeAltSlash } from 'react-icons/fa';
 import { IoPersonRemoveOutline } from 'react-icons/io5';
 import { MdOutlineVerified, MdOutlineApproval } from 'react-icons/md';
 
+import { useState } from 'react';
 import { GroupNotificationFilter, GroupNotificationUIModel } from '../../models/uiModels';
 import { ColorDao } from '../../constants/colorConstant';
 import { calculateTimeDifference } from '../../constants/coreLibrary';
@@ -58,6 +58,7 @@ function GroupNotification() {
       type: GroupNotificationFilter.REQUEST,
     },
   ];
+  const [notificationsState, setNotification] = useState<GroupNotificationUIModel[]>(notifications);
   const setIconForNots = (type: GroupNotificationFilter): JSX.Element => {
     switch (type) {
       case GroupNotificationFilter.DEPOSIT:
@@ -91,47 +92,65 @@ function GroupNotification() {
       case GroupNotificationFilter.REQUEST:
         return 'Approval Management';
       default:
-        return 'Transaction History';
+        return 'Mark as Read';
     }
   };
-  const setButtonAction = (type: GroupNotificationFilter) => {
-    console.log(type);
+  const setButtonAction = (item: GroupNotificationUIModel) => {
+    console.log(item);
+    const updatedArr = notificationsState.map((obj) => {
+      if (obj.id === item.id) {
+        return {
+          ...obj,
+          isRead: true,
+        };
+      } return obj;
+    });
+    setNotification(updatedArr);
+  };
+  const markAllRead = () => {
+    const readArr = notificationsState.map((item) => ({ ...item, isRead: true }));
+    setNotification(readArr);
   };
 
   return (
     <Stack gap="xs">
       <Group justify="space-between">
         <Text>Notifications</Text>
-        <Button variant="transparent" leftSection={<MdOutlineVerified />}>
+        <Button
+          variant="transparent"
+          leftSection={<MdOutlineVerified />}
+          onClick={() => markAllRead()}
+        >
           Mark all as read
         </Button>
       </Group>
       <Divider variant="solid" />
-      {notifications.map((item) => (
+      {notificationsState.map((item) => (
         <Box>
-          <Group justify="space-between" align="baseline">
-            <Group>
+          <Group justify="space-between" align="baseline" wrap="nowrap">
+            <Group wrap="nowrap" align="baseline">
               <Box>
                 {setIconForNots(item.type)}
-                {item.isRead ? (
+                {!item.isRead ? (
                   <Box
                     style={{
                       width: 12,
                       height: 12,
                       borderRadius: 8,
+                      padding: 2,
                       backgroundColor: ColorDao.serviceText1,
                     }}
                   />
                 ) : null}
               </Box>
               <Box>
-                <Text size="sm">{item.message}</Text>
+                <Text>{item.message}</Text>
                 <Button
                   variant="outline"
                   c={ColorDao.greyColor}
                   color={ColorDao.greyColor}
                   size="compact-xs"
-                  onClick={() => setButtonAction(item.type)}
+                  onClick={() => setButtonAction(item)}
                 >
                   {setButtonTitle(item.type)}
                 </Button>
@@ -141,7 +160,7 @@ function GroupNotification() {
               {calculateTimeDifference(item.date)}
             </Text>
           </Group>
-          <Divider mt={"sm"} variant="solid" />
+          <Divider mt="sm" variant="solid" />
         </Box>
       ))}
     </Stack>

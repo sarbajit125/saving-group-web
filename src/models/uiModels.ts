@@ -46,3 +46,20 @@ export interface GoalItemDao {
     isCompleted: boolean
 
 }
+
+export enum GroupNotificationFilter {
+    DEPOSIT = 'DEPOSIT',
+    WITHDRAWAL = 'WITHDRAWAL',
+    JOINED = 'JOINED',
+    LEFT = 'LEFT',
+    REMOVED = 'REMOVED',
+    REQUEST = 'APPROVALS',
+}
+
+export interface GroupNotificationUIModel {
+    id: string,
+    message: string,
+    isRead: boolean,
+    date: Date,
+    type: GroupNotificationFilter
+}

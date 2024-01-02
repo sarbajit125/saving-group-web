@@ -1,8 +1,11 @@
-import { Container, Grid, GridCol, Paper } from '@mantine/core';
+import { Container, Grid, GridCol, Paper, Stack, Text } from '@mantine/core';
 import TopNavBar from '../components/TopNavBar/TopNavBar';
 import GoalsTab from '../components/GoalsTab/GoalsTab';
 import { GoalItemDao } from '../models/uiModels';
 import { dashboardRoute } from '../Router';
+import GroupMonthGraph from '../components/GroupMonthGraph/GroupMonthGraph';
+import GroupGauge from '../components/GroupGauge/GroupGauge';
+import GroupNotification from '../components/GroupNotification/GroupNotification';
 
 function GroupDashboard() {
   const { groupId } = dashboardRoute.useParams();
@@ -18,16 +21,25 @@ function GroupDashboard() {
     <Container fluid>
       <TopNavBar />
       <Grid>
-        <GridCol span={7}>
+        <GridCol span={8}>
+          <Stack>
           <GoalsTab
             goals={dummyGoalsArr}
             totalDeposited={2300}
             totalWithdrawan={100}
             creationDate={new Date()}
           />
+          <GroupMonthGraph />
+          </Stack>
         </GridCol>
-        <GridCol span={5}>
-          <Paper />
+        <GridCol span={4}>
+          <Paper shadow="xs" p="xl" m="md" withBorder>
+            <Stack>
+              <Text size="md" fw="bold"> On going goal summary</Text>
+              <GroupGauge />
+              <GroupNotification />
+            </Stack>
+          </Paper>
         </GridCol>
       </Grid>
     </Container>

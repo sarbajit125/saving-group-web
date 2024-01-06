@@ -14,5 +14,6 @@ export enum ColorDao {
     goldBGColor = 'rgba(255,215,0,0.1)',
     cyanBGColor = 'rgba(83, 213, 187, 0.1)',
     cyanColor = 'rgba(83, 213, 187, 1)',
-    greyColor = 'rgba(147,147,147,1)'
+    greyColor = 'rgba(147,147,147,1)',
+    silverColor = 'rgba(165,169,180,1)'
 }

@@ -31,3 +31,17 @@ export const calculateTimeDifference = (targetTime: Date): string => {
     }
     return `${hours} hr${hours > 1 ? 's' : ''}`;
   };
+
+  export enum UIString {
+    space = ' ',
+    empty = '',
+    comma = ',',
+    dot = '.',
+}
+
+export const getNameInitials = (firstName: string, lastName?: string): string => {
+    const firstNameInitial = firstName.charAt(0).toUpperCase();
+    const lastNameInitial = lastName ? lastName.charAt(0).toUpperCase() : '';
+
+    return `${firstNameInitial}${lastNameInitial}`;
+};

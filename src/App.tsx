@@ -1,6 +1,7 @@
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'mantine-react-table/styles.css';
 import './app.css';
 import { MantineProvider } from '@mantine/core';
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';

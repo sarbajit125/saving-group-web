@@ -15,6 +15,7 @@ import { HomePage } from './pages/Home.page';
 import { useAuthStore } from './store/authStore';
 import GroupList from './pages/GroupList.page';
 import GroupDashboard from './pages/GroupDashbord.page';
+import UserManagement from './pages/UserManagement.page';
 
 // Create a root route
 const rootRoute = rootRouteWithContext<RouterAuthContext>()({
@@ -26,7 +27,7 @@ const rootRoute = rootRouteWithContext<RouterAuthContext>()({
         {isAuthenticated ? (
           <Navigate to="/user/home" />
         ) : (
-          <Navigate to="/user/dashboard/$groupId" params={{ groupId: '1234' }} />
+          <Navigate to="/user-management" />
         )}
       </>
     );
@@ -47,8 +48,14 @@ const registerRoute = new Route({
 // Group dashboard route
 export const dashboardRoute = new Route({
   getParentRoute: () => rootRoute,
-  path: '/user/dashboard/$groupId',
+  path: 'dashboard/$groupId',
   component: GroupDashboard,
+});
+// Group User management route
+const groupManagement = new Route({
+  getParentRoute: () => rootRoute,
+  path: 'user-management',
+  component: UserManagement,
 });
 // authenticated route
 const userRoute = new Route({
@@ -88,6 +95,7 @@ const routeTree = rootRoute.addChildren([
   registerRoute,
   lobbyRoute,
   dashboardRoute,
+  groupManagement,
   userRoute.addChildren([homeRoute]),
 ]);
 // Create the router using your route tree

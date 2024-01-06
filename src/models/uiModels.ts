@@ -63,3 +63,38 @@ export interface GroupNotificationUIModel {
     date: Date,
     type: GroupNotificationFilter
 }
+
+export enum RequestType {
+    join = 'JOIN',
+    leave = 'LEAVE',
+    remove = 'REMOVE'
+}
+export enum ApprovalType {
+    approved = 'APPROVED',
+    rejected = 'REJECTED',
+    pending = 'PENDING',
+}
+export interface ApproverItem extends ApprovalPartyDetails {
+    decision: ApprovalType
+}
+export interface ApprovalPartyDetails {
+    userId: string,
+    name: string,
+    role: GroupRoles,
+}
+export interface GroupApprovalItemUIModel {
+    requestId: string,
+    requestType: RequestType,
+    requestTimeStamp: Date,
+    initiatorDetails: ApprovalPartyDetails,
+    approverArr: ApproverItem[],
+    initiatedOnDetails?: ApprovalPartyDetails,
+}
+
+export interface UserManageItemModel {
+    userId: string,
+    firstName: string,
+    lastName?: string,
+    joiningDate: Date,
+    role: GroupRoles,
+}

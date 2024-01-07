@@ -98,3 +98,15 @@ export interface UserManageItemModel {
     joiningDate: Date,
     role: GroupRoles,
 }
+
+export interface ManageRoleUIModel {
+    userId: string,
+    action: string,
+    name: string,
+}
+
+export interface RequestConfirmationProps {
+    requestType: RequestType,
+    decision: 'ACCEPT' | 'REJECT' | 'CONFIRM',
+    requestId: string,
+}

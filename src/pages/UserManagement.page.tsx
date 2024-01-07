@@ -5,6 +5,11 @@ import {
   Container,
   Divider,
   Group,
+  Menu,
+  MenuDropdown,
+  MenuItem,
+  MenuLabel,
+  MenuTarget,
   Pagination,
   Paper,
   Stack,
@@ -31,6 +36,8 @@ import {
   RequestType,
   GroupRoles,
   UserManageItemModel,
+  ManageRoleUIModel,
+  RequestConfirmationProps,
 } from '../models/uiModels';
 import { DateFormatConstants, UIString, getNameInitials } from '../constants/coreLibrary';
 import { ColorDao } from '../constants/colorConstant';
@@ -157,6 +164,7 @@ function UserManagement() {
   const openUserDetail = (item: UserManageItemModel) =>
     modals.open({
       title: 'User details',
+      id: 'User-details',
       children: <UserDetails item={item} />,
       size: 'auto',
       radius: 'md',
@@ -168,6 +176,7 @@ function UserManagement() {
       children: <RequestDetails item={item} />,
       size: 'auto',
       radius: 'md',
+      id: 'Request-details',
       labels: { confirm: 'Approve', cancel: 'Reject' },
       confirmProps: {
         color: ColorDao.serviceText1,
@@ -177,10 +186,57 @@ function UserManagement() {
         color: ColorDao.negativeColor,
       },
       onCancel() {
-        console.log('Cancel');
+        modals.close('Request-details');
       },
       onConfirm() {
         console.log('Confirm');
+      },
+    });
+  const setDropdownMenus = (item: UserManageItemModel): JSX.Element => {
+    let menuItems: ManageRoleUIModel[] = [];
+    switch (item.role) {
+      case GroupRoles.Gold:
+        menuItems = [];
+        break;
+      case GroupRoles.Silver:
+        menuItems = [
+          { userId: item.userId, action: 'UPG-SILVER', name: 'Upgrade to Silver' },
+          { userId: item.userId, action: 'DOWN-REGULAR', name: 'Downgrade to Regular' },
+        ];
+        break;
+      case GroupRoles.Regular:
+        menuItems = [{ userId: item.userId, action: 'UPG-SILVER', name: 'Upgrade to Silver' }];
+        break;
+    }
+    return (
+      <MenuDropdown>
+        <MenuLabel>Set user role</MenuLabel>
+        {menuItems.map((itm) => (
+          <MenuItem key={itm.action} onClick={() => console.log(itm.name)}>
+            {itm.name}
+          </MenuItem>
+        ))}
+      </MenuDropdown>
+    );
+  };
+  const setConfirmModal = (props: RequestConfirmationProps) =>
+    modals.openConfirmModal({
+      title: 'Please confirm',
+      id: 'Request-confirmation',
+      children: <Text>This action is irreversible, Please confirm your decision</Text>,
+      labels: { confirm: props.decision, cancel: 'Cancel' },
+      confirmProps: {
+        color: ColorDao.serviceText1,
+      },
+      cancelProps: {
+        variant: 'outline',
+        color: ColorDao.negativeColor,
+      },
+      onCancel() {
+        modals.close('Request-confirmation');
+      },
+      onConfirm() {
+        console.log(props.requestId);
       },
     });
   const setUserButtons = (item: UserManageItemModel): JSX.Element => {
@@ -207,19 +263,31 @@ function UserManagement() {
         >
           View details
         </Button>
-        <Button
-          leftSection={<GiCardExchange />}
-          variant="outline"
-          color={ColorDao.serviceText3}
-          size="compact-md"
-        >
-          Change role
-        </Button>
+        <Menu shadow="md" width={200}>
+          <MenuTarget>
+            <Button
+              leftSection={<GiCardExchange />}
+              variant="outline"
+              color={ColorDao.serviceText3}
+              size="compact-md"
+            >
+              Change role
+            </Button>
+          </MenuTarget>
+          {setDropdownMenus(item)}
+        </Menu>
         <Button
           leftSection={<FaHandshakeAltSlash />}
           variant="outline"
           color={ColorDao.negativeColor}
           size="compact-md"
+          onClick={() =>
+            setConfirmModal({
+              decision: 'CONFIRM',
+              requestId: UIString.empty,
+              requestType: RequestType.remove,
+            })
+          }
         >
           Remove user
         </Button>
@@ -236,10 +304,30 @@ function UserManagement() {
       ) {
         return (
           <Group>
-            <Button leftSection={<FcApprove />} color={ColorDao.serviceText1}>
+            <Button
+              leftSection={<FcApprove />}
+              color={ColorDao.serviceText1}
+              onClick={() =>
+                setConfirmModal({
+                  decision: 'ACCEPT',
+                  requestId: item.requestId,
+                  requestType: item.requestType,
+                })
+              }
+            >
               Approve
             </Button>
-            <Button leftSection={<FcDisapprove />} color={ColorDao.negativeColor}>
+            <Button
+              leftSection={<FcDisapprove />}
+              color={ColorDao.negativeColor}
+              onClick={() =>
+                setConfirmModal({
+                  decision: 'REJECT',
+                  requestId: item.requestId,
+                  requestType: item.requestType,
+                })
+              }
+            >
               Reject
             </Button>
             <Button

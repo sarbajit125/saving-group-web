@@ -1,9 +1,9 @@
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
-import 'mantine-react-table/styles.css';
 import './app.css';
 import { MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer, toast } from 'react-toastify';
 import { AppRouter } from './Router';
@@ -35,14 +35,14 @@ const queryClient = new QueryClient({
       if (query.meta && query.meta.errorMessage && query.meta.errorMessage instanceof String) {
         toast.error(query.meta.errorMessage, { position: 'top-right', autoClose: 1000 });
       } else if (error instanceof RootErrorResponse) {
-          if (error.statusCode >= 400 && error.statusCode < 500) {
-            toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
-          } else {
-            // Go to something went wrong page
-          }
+        if (error.statusCode >= 400 && error.statusCode < 500) {
+          toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
         } else {
           // Go to something went wrong page
         }
+      } else {
+        // Go to something went wrong page
+      }
     },
   }),
   mutationCache: new MutationCache({
@@ -58,12 +58,14 @@ const queryClient = new QueryClient({
 export default function App() {
   return (
     <ErrorBoundary>
-    <MantineProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <ToastContainer />
-        <AppRouter />
-      </QueryClientProvider>
-    </MantineProvider>
+      <MantineProvider theme={theme}>
+        <ModalsProvider>
+          <QueryClientProvider client={queryClient}>
+            <ToastContainer />
+            <AppRouter />
+          </QueryClientProvider>
+        </ModalsProvider>
+      </MantineProvider>
     </ErrorBoundary>
   );
 }

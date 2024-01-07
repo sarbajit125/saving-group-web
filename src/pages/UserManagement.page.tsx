@@ -22,6 +22,7 @@ import { FcApprove, FcDisapprove } from 'react-icons/fc';
 import { useState } from 'react';
 import { GiCardExchange } from 'react-icons/gi';
 import { FaHandshakeAltSlash } from 'react-icons/fa';
+import { modals } from '@mantine/modals';
 import TopNavBar from '../components/TopNavBar/TopNavBar';
 import {
   GroupApprovalItemUIModel,
@@ -33,6 +34,8 @@ import {
 } from '../models/uiModels';
 import { DateFormatConstants, UIString, getNameInitials } from '../constants/coreLibrary';
 import { ColorDao } from '../constants/colorConstant';
+import UserDetails from '../components/UserDetails/UserDetails';
+import RequestDetails from '../components/UserDetails/RequestDetails';
 
 function UserManagement() {
   const [isUserTab, setIsUserTab] = useState<boolean>(true);
@@ -151,6 +154,35 @@ function UserManagement() {
         return <Badge color={ColorDao.serviceText2}> Regular</Badge>;
     }
   };
+  const openUserDetail = (item: UserManageItemModel) =>
+    modals.open({
+      title: 'User details',
+      children: <UserDetails item={item} />,
+      size: 'auto',
+      radius: 'md',
+    });
+
+  const openRequestDetail = (item: GroupApprovalItemUIModel) =>
+    modals.openConfirmModal({
+      title: `Approval request for Id: ${item.requestId}`,
+      children: <RequestDetails item={item} />,
+      size: 'auto',
+      radius: 'md',
+      labels: { confirm: 'Approve', cancel: 'Reject' },
+      confirmProps: {
+        color: ColorDao.serviceText1,
+      },
+      cancelProps: {
+        variant: 'outline',
+        color: ColorDao.negativeColor,
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+      onConfirm() {
+        console.log('Confirm');
+      },
+    });
   const setUserButtons = (item: UserManageItemModel): JSX.Element => {
     if (item.userId === '1') {
       return (
@@ -171,6 +203,7 @@ function UserManagement() {
           variant="outline"
           color={ColorDao.primaryColor}
           size="compact-md"
+          onClick={() => openUserDetail(item)}
         >
           View details
         </Button>
@@ -209,7 +242,12 @@ function UserManagement() {
             <Button leftSection={<FcDisapprove />} color={ColorDao.negativeColor}>
               Reject
             </Button>
-            <Button leftSection={<TbListDetails />} variant="outline" color={ColorDao.primaryColor}>
+            <Button
+              leftSection={<TbListDetails />}
+              variant="outline"
+              color={ColorDao.primaryColor}
+              onClick={() => openRequestDetail(item)}
+            >
               View Details
             </Button>
           </Group>
@@ -218,7 +256,12 @@ function UserManagement() {
       return (
         <Group>
           <Text> Your decision has been recorded</Text>
-          <Button leftSection={<TbListDetails />} variant="outline" color={ColorDao.primaryColor}>
+          <Button
+            leftSection={<TbListDetails />}
+            variant="outline"
+            color={ColorDao.primaryColor}
+            onClick={() => openRequestDetail(item)}
+          >
             View Details
           </Button>
           ;
@@ -226,7 +269,12 @@ function UserManagement() {
       );
     }
     return (
-      <Button leftSection={<TbListDetails />} variant="outline" color={ColorDao.primaryColor}>
+      <Button
+        leftSection={<TbListDetails />}
+        variant="outline"
+        color={ColorDao.primaryColor}
+        onClick={() => openRequestDetail(item)}
+      >
         View Details
       </Button>
     );
@@ -250,9 +298,7 @@ function UserManagement() {
       </TableTd>
       <TableTd>{item.userId}</TableTd>
       <TableTd>{dayjs(item.joiningDate).format(DateFormatConstants.dashboard)}</TableTd>
-      <TableTd>
-        {setRoleBadge(item)}
-      </TableTd>
+      <TableTd>{setRoleBadge(item)}</TableTd>
       <TableTd> {setUserButtons(item)} </TableTd>
     </TableTr>
   ));

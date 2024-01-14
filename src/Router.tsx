@@ -16,6 +16,7 @@ import { useAuthStore } from './store/authStore';
 import GroupList from './pages/GroupList.page';
 import GroupDashboard from './pages/GroupDashbord.page';
 import UserManagement from './pages/UserManagement.page';
+import GroupAddMoney from './pages/GroupAddMoney.page';
 
 // Create a root route
 const rootRoute = rootRouteWithContext<RouterAuthContext>()({
@@ -24,11 +25,7 @@ const rootRoute = rootRouteWithContext<RouterAuthContext>()({
     return (
       <>
         <Outlet />
-        {isAuthenticated ? (
-          <Navigate to="/user/home" />
-        ) : (
-          <Navigate to="/user-management" />
-        )}
+        {isAuthenticated ? <Navigate to="/user/home" /> : <Navigate to="/group-transaction" />}
       </>
     );
   },
@@ -56,6 +53,12 @@ const groupManagement = new Route({
   getParentRoute: () => rootRoute,
   path: 'user-management',
   component: UserManagement,
+});
+// Add money to group
+const addMoneyGroup = new Route({
+  getParentRoute: () => rootRoute,
+  path: 'group-transaction',
+  component: GroupAddMoney,
 });
 // authenticated route
 const userRoute = new Route({
@@ -96,6 +99,7 @@ const routeTree = rootRoute.addChildren([
   lobbyRoute,
   dashboardRoute,
   groupManagement,
+  addMoneyGroup,
   userRoute.addChildren([homeRoute]),
 ]);
 // Create the router using your route tree

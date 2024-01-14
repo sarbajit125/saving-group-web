@@ -6,6 +6,7 @@ export enum StatusType {
 
 export enum DateFormatConstants {
     dashboard = 'DD MMM YY',
+    cardExpiry = 'MM/YY'
 
 }
 

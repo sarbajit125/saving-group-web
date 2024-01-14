@@ -74,6 +74,24 @@ export enum ApprovalType {
     rejected = 'REJECTED',
     pending = 'PENDING',
 }
+export enum TransactionType {
+    DEPOSIT = 'DEPOSIT',
+    WITHDRAWAL = 'WITHDRAWAL',
+}
+export enum WalletType {
+    REGULAR = 'REGULAR',
+    SAVING = 'SAVING',
+    PREMIUM = 'PREMIUM'
+}
+export enum CardType {
+    VISA = 'VISA',
+    MASTERCARD = 'MASTERCARD',
+    OTHERS = 'OTHERS',
+}
+export enum InstrumentType {
+    wallet = 'WALLET',
+    card = 'CARD',
+}
 export interface ApproverItem extends ApprovalPartyDetails {
     decision: ApprovalType
 }
@@ -109,4 +127,28 @@ export interface RequestConfirmationProps {
     requestType: RequestType,
     decision: 'ACCEPT' | 'REJECT' | 'CONFIRM',
     requestId: string,
+}
+
+export interface PaymentInstrument {
+    instrumentId: string,
+    instrumentBalance: number,
+    instrumentCurrency: number,
+    instrumentType: InstrumentType,
+}
+
+export interface WalletPaymentInstrument extends PaymentInstrument {
+    walletId: string,
+    walletType: WalletType,
+    isDefault: boolean,
+}
+
+export interface CardPaymentInstrument extends PaymentInstrument {
+    cardType: CardType
+    cardHolderName: string,
+    cardExpiry: Date,
+}
+export interface FeesUIModel {
+    isAmount: boolean,
+    key: string
+    value: string | number,
 }

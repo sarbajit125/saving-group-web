@@ -25,7 +25,7 @@ const rootRoute = rootRouteWithContext<RouterAuthContext>()({
     return (
       <>
         <Outlet />
-        {isAuthenticated ? <Navigate to="/user/home" /> : <Navigate to="/group-transaction" />}
+        {isAuthenticated ? <Navigate to="/user/home" /> : <Navigate to="/login" />}
       </>
     );
   },
@@ -41,24 +41,6 @@ const registerRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/register',
   component: RegisterPage,
-});
-// Group dashboard route
-export const dashboardRoute = new Route({
-  getParentRoute: () => rootRoute,
-  path: 'dashboard/$groupId',
-  component: GroupDashboard,
-});
-// Group User management route
-const groupManagement = new Route({
-  getParentRoute: () => rootRoute,
-  path: 'user-management',
-  component: UserManagement,
-});
-// Add money to group
-const addMoneyGroup = new Route({
-  getParentRoute: () => rootRoute,
-  path: 'group-transaction',
-  component: GroupAddMoney,
 });
 // authenticated route
 const userRoute = new Route({
@@ -77,6 +59,29 @@ const userRoute = new Route({
     }
   },
 });
+// Group route
+const groupRoute = new Route({
+  getParentRoute: () => userRoute,
+  path: 'group',
+});
+// Group dashboard route
+export const dashboardRoute = new Route({
+  getParentRoute: () => groupRoute,
+  path: 'dashboard/$groupId',
+  component: GroupDashboard,
+});
+// Group User management route
+const groupManagement = new Route({
+  getParentRoute: () => groupRoute,
+  path: 'user-management',
+  component: UserManagement,
+});
+// Add money to group
+const addMoneyGroup = new Route({
+  getParentRoute: () => groupRoute,
+  path: 'group-transaction',
+  component: GroupAddMoney,
+});
 // home route
 const homeRoute = new Route({
   getParentRoute: () => userRoute,
@@ -84,7 +89,7 @@ const homeRoute = new Route({
   component: HomePage,
 });
 const lobbyRoute = new Route({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => groupRoute,
   path: 'lobby',
   component: GroupList,
 });
@@ -96,11 +101,10 @@ const notFoundRoute = new NotFoundRoute({
 const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
-  lobbyRoute,
-  dashboardRoute,
-  groupManagement,
-  addMoneyGroup,
-  userRoute.addChildren([homeRoute]),
+  userRoute.addChildren([
+    homeRoute,
+    groupRoute.addChildren([lobbyRoute, dashboardRoute, groupManagement, addMoneyGroup]),
+  ]),
 ]);
 // Create the router using your route tree
 const router = new Router({

@@ -6,10 +6,15 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastContainer, toast } from 'react-toastify';
+import Cookies from 'universal-cookie';
 import { AppRouter } from './Router';
 import { theme } from './theme';
 import { RootErrorResponse } from './models/responseModels';
 import ErrorBoundary from './boundary/ErrorBoundary';
+import { fireRefreshToken } from './handlers/axiosHandler';
+
+//Cookie constant
+export const cookies = new Cookies();
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,10 +40,12 @@ const queryClient = new QueryClient({
       if (query.meta && query.meta.errorMessage && query.meta.errorMessage instanceof String) {
         toast.error(query.meta.errorMessage, { position: 'top-right', autoClose: 1000 });
       } else if (error instanceof RootErrorResponse) {
-        if (error.statusCode >= 400 && error.statusCode < 500) {
-          toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
+        if (error.statusCode === 401 && cookies.get('refresh_token') !== undefined) {
+          fireRefreshToken(cookies.get('refresh_token'))
+            .then((response) => console.log(response.access_token))
+            .catch(() => console.log('error'));
         } else {
-          // Go to something went wrong page
+          toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
         }
       } else {
         // Go to something went wrong page

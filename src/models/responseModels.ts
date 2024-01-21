@@ -24,6 +24,7 @@ export default RootSuccessResponse;
 
 export interface loginSuccessResp extends RootSuccessResponse {
     access_token: string,
+    refresh_token: string,
 }
 
 export interface BannerDao {
@@ -35,4 +36,7 @@ export interface GroupItemResponse {
     groupCode: string,
     groupName: string,
     role: string,
+}
+export interface RefreshTokenResponseDao extends RootSuccessResponse {
+    access_token: string,
 }

@@ -4,7 +4,6 @@ import {
   AccordionItem,
   AccordionPanel,
   Button,
-  Center,
   Grid,
   GridCol,
   Group,
@@ -26,6 +25,7 @@ import HeaderProgressBar from '../components/HeaderPogressBar/HeaderPogressBar';
 import WalletsSelection from '../components/WalletSelection/WalletsSelection';
 import TxnSummary from '../components/WalletSelection/TxnSummary';
 import TopNavBar from '../components/TopNavBar/TopNavBar';
+import { ColorDao } from '../constants/colorConstant';
 
 function GroupAddMoney() {
   const [transactionType, setTransactionType] = useState<TransactionType>(TransactionType.DEPOSIT);
@@ -102,7 +102,7 @@ function GroupAddMoney() {
               items={['Add amount', 'Payments', 'Confirm payment']}
               progress={transactionProgress}
             />
-            <Accordion variant="separated">
+            <Accordion variant="separated" value={transactionProgress.toString()}>
               <AccordionItem key={0} value="0">
                 <AccordionControl>{transactionType}</AccordionControl>
                 <AccordionPanel>
@@ -122,21 +122,41 @@ function GroupAddMoney() {
                       disabled={!isCustomAmount}
                     />
                     <Group>
-                      <Button variant="outline" onClick={() => setAmount(100)}>
+                      <Button
+                        variant="outline"
+                        color={ColorDao.primaryColor}
+                        onClick={() => setAmount(100)}
+                      >
                         100
                       </Button>
-                      <Button variant="outline" onClick={() => setAmount(500)}>
+                      <Button
+                        variant="outline"
+                        color={ColorDao.primaryColor}
+                        onClick={() => setAmount(500)}
+                      >
                         500
                       </Button>
-                      <Button variant="outline" onClick={() => setAmount(1000)}>
+                      <Button
+                        variant="outline"
+                        color={ColorDao.primaryColor}
+                        onClick={() => setAmount(1000)}
+                      >
                         1000
                       </Button>
-                      <Button variant="outline" onClick={() => setIsCustom(true)}>
+                      <Button
+                        variant="outline"
+                        color={ColorDao.primaryColor}
+                        onClick={() => setIsCustom(true)}
+                      >
                         Custom amount
                       </Button>
                     </Group>
                     <Group justify="flex-end">
-                      <Button onClick={() => setProgress(1)} disabled={enteredAmount === 0}>
+                      <Button
+                        onClick={() => setProgress(1)}
+                        disabled={enteredAmount === 0}
+                        color={ColorDao.primaryColor}
+                      >
                         Continue
                       </Button>
                     </Group>
@@ -156,6 +176,7 @@ function GroupAddMoney() {
                       <Button
                         onClick={() => setProgress(2)}
                         disabled={selectedInstrument === undefined}
+                        color={ColorDao.primaryColor}
                       >
                         Continue
                       </Button>
@@ -173,7 +194,9 @@ function GroupAddMoney() {
                       feesModel={setFeesTable()}
                     />
                     <Group justify="flex-end">
-                      <Button onClick={() => openPINModal()}>Make payment</Button>
+                      <Button color={ColorDao.primaryColor} onClick={() => openPINModal()}>
+                        Make payment
+                      </Button>
                     </Group>
                   </Stack>
                 </AccordionPanel>

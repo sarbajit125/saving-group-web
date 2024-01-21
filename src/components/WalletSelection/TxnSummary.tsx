@@ -1,9 +1,6 @@
-import { Badge, Card, CardSection, Center, Divider, Group, Stack, Text } from '@mantine/core';
+import { Badge, Box, Card, CardSection, Center, Divider, Group, Stack, Text } from '@mantine/core';
 import { formattedCurrency } from '../../constants/coreLibrary';
-import {
-  FeesUIModel,
-  TransactionType,
-} from '../../models/uiModels';
+import { FeesUIModel, TransactionType } from '../../models/uiModels';
 import { ColorDao } from '../../constants/colorConstant';
 
 function TxnSummary(props: TxnSummaryProps) {
@@ -11,12 +8,16 @@ function TxnSummary(props: TxnSummaryProps) {
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <CardSection>
         <Center>
-          <Text>{formattedCurrency('INR', props.enteredAmount)}</Text>
-          <Badge color={ColorDao.goldBGColor}>{props.service}</Badge>
+          <Box>
+            <Text fw="bold" size="md">
+              {formattedCurrency('INR', props.enteredAmount)}
+            </Text>
+            <Badge color={ColorDao.cyanColor}>{props.service}</Badge>
+          </Box>
         </Center>
-        <Divider variant="dashed" />
+        <Divider mt="sm" variant="dashed" />
       </CardSection>
-      <Stack>
+      <Stack mt="sm">
         {props.feesModel.map((item) => (
           <Group justify="space-between">
             <Text>{item.key}</Text>

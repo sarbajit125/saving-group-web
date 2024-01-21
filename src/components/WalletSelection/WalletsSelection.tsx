@@ -1,7 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Avatar, Box, Card, Checkbox, Group, Radio, RadioGroup, Stack, Text } from '@mantine/core';
+import {
+  Avatar,
+  Box,
+  Card,
+  Image,
+  Checkbox,
+  Group,
+  Paper,
+  Radio,
+  RadioGroup,
+  Stack,
+  Text,
+} from '@mantine/core';
 import dayjs from 'dayjs';
 import { CiWallet } from 'react-icons/ci';
+import { v4 as uuidv4 } from 'uuid';
 import {
   CardPaymentInstrument,
   CardType,
@@ -11,12 +24,38 @@ import {
 } from '../../models/uiModels';
 import { DateFormatConstants } from '../../constants/coreLibrary';
 
+const getRandomCardType = () => {
+  const cardTypes = Object.values(CardType);
+  const randomIndex = Math.floor(Math.random() * cardTypes.length);
+  return cardTypes[randomIndex];
+};
+
+const getRandomDate = () => {
+  const currentDate = new Date();
+  const randomFutureDate = new Date(
+    currentDate.getFullYear() + 1,
+    currentDate.getMonth(),
+    currentDate.getDate()
+  );
+  return randomFutureDate;
+};
+const cardDummy: CardPaymentInstrument[] = Array.from({ length: 10 }, (_, index) => ({
+  instrumentId: uuidv4(),
+  instrumentBalance: Math.random() * 1000,
+  instrumentCurrency: 840, // Assuming USD as currency code
+  instrumentType: InstrumentType.card,
+  cardType: getRandomCardType(),
+  cardHolderName: `Card Holder ${index + 1}`,
+  cardExpiry: getRandomDate(),
+}));
+
 function WalletsSelection(props: WalletSelectionProps) {
   const [typesList, setTypeList] = useState<InstrumentType[]>([]);
   const [selectedType, setInstrumentType] = useState<string>(typesList[0]);
   const [selectedInstrument, setSelected] = useState<
     CardPaymentInstrument | WalletPaymentInstrument | undefined
   >();
+  const [cardList, setCardList] = useState<CardPaymentInstrument[]>(cardDummy);
   useEffect(() => {
     props.selectedInstrument(selectedInstrument);
   }, [selectedInstrument]);
@@ -30,7 +69,7 @@ function WalletsSelection(props: WalletSelectionProps) {
         break;
     }
   }, [props.serviceType]);
-  const cardList: CardPaymentInstrument[] = [];
+  
   const walletList: WalletPaymentInstrument[] = [];
   const setCardImage = (cardType: CardType): string => {
     switch (cardType) {
@@ -45,26 +84,41 @@ function WalletsSelection(props: WalletSelectionProps) {
     }
   };
   const setForCards = () => (
-    <Stack>
+    <Stack h={100} style={{ overflow: 'auto' }}>
       {cardList.map((item) => (
-        <Card shadow="sm" padding="lg" radius="md" withBorder onClick={() => setSelected(item)}>
-          <Group justify="space-around">
-            <Group>
-              <Avatar src={setCardImage(item.cardType)}>{item.cardType} </Avatar>
+        <Paper shadow="sm" radius="md" withBorder onClick={() => setSelected(item)}>
+          <Group justify="space-between">
+            <Group p="sm" ml="sm">
+              <div style={{ width: 40, height: 40, borderRadius: '50%' }}>
+                <Image
+                  h={40}
+                  w={40}
+                  radius="md"
+                  fit="scale-down"
+                  src={setCardImage(item.cardType)}
+                  alt="card-logo"
+                />
+              </div>
               <Box>
-                <Text>{item.instrumentId}</Text>
-                <Text>{item.cardHolderName}</Text>
+                <Text fw="bold" size="sm">
+                  {item.instrumentId}
+                </Text>
+                <Text fw="lighter" size="xs">
+                  {item.cardHolderName}
+                </Text>
               </Box>
             </Group>
-            <Text>{dayjs(item.cardExpiry).format(DateFormatConstants.cardExpiry)}</Text>
+            <Text size="xs">{dayjs(item.cardExpiry).format(DateFormatConstants.cardExpiry)}</Text>
             <Checkbox
               checked={selectedInstrument?.instrumentId === item.instrumentId}
               onChange={() => setSelected(item)}
               disabled={props.enteredAmount > item.instrumentBalance}
               error={props.enteredAmount > item.instrumentBalance ? 'Insufficient balance' : null}
+              mr="sm"
+              p="sm"
             />
           </Group>
-        </Card>
+        </Paper>
       ))}
     </Stack>
   );

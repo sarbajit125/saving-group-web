@@ -4,6 +4,7 @@ import RootSuccessResponse, {
   RefreshTokenResponseDao,
   loginSuccessResp,
   RootErrorResponse,
+  HomeResp,
 } from '../models/responseModels';
 import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
@@ -14,7 +15,7 @@ export const axiosInstance = axios.create({
 });
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   const { method, url, headers } = config;
-  const bearerToken = useAuthStore((state) => state.bearerToken);
+  const { bearerToken } = useAuthStore.getState();
   if (headers && bearerToken) {
     headers.Authorization = `Bearer ${bearerToken}`;
   }
@@ -56,3 +57,12 @@ export const fireRefreshToken = async (
       throw new RootErrorResponse(400, 'Refresh token failed');
     }
   };
+export const fireUserDetails = async () => {
+  try {
+    wrapInterceptor();
+    const response = await axiosInstance.get<HomeResp>('/user/home');
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};

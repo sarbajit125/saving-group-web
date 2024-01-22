@@ -10,6 +10,7 @@ import {
   Flex,
   Box,
   Divider,
+  LoadingOverlay,
 } from '@mantine/core';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import { CiSearch } from 'react-icons/ci';
@@ -27,7 +28,8 @@ import DashboardBanners from '../components/DashboardBanners/DashboardBanners';
 import RecentTransactionTable, {
   RecentTransactionRowProps,
 } from '../components/TransactionTable/TransactionTable';
-import { StatusType } from '../constants/coreLibrary';
+import { StatusType, getNameInitials } from '../constants/coreLibrary';
+import { userDetailQuery } from '../handlers/networkHook';
 
 export function HomePage() {
   const linksArr: SideNavbarItem[] = [
@@ -126,80 +128,76 @@ export function HomePage() {
       textColor: ColorDao.serviceText2,
     },
   ];
+  const homeVM = userDetailQuery();
   return (
     <>
-      <Grid>
-        <GridCol span={2}>
-          <SideNavBar title="Olith Banking" navlinks={linksArr} />
-          <Divider orientation="vertical" />
-        </GridCol>
-        <GridCol span={10}>
-          <Group mt="md" p="lg" justify="space-between">
-            <Autocomplete
-              placeholder="Search"
-              leftSection={<CiSearch fontSize="1em" />}
-              data={['React', 'Angular', 'Vue', 'Next.js', 'Riot.js', 'Svelte', 'Blitz.js']}
-              visibleFrom="xs"
-              w="50%"
-            />
-            <Group mr="sm">
-              <GoBell fontSize="1em" />
-              <IoPersonOutline fontSize="1em" />
-              <Avatar src={null} alt="Vitaly Rtishchev" color="red">
-                VR
-              </Avatar>
+      {homeVM.isLoading ? (
+        <LoadingOverlay visible zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+      ) : null}
+      {homeVM.isSuccess ? (
+        <Grid>
+          <GridCol span={2}>
+            <SideNavBar title="Olith Banking" navlinks={linksArr} />
+            <Divider orientation="vertical" />
+          </GridCol>
+          <GridCol span={10}>
+            <Group mt="md" p="lg" justify="space-between">
+              <Autocomplete
+                placeholder="Search"
+                leftSection={<CiSearch fontSize="1em" />}
+                data={['React', 'Angular', 'Vue', 'Next.js', 'Riot.js', 'Svelte', 'Blitz.js']}
+                visibleFrom="xs"
+                w="50%"
+              />
+              <Group mr="sm">
+                <GoBell fontSize="1em" />
+                <IoPersonOutline fontSize="1em" />
+                <Avatar src={null} alt={homeVM.data.userDetails.username} color="red">
+                  {getNameInitials(homeVM.data.userDetails.username)}
+                </Avatar>
+              </Group>
             </Group>
-          </Group>
-          <Grid>
-            <GridCol span={7}>
-              <Flex direction="column" justify="flex-start" align="flex-start">
-                <WelcomeCard
-                  name="Vitaly Rtishchev"
-                  serviceList={defaultServiceDao}
-                  serviceTapped={(code) => console.log(code)}
-                />
-                <DashboardGraph balance={1000} currencySign="INR" />
-                <DashboardBanners
-                  rows={[
-                    {
-                      url: 'https://media.angi.com/s3fs-public/home-landscape-design.jpeg?impolicy=leadImage',
-                      action: 'https://www.makemytrip.com/flights/',
-                    },
-                    {
-                      url: 'https://www.tasteofcinema.com/wp-content/uploads/2016/12/days-of-heaven.jpg',
-                      action: 'https://in.bookmyshow.com/',
-                    },
-                  ]}
-                />
-              </Flex>
-            </GridCol>
-            <Stack mt="100">
-              <Cards number="4012888888881881" expiry="08/23" cvc="054" name="Vitaly Rtishchev" />
-              <Center
-                h={44}
-                w={290}
-                mt="md"
-                ml={44}
-                p="md"
-                style={{
-                  borderWidth: 2,
-                  borderStyle: 'dashed',
-                  borderColor: ColorDao.serviceText2,
-                }}
-              >
-                <Text c={ColorDao.serviceText2} fw="bold">
-                  {' '}
-                  Add new card
-                </Text>
-              </Center>
-              <Box mt="md" ml="xl">
-                <RecentTransactionTable items={recentTable} />
-              </Box>
-            </Stack>
-            <GridCol />
-          </Grid>
-        </GridCol>
-      </Grid>
+            <Grid>
+              <GridCol span={7}>
+                <Flex direction="column" justify="flex-start" align="flex-start">
+                  <WelcomeCard
+                    name={homeVM.data.userDetails.username}
+                    serviceList={defaultServiceDao}
+                    serviceTapped={(code) => console.log(code)}
+                  />
+                  <DashboardGraph balance={1000} currencySign="INR" />
+                  <DashboardBanners
+                    rows={homeVM.data.bannerList}
+                  />
+                </Flex>
+              </GridCol>
+              <Stack mt="100">
+                <Cards number="4012888888881881" expiry="08/23" cvc="054" name="Vitaly Rtishchev" />
+                <Center
+                  h={44}
+                  w={290}
+                  mt="md"
+                  ml={44}
+                  p="md"
+                  style={{
+                    borderWidth: 2,
+                    borderStyle: 'dashed',
+                    borderColor: ColorDao.serviceText2,
+                  }}
+                >
+                  <Text c={ColorDao.serviceText2} fw="bold">
+                    Add new card
+                  </Text>
+                </Center>
+                <Box mt="md" ml="xl">
+                  <RecentTransactionTable items={recentTable} />
+                </Box>
+              </Stack>
+              <GridCol />
+            </Grid>
+          </GridCol>
+        </Grid>
+      ) : null}
     </>
   );
 }

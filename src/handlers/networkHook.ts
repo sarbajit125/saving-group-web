@@ -1,8 +1,8 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { LoginRequestType, RegisterRequestType } from './schemaHandler';
-import { loginUser, registerUser } from './axiosHandler';
+import { fireUserDetails, loginUser, registerUser } from './axiosHandler';
 
 export const cookies = new Cookies();
 
@@ -28,3 +28,7 @@ export const registerMutation = () =>
       toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
     },
   });
+export const userDetailQuery = () => useQuery({
+  queryKey: ['user/home'],
+  queryFn: () => fireUserDetails(),
+});

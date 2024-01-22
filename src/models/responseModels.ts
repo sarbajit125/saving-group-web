@@ -40,3 +40,13 @@ export interface GroupItemResponse {
 export interface RefreshTokenResponseDao extends RootSuccessResponse {
     access_token: string,
 }
+export interface HomeResp extends RootSuccessResponse {
+    bannerList: BannerDao[]
+    userDetails: UserDetails
+}
+
+export interface UserDetails {
+    username: string,
+    email: string,
+    userId: string
+}

@@ -12,6 +12,8 @@ import { theme } from './theme';
 import { RootErrorResponse } from './models/responseModels';
 import ErrorBoundary from './boundary/ErrorBoundary';
 import { fireRefreshToken } from './handlers/axiosHandler';
+import { useAuthStore } from './store/authStore';
+import { APIConstants } from './constants/coreLibrary';
 
 //Cookie constant
 export const cookies = new Cookies();
@@ -25,6 +27,7 @@ const queryClient = new QueryClient({
         }
         return false;
       },
+      retry: false,
     },
     queries: {
       throwOnError(error) {
@@ -33,6 +36,7 @@ const queryClient = new QueryClient({
         }
         return false;
       },
+      retry: false,
     },
   },
   queryCache: new QueryCache({
@@ -40,10 +44,13 @@ const queryClient = new QueryClient({
       if (query.meta && query.meta.errorMessage && query.meta.errorMessage instanceof String) {
         toast.error(query.meta.errorMessage, { position: 'top-right', autoClose: 1000 });
       } else if (error instanceof RootErrorResponse) {
-        if (error.statusCode === 401 && cookies.get('refresh_token') !== undefined) {
-          fireRefreshToken(cookies.get('refresh_token'))
-            .then((response) => console.log(response.access_token))
-            .catch(() => console.log('error'));
+        if (error.statusCode === 401 && cookies.get(APIConstants.refreshTokenKey) !== undefined) {
+          fireRefreshToken(cookies.get(APIConstants.refreshTokenKey))
+            .then((response) => {
+              useAuthStore.setState({ bearerToken: response.access_token });
+              query.fetch();
+            })
+            .catch((err) => console.log(err));
         } else {
           toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
         }
@@ -53,11 +60,22 @@ const queryClient = new QueryClient({
     },
   }),
   mutationCache: new MutationCache({
-    onError(error) {
+    onError(error, variables, context, mutation) {
+      console.log(variables);
+      console.log(context);
       if (error instanceof RootErrorResponse) {
-        toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
+        if (error.statusCode === 401 && cookies.get(APIConstants.refreshTokenKey) !== undefined) {
+          fireRefreshToken(cookies.get(APIConstants.refreshTokenKey))
+            .then((response) => {
+              useAuthStore.setState({ bearerToken: response.access_token });
+              mutation.execute(variables);
+            })
+            .catch((err) => console.log(err));
+        } else {
+          toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
+        }
       } else {
-        toast.error(error.message, { position: 'top-right', autoClose: 1000 });
+        // Go to something went wrong page
       }
     },
   }),

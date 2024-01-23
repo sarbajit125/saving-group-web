@@ -47,3 +47,6 @@ export const getNameInitials = (firstName: string, lastName?: string): string =>
 
   return `${firstNameInitial}${lastNameInitial}`;
 };
+export enum APIConstants {
+  refreshTokenKey = 'refresh_token'
+}

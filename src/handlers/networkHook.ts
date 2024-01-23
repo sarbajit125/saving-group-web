@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { LoginRequestType, RegisterRequestType } from './schemaHandler';
 import { fireUserDetails, loginUser, registerUser } from './axiosHandler';
+import { APIConstants } from '../constants/coreLibrary';
 
 export const cookies = new Cookies();
 
@@ -11,7 +12,12 @@ export const loginMutation = () =>
     mutationKey: ['user/login'],
     mutationFn: (request: LoginRequestType) => loginUser(request),
     onSuccess(data) {
-      cookies.set('refresh_token', data.refresh_token, { httpOnly: true, secure: true });
+      cookies.remove(APIConstants.refreshTokenKey);
+      cookies.set(APIConstants.refreshTokenKey, data.refresh_token, {
+        httpOnly: false,
+        secure: true,
+        sameSite: 'none',
+      });
       toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
     },
   });
@@ -28,7 +34,8 @@ export const registerMutation = () =>
       toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
     },
   });
-export const userDetailQuery = () => useQuery({
-  queryKey: ['user/home'],
-  queryFn: () => fireUserDetails(),
-});
+export const userDetailQuery = () =>
+  useQuery({
+    queryKey: ['user/home'],
+    queryFn: () => fireUserDetails(),
+  });

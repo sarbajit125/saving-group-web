@@ -19,6 +19,7 @@ import { GoBell, GoCreditCard } from 'react-icons/go';
 import { IoPersonOutline } from 'react-icons/io5';
 import { GiBank } from 'react-icons/gi';
 import { PiBankLight, PiPiggyBank } from 'react-icons/pi';
+import { useNavigate } from '@tanstack/react-router';
 import SideNavBar, { SideNavbarItem } from '../components/SideNavBar/SideNavBar';
 import WelcomeCard from '../components/WelcomeCard/welcomeCard';
 import { ServiceCardsDao } from '../models/uiModels';
@@ -32,6 +33,7 @@ import { StatusType, getNameInitials } from '../constants/coreLibrary';
 import { userDetailQuery } from '../handlers/networkHook';
 
 export function HomePage() {
+  const navigate = useNavigate();
   const linksArr: SideNavbarItem[] = [
     {
       serviceCode: 'HOME',
@@ -128,6 +130,15 @@ export function HomePage() {
       textColor: ColorDao.serviceText2,
     },
   ];
+  const topServiceTapped = (serviceCode: string) => {
+    switch (serviceCode) {
+      case 'SAVE':
+        navigate({ to: '/user/group/lobby' });
+        break;
+      default:
+        console.log(serviceCode);
+    }
+  };
   const homeVM = userDetailQuery();
   return (
     <>
@@ -163,12 +174,10 @@ export function HomePage() {
                   <WelcomeCard
                     name={homeVM.data.userDetails.username}
                     serviceList={defaultServiceDao}
-                    serviceTapped={(code) => console.log(code)}
+                    serviceTapped={(code) => topServiceTapped(code)}
                   />
                   <DashboardGraph balance={1000} currencySign="INR" />
-                  <DashboardBanners
-                    rows={homeVM.data.bannerList}
-                  />
+                  <DashboardBanners rows={homeVM.data.bannerList} />
                 </Flex>
               </GridCol>
               <Stack mt="100">

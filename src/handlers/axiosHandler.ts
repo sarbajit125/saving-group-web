@@ -1,6 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { LoginRequestType, createGroupRequestType } from './schemaHandler';
-import RootSuccessResponse, {
+import { RootSuccessResponse,
   RefreshTokenResponseDao,
   loginSuccessResp,
   RootErrorResponse,
@@ -45,19 +45,17 @@ export const registerUser = async (request: RegisterRequestModel) => {
     throw apiErrorHandler(error);
   }
 };
-export const fireRefreshToken = async (
-    refreshToken: string
-  ): Promise<RefreshTokenResponseDao> => {
-    try {
-        wrapInterceptor();
-      const response = await axiosInstance.post<RefreshTokenResponseDao>('/user/refresh', {
-        refresh_token: refreshToken,
-      });
-      return response.data;
-    } catch (error) {
-      throw new RootErrorResponse(400, 'Refresh token failed');
-    }
-  };
+export const fireRefreshToken = async (refreshToken: string): Promise<RefreshTokenResponseDao> => {
+  try {
+    wrapInterceptor();
+    const response = await axiosInstance.post<RefreshTokenResponseDao>('/user/refresh', {
+      refresh_token: refreshToken,
+    });
+    return response.data;
+  } catch (error) {
+    throw new RootErrorResponse(400, 'Refresh token failed');
+  }
+};
 export const fireUserDetails = async () => {
   try {
     wrapInterceptor();
@@ -77,7 +75,7 @@ export const fireGroupLobby = async () => {
   }
 };
 
-export const fireCreateGroup = async (request:createGroupRequestType) => {
+export const fireCreateGroup = async (request: createGroupRequestType) => {
   try {
     wrapInterceptor();
     const response = await axiosInstance.post<RootSuccessResponse>('/user/create-group', request);
@@ -85,4 +83,15 @@ export const fireCreateGroup = async (request:createGroupRequestType) => {
   } catch (error) {
     throw apiErrorHandler(error);
   }
-}
+};
+export const fireJoinGroup = async (groupCode: string) => {
+  try {
+    wrapInterceptor();
+    const response = await axiosInstance.post<RootSuccessResponse>('/group/join', {
+      groupcode: groupCode,
+    });
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};

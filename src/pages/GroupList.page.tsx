@@ -17,14 +17,19 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { IoListOutline, IoGridOutline, IoAdd } from 'react-icons/io5';
 import { PiUsersLight } from 'react-icons/pi';
+import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import SideNavBar from '../components/SideNavBar/SideNavBar';
 import { navLinksArr } from '../constants/NavLinksConstant';
 import { InviteItemUIDao } from '../models/uiModels';
 import { ColorDao } from '../constants/colorConstant';
-import { useGroupLobbyQuery } from '../handlers/networkHook';
+import { useGroupLobbyQuery, useJoinGroupMutation } from '../handlers/networkHook';
 
 function GroupList() {
+  const [enteredGroupCode, setGroupCode] = useState<string>('');
+  const navigate = useNavigate();
   const lobbyVM = useGroupLobbyQuery();
+  const joinVM = useJoinGroupMutation();
   const dummyInviteList: InviteItemUIDao[] = [
     {
       groupCode: 'ABC1236',
@@ -49,22 +54,31 @@ function GroupList() {
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <Grid>
-      {lobbyVM.isLoading ? (
-        <LoadingOverlay visible zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-      ) : null}
+      <LoadingOverlay
+        visible={lobbyVM.isLoading || joinVM.isPending}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+      />
       <GridCol span={2}>
         <SideNavBar title="Olith Banking" navlinks={navLinksArr} />
       </GridCol>
       <GridCol span={6}>
         <Group p="md" mt="xl" mr="md" ml="md" justify="space-between">
-          <Text> Groups(11)</Text>
+          <Text>{lobbyVM.isSuccess ? `Groups(${lobbyVM.data.length})` : 'Group'}</Text>
           <Group p="md">
             <IoGridOutline fontSize="1.5em" />
             <IoListOutline fontSize="1.5em" />
           </Group>
         </Group>
         <SimpleGrid p="md" cols={4}>
-          <Card shadow="sm" padding="lg" radius="md" h={200} withBorder>
+          <Card
+            shadow="sm"
+            padding="lg"
+            radius="md"
+            h={200}
+            withBorder
+            onClick={() => navigate({ to: '/user/group/create-group' })}
+          >
             <Center h={200}>
               <Stack>
                 <Avatar src={null} size="lg" style={{ alignSelf: 'center' }}>
@@ -102,7 +116,11 @@ function GroupList() {
             Join Group
           </Button>
           <Modal opened={opened} onClose={close} title="Join Group">
-            <TextInput placeholder="Enter group code" />
+            <TextInput
+              placeholder="Enter group code"
+              value={enteredGroupCode}
+              onChange={(event) => setGroupCode(event.currentTarget.value)}
+            />
             <Stack mt="md">
               <Center h={100}>
                 <Stack>
@@ -121,8 +139,8 @@ function GroupList() {
           </Modal>
         </Group>
         <Stack mr="sm" ml="sm">
-          {dummyInviteList.map((item) => (
-            <Group mt="md" justify="space-between">
+          {dummyInviteList.map((item, index) => (
+            <Group mt="md" justify="space-between" key={index}>
               <Group>
                 <Avatar src={item.groupImage} alt="invite-request" size="lg">
                   <PiUsersLight fontSize="2em" />

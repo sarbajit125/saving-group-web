@@ -12,16 +12,12 @@ export class RootErrorResponse extends Error {
         this.timestamp = timestamp || new Date();
     }
 }
-
 export interface RootSuccessResponse {
     status: string
     statusCode: number
     userMsg: string
     timestamp: Date
 }
-
-export default RootSuccessResponse;
-
 export interface loginSuccessResp extends RootSuccessResponse {
     access_token: string,
     refresh_token: string,

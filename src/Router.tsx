@@ -17,6 +17,7 @@ import GroupList from './pages/GroupList.page';
 import GroupDashboard from './pages/GroupDashbord.page';
 import UserManagement from './pages/UserManagement.page';
 import GroupAddMoney from './pages/GroupAddMoney.page';
+import CreateGroupPage from './pages/CreateGroup.page';
 
 // Create a root route
 const rootRoute = rootRouteWithContext<RouterAuthContext>()({
@@ -50,7 +51,7 @@ const userRoute = new Route({
   beforeLoad: (opts) => {
     // console.log(opts.context.isAuthValidated);
     if (!opts.context.isAuthValidated) {
-      throw redirect({
+       redirect({
         to: '/login',
         search: {
           redirect: opts.location.href,
@@ -88,10 +89,17 @@ const homeRoute = new Route({
   path: 'home',
   component: HomePage,
 });
+// Group lobby page
 const lobbyRoute = new Route({
   getParentRoute: () => groupRoute,
   path: 'lobby',
   component: GroupList,
+});
+// Create new group page
+const createGroupRoute = new Route({
+  getParentRoute: () => groupRoute,
+  path: 'create-group',
+  component: CreateGroupPage,
 });
 const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => rootRoute,
@@ -103,7 +111,13 @@ const routeTree = rootRoute.addChildren([
   registerRoute,
   userRoute.addChildren([
     homeRoute,
-    groupRoute.addChildren([lobbyRoute, dashboardRoute, groupManagement, addMoneyGroup]),
+    groupRoute.addChildren([
+      lobbyRoute,
+      dashboardRoute,
+      groupManagement,
+      addMoneyGroup,
+      createGroupRoute,
+    ]),
   ]),
 ]);
 // Create the router using your route tree

@@ -1,5 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
+import '@mantine/dates/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 import './app.css';
 import { MantineProvider } from '@mantine/core';

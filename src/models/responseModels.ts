@@ -50,3 +50,13 @@ export interface UserDetails {
     email: string,
     userId: string
 }
+export interface GroupLobbyDTO extends RootSuccessResponse {
+    groupList: GroupLobbyDetails[]
+}
+
+export interface GroupLobbyDetails {
+    groupName: string
+    groupCode: string
+    role: string
+    memberCount: number
+}

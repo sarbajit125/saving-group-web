@@ -1,10 +1,11 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { LoginRequestType } from './schemaHandler';
+import { LoginRequestType, createGroupRequestType } from './schemaHandler';
 import RootSuccessResponse, {
   RefreshTokenResponseDao,
   loginSuccessResp,
   RootErrorResponse,
   HomeResp,
+  GroupLobbyDTO,
 } from '../models/responseModels';
 import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
@@ -66,3 +67,22 @@ export const fireUserDetails = async () => {
     throw apiErrorHandler(error);
   }
 };
+export const fireGroupLobby = async () => {
+  try {
+    wrapInterceptor();
+    const response = await axiosInstance.get<GroupLobbyDTO>('/group/lobby');
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+
+export const fireCreateGroup = async (request:createGroupRequestType) => {
+  try {
+    wrapInterceptor();
+    const response = await axiosInstance.post<RootSuccessResponse>('/user/create-group', request);
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+}

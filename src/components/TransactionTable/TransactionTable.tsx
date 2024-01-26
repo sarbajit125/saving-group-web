@@ -49,8 +49,8 @@ function RecentTransactionTable({ items }: RecentTransactionTableProps) {
   return (
     <Table highlightOnHover>
       <Table.Tbody>
-        {items.map((item) => (
-          <Table.Tr>
+        {items.map((item, index) => (
+          <Table.Tr key={index}>
             <Table.Td>
               <Group justify="space-between">
                 <Group>

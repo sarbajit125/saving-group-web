@@ -14,6 +14,11 @@ export const registerUISchema = z.object({
      message: "Passwords don't match",
      path: ['confirm'],
 });
+export const createGroupSchema = z.object({
+     groupname: z.string().max(20, 'Group name cannot exceeds 20 characters'),
+     groupDesc: z.string().max(40, 'Group desc cannot exceed 50 characters').optional(),
+ });
 // Types
 export type LoginRequestType = z.infer<typeof loginRequestSchema>;
 export type RegisterRequestType = z.infer<typeof registerUISchema>;
+export type createGroupRequestType = z.infer<typeof createGroupSchema>;

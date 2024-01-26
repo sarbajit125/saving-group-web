@@ -12,55 +12,19 @@ import {
   Button,
   Modal,
   TextInput,
+  LoadingOverlay,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IoListOutline, IoGridOutline, IoAdd } from 'react-icons/io5';
 import { PiUsersLight } from 'react-icons/pi';
 import SideNavBar from '../components/SideNavBar/SideNavBar';
 import { navLinksArr } from '../constants/NavLinksConstant';
-import { GroupItemUIDao, GroupRoles, InviteItemUIDao } from '../models/uiModels';
+import { InviteItemUIDao } from '../models/uiModels';
 import { ColorDao } from '../constants/colorConstant';
+import { useGroupLobbyQuery } from '../handlers/networkHook';
 
 function GroupList() {
-  const dummyGroupList: GroupItemUIDao[] = [
-    {
-      groupCode: 'ABC1234',
-      groupImage:
-        'https://uploads-ssl.webflow.com/5fe0022130b6119c3b25d03f/6000a4262c3c62f6aadb85d3_shutterstock_1044844045.jpg',
-      groupName: 'Cuisine',
-      role: GroupRoles.Gold,
-      memberCount: 3,
-    },
-    {
-      groupCode: 'ABC1235',
-      groupImage: null,
-      groupName: 'Art',
-      role: GroupRoles.Gold,
-      memberCount: 1,
-    },
-    {
-      groupCode: 'ABC1239',
-      groupImage: null,
-      groupName: 'Music',
-      role: GroupRoles.Silver,
-      memberCount: 1,
-    },
-    {
-      groupCode: 'ABC1236',
-      groupImage:
-        'https://images.unsplash.com/photo-1525824236856-8c0a31dfe3be?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHdhdGVyZmFsbHxlbnwwfHwwfHx8MA%3D%3D',
-      groupName: 'Vizaag',
-      role: GroupRoles.Regular,
-      memberCount: 4,
-    },
-    {
-      groupCode: 'ABC1237',
-      groupImage: null,
-      groupName: 'Dhamra',
-      role: GroupRoles.Regular,
-      memberCount: 1,
-    },
-  ];
+  const lobbyVM = useGroupLobbyQuery();
   const dummyInviteList: InviteItemUIDao[] = [
     {
       groupCode: 'ABC1236',
@@ -85,6 +49,9 @@ function GroupList() {
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <Grid>
+      {lobbyVM.isLoading ? (
+        <LoadingOverlay visible zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+      ) : null}
       <GridCol span={2}>
         <SideNavBar title="Olith Banking" navlinks={navLinksArr} />
       </GridCol>
@@ -107,24 +74,25 @@ function GroupList() {
               </Stack>
             </Center>
           </Card>
-          {dummyGroupList.map((item) => (
-            <Card shadow="sm" padding="lg" radius="md" h={200} withBorder key={item.groupCode}>
-              <Center h={200}>
-                <Stack>
-                  <Avatar src={item.groupImage} size="lg" style={{ alignSelf: 'center' }}>
-                    <PiUsersLight fontSize="4em" />
-                  </Avatar>
-                  <Box>
-                    <Text fw="bold" style={{ textAlign: 'center' }}>
-                      {' '}
-                      {item.groupName}{' '}
-                    </Text>
-                    <Text style={{ textAlign: 'center' }}> Members: {item.memberCount}</Text>
-                  </Box>
-                </Stack>
-              </Center>
-            </Card>
-          ))}
+          {lobbyVM.isSuccess
+            ? lobbyVM.data.map((item) => (
+                <Card shadow="sm" padding="lg" radius="md" h={200} withBorder key={item.groupCode}>
+                  <Center h={200}>
+                    <Stack>
+                      <Avatar src={item.groupImage} size="lg" style={{ alignSelf: 'center' }}>
+                        <PiUsersLight fontSize="4em" />
+                      </Avatar>
+                      <Box>
+                        <Text fw="bold" style={{ textAlign: 'center' }}>
+                          {item.groupName}
+                        </Text>
+                        <Text style={{ textAlign: 'center' }}> Members: {item.memberCount}</Text>
+                      </Box>
+                    </Stack>
+                  </Center>
+                </Card>
+              ))
+            : null}
         </SimpleGrid>
       </GridCol>
       <GridCol span={4}>

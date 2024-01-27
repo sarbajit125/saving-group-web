@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { LoginRequestType, RegisterRequestType, createGroupRequestType } from './schemaHandler';
-import { fireCreateGroup, fireGroupLobby, fireJoinGroup, fireUserDetails, loginUser, registerUser } from './axiosHandler';
+import { fireCreateGroup, fireGroupLobby, fireJoinGroup, fireSearchGroup, fireUserDetails, loginUser, registerUser } from './axiosHandler';
 import { APIConstants } from '../constants/coreLibrary';
 import { GroupItemUIDao } from '../models/uiModels';
 import { convertDataToRoleEnum } from '../constants/utilityConstant';
@@ -71,4 +71,10 @@ export const useJoinGroupMutation = () => useMutation({
   onSuccess(data) {
     toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
   },
+});
+
+export const useSearchGroupQuery = (groupId: string) => useQuery({
+  queryKey: [`group/search/${groupId}`],
+  queryFn: () => fireSearchGroup(groupId),
+  enabled: false,
 });

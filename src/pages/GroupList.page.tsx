@@ -17,19 +17,29 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { IoListOutline, IoGridOutline, IoAdd } from 'react-icons/io5';
 import { PiUsersLight } from 'react-icons/pi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import SideNavBar from '../components/SideNavBar/SideNavBar';
 import { navLinksArr } from '../constants/NavLinksConstant';
 import { InviteItemUIDao } from '../models/uiModels';
 import { ColorDao } from '../constants/colorConstant';
-import { useGroupLobbyQuery, useJoinGroupMutation } from '../handlers/networkHook';
+import {
+  useGroupLobbyQuery,
+  useJoinGroupMutation,
+  useSearchGroupQuery,
+} from '../handlers/networkHook';
 
 function GroupList() {
   const [enteredGroupCode, setGroupCode] = useState<string>('');
   const navigate = useNavigate();
   const lobbyVM = useGroupLobbyQuery();
   const joinVM = useJoinGroupMutation();
+  const searchGroupVM = useSearchGroupQuery(enteredGroupCode);
+  useEffect(() => {
+    if (enteredGroupCode.length !== 0) {
+      searchGroupVM.refetch();
+    }
+  }, [enteredGroupCode]);
   const dummyInviteList: InviteItemUIDao[] = [
     {
       groupCode: 'ABC1236',
@@ -55,7 +65,7 @@ function GroupList() {
   return (
     <Grid>
       <LoadingOverlay
-        visible={lobbyVM.isLoading || joinVM.isPending}
+        visible={lobbyVM.isLoading || joinVM.isPending || searchGroupVM.isLoading}
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
@@ -90,7 +100,20 @@ function GroupList() {
           </Card>
           {lobbyVM.isSuccess
             ? lobbyVM.data.map((item) => (
-                <Card shadow="sm" padding="lg" radius="md" h={200} withBorder key={item.groupCode}>
+                <Card
+                  shadow="sm"
+                  padding="lg"
+                  radius="md"
+                  h={200}
+                  withBorder
+                  key={item.groupCode}
+                  onClick={() =>
+                    navigate({
+                      to: '/user/group/dashboard/$groupId',
+                      params: { groupId: item.groupCode },
+                    })
+                  }
+                >
                   <Center h={200}>
                     <Stack>
                       <Avatar src={item.groupImage} size="lg" style={{ alignSelf: 'center' }}>
@@ -122,19 +145,33 @@ function GroupList() {
               onChange={(event) => setGroupCode(event.currentTarget.value)}
             />
             <Stack mt="md">
-              <Center h={100}>
-                <Stack>
-                  <Avatar src={null} size="lg" style={{ alignSelf: 'center' }}>
-                    <PiUsersLight fontSize="4em" />
-                  </Avatar>
-                  <Box>
-                    <Text fw="bold" style={{ textAlign: 'center' }}>
-                      Alok
-                    </Text>
-                  </Box>
-                </Stack>
-              </Center>
-              <Button color={ColorDao.primaryColor}>Send Request</Button>
+              {searchGroupVM.isSuccess ? (
+                <Center h={100}>
+                  <Stack>
+                    <Avatar src={null} size="lg" style={{ alignSelf: 'center' }}>
+                      <PiUsersLight fontSize="4em" />
+                    </Avatar>
+                    <Box>
+                      <Text fw="bold" style={{ textAlign: 'center' }}>
+                        {searchGroupVM.data.groupName}
+                      </Text>
+                      <Text mt="sm" fw="normal" style={{ textAlign: 'center' }} size="sm">
+                        Member count: {searchGroupVM.data.memberCount}
+                      </Text>
+                    </Box>
+                  </Stack>
+                </Center>
+              ) : null}
+              <Button
+                disabled={searchGroupVM.data?.groupCode.length === 0}
+                color={ColorDao.primaryColor}
+                onClick={() => {
+                  joinVM.mutate(enteredGroupCode);
+                  close();
+                }}
+              >
+                Send Request
+              </Button>
             </Stack>
           </Modal>
         </Group>

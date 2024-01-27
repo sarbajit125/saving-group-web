@@ -56,3 +56,9 @@ export interface GroupLobbyDetails {
     role: string
     memberCount: number
 }
+export interface GroupSearchDTO extends RootSuccessResponse {
+    groupCode: string,
+    groupName: string,
+    memberCount: number,
+    groupImageURL: string | null
+}

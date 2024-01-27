@@ -1,18 +1,20 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { LoginRequestType, createGroupRequestType } from './schemaHandler';
-import { RootSuccessResponse,
+import {
+  RootSuccessResponse,
   RefreshTokenResponseDao,
   loginSuccessResp,
   RootErrorResponse,
   HomeResp,
   GroupLobbyDTO,
+  GroupSearchDTO,
 } from '../models/responseModels';
 import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
 import { apiErrorHandler } from './errorHandler';
 
 export const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_SERVER_URL,
 });
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   const { method, url, headers } = config;
@@ -27,7 +29,7 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
   console.error(`[request error] [${JSON.stringify(error)}]`);
   return Promise.reject(error);
 };
-const wrapInterceptor = () => axiosInstance.interceptors.request.use(onRequest, onRequestError);
+axiosInstance.interceptors.request.use(onRequest, onRequestError);
 
 export const loginUser = async (request: LoginRequestType) => {
   try {
@@ -47,7 +49,6 @@ export const registerUser = async (request: RegisterRequestModel) => {
 };
 export const fireRefreshToken = async (refreshToken: string): Promise<RefreshTokenResponseDao> => {
   try {
-    wrapInterceptor();
     const response = await axiosInstance.post<RefreshTokenResponseDao>('/user/refresh', {
       refresh_token: refreshToken,
     });
@@ -58,7 +59,6 @@ export const fireRefreshToken = async (refreshToken: string): Promise<RefreshTok
 };
 export const fireUserDetails = async () => {
   try {
-    wrapInterceptor();
     const response = await axiosInstance.get<HomeResp>('/user/home');
     return response.data;
   } catch (error) {
@@ -67,7 +67,6 @@ export const fireUserDetails = async () => {
 };
 export const fireGroupLobby = async () => {
   try {
-    wrapInterceptor();
     const response = await axiosInstance.get<GroupLobbyDTO>('/group/lobby');
     return response.data;
   } catch (error) {
@@ -77,7 +76,6 @@ export const fireGroupLobby = async () => {
 
 export const fireCreateGroup = async (request: createGroupRequestType) => {
   try {
-    wrapInterceptor();
     const response = await axiosInstance.post<RootSuccessResponse>('/user/create-group', request);
     return response.data;
   } catch (error) {
@@ -86,9 +84,18 @@ export const fireCreateGroup = async (request: createGroupRequestType) => {
 };
 export const fireJoinGroup = async (groupCode: string) => {
   try {
-    wrapInterceptor();
     const response = await axiosInstance.post<RootSuccessResponse>('/group/join', {
       groupcode: groupCode,
+    });
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireSearchGroup = async (groupId: string) => {
+  try {
+    const response = await axiosInstance.get<GroupSearchDTO>('/group/home', {
+      params: { groupId, type: 'SEARCH' },
     });
     return response.data;
   } catch (error) {

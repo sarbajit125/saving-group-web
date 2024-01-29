@@ -72,15 +72,15 @@ export const dashboardRoute = new Route({
   component: GroupDashboard,
 });
 // Group User management route
-const groupManagement = new Route({
+export const groupManagement = new Route({
   getParentRoute: () => groupRoute,
-  path: 'user-management',
+  path: 'user-management/$groupId',
   component: UserManagement,
 });
 // Add money to group
 const addMoneyGroup = new Route({
   getParentRoute: () => groupRoute,
-  path: 'group-transaction',
+  path: 'group-transaction/$groupId',
   component: GroupAddMoney,
 });
 // home route

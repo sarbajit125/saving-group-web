@@ -17,7 +17,7 @@ function GroupDashboard() {
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
-      <TopNavBar />
+      <TopNavBar groupId={groupId} />
       <Grid>
         <GridCol span={8}>
           {groupHomeVM.isSuccess ? (

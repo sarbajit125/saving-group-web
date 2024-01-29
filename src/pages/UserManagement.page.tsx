@@ -45,10 +45,12 @@ import UserDetails from '../components/UserDetails/UserDetails';
 import RequestDetails from '../components/UserDetails/RequestDetails';
 import { useGroupMemberListQuery } from '../handlers/networkHook';
 import { GroupUserShortDao } from '../models/responseModels';
+import { groupManagement } from '../Router';
 
 function UserManagement() {
   const [isUserTab, setIsUserTab] = useState<boolean>(true);
-  const usersListVM = useGroupMemberListQuery('');
+  const { groupId } = groupManagement.useParams();
+  const usersListVM = useGroupMemberListQuery(groupId);
   const generateRandomId = (): string => Math.random().toString(36).substring(2, 15);
   const generateRandomGroupRole = (): GroupRoles => {
     const roles = Object.keys(GroupRoles).map((key) => GroupRoles[key as keyof typeof GroupRoles]);
@@ -400,7 +402,7 @@ function UserManagement() {
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
       <Stack>
-        <TopNavBar />
+        <TopNavBar groupId={groupId} />
         <Group>
           <Button
             variant={isUserTab ? 'filled' : 'subtle'}

@@ -13,9 +13,11 @@ import { IoChevronDown, IoExitOutline } from 'react-icons/io5';
 import { PiUsersLight } from 'react-icons/pi';
 import { RiGalleryLine } from 'react-icons/ri';
 import { MdOutlineDeleteForever } from 'react-icons/md';
+import { useNavigate } from '@tanstack/react-router';
 import { ColorDao } from '../../constants/colorConstant';
 
-function TopNavBar() {
+function TopNavBar({ groupId }: TopNavBarProps) {
+  const navigate = useNavigate();
   const menuItems: MenuRightItem[] = [
     {
       id: 'PROFILEPIC',
@@ -41,10 +43,20 @@ function TopNavBar() {
       justify="space-between"
     >
       <Group>
-        <Button variant="transparent" c={ColorDao.onTextColor}>
+        <Button
+          variant="transparent"
+          c={ColorDao.onTextColor}
+          onClick={() => navigate({ to: '/user/group/dashboard/$groupId', params: { groupId } })}
+        >
           Summary
         </Button>
-        <Button variant="transparent" c={ColorDao.onTextColor}>
+        <Button
+          variant="transparent"
+          c={ColorDao.onTextColor}
+          onClick={() =>
+            navigate({ to: '/user/group/user-management/$groupId', params: { groupId } })
+          }
+        >
           User management
         </Button>
       </Group>
@@ -82,7 +94,9 @@ function TopNavBar() {
 }
 
 export default TopNavBar;
-
+export interface TopNavBarProps {
+  groupId: string;
+}
 interface MenuRightItem {
   id: string;
   name: string;

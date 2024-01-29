@@ -5,6 +5,7 @@ import {
   Container,
   Divider,
   Group,
+  LoadingOverlay,
   Menu,
   MenuDropdown,
   MenuItem,
@@ -35,7 +36,6 @@ import {
   ApprovalType,
   RequestType,
   GroupRoles,
-  UserManageItemModel,
   ManageRoleUIModel,
   RequestConfirmationProps,
 } from '../models/uiModels';
@@ -43,9 +43,12 @@ import { DateFormatConstants, UIString, getNameInitials } from '../constants/cor
 import { ColorDao } from '../constants/colorConstant';
 import UserDetails from '../components/UserDetails/UserDetails';
 import RequestDetails from '../components/UserDetails/RequestDetails';
+import { useGroupMemberListQuery } from '../handlers/networkHook';
+import { GroupUserShortDao } from '../models/responseModels';
 
 function UserManagement() {
   const [isUserTab, setIsUserTab] = useState<boolean>(true);
+  const usersListVM = useGroupMemberListQuery('');
   const generateRandomId = (): string => Math.random().toString(36).substring(2, 15);
   const generateRandomGroupRole = (): GroupRoles => {
     const roles = Object.keys(GroupRoles).map((key) => GroupRoles[key as keyof typeof GroupRoles]);
@@ -105,20 +108,9 @@ function UserManagement() {
       },
     };
   };
-  const createRandomUser = (): UserManageItemModel => ({
-    userId: `user_${Math.floor(Math.random() * 1000)}`, // Generate a random user ID
-    firstName: `User ${Math.floor(Math.random() * 1000)}`,
-    lastName: `_${Math.floor(Math.random() * 1000)}`,
-    joiningDate: generateRandomDate(),
-    role: generateRandomGroupRole(),
-  });
-
   const arrayOfGroupApprovalItems: GroupApprovalItemUIModel[] = Array.from(
     { length: 10 },
     generateRandomApprovalItem
-  );
-  const userManageItemModels: UserManageItemModel[] = Array.from({ length: 10 }, () =>
-    createRandomUser()
   );
 
   const setRowMessage = (item: GroupApprovalItemUIModel): string => {
@@ -149,7 +141,7 @@ function UserManagement() {
     }
     return <Badge color={ColorDao.serviceText2}> Pending</Badge>;
   };
-  const setRoleBadge = (item: UserManageItemModel): JSX.Element => {
+  const setRoleBadge = (item: GroupUserShortDao): JSX.Element => {
     switch (item.role) {
       case GroupRoles.Gold:
         return <Badge color={ColorDao.goldColor}> Gold</Badge>;
@@ -161,7 +153,7 @@ function UserManagement() {
         return <Badge color={ColorDao.serviceText2}> Regular</Badge>;
     }
   };
-  const openUserDetail = (item: UserManageItemModel) =>
+  const openUserDetail = (item: GroupUserShortDao) =>
     modals.open({
       title: 'User details',
       id: 'User-details',
@@ -192,7 +184,7 @@ function UserManagement() {
         console.log('Confirm');
       },
     });
-  const setDropdownMenus = (item: UserManageItemModel): JSX.Element => {
+  const setDropdownMenus = (item: GroupUserShortDao): JSX.Element => {
     let menuItems: ManageRoleUIModel[] = [];
     switch (item.role) {
       case GroupRoles.Gold:
@@ -200,12 +192,12 @@ function UserManagement() {
         break;
       case GroupRoles.Silver:
         menuItems = [
-          { userId: item.userId, action: 'UPG-SILVER', name: 'Upgrade to Silver' },
-          { userId: item.userId, action: 'DOWN-REGULAR', name: 'Downgrade to Regular' },
+          { userId: item.groupUserId, action: 'UPG-SILVER', name: 'Upgrade to Silver' },
+          { userId: item.groupUserId, action: 'DOWN-REGULAR', name: 'Downgrade to Regular' },
         ];
         break;
       case GroupRoles.Regular:
-        menuItems = [{ userId: item.userId, action: 'UPG-SILVER', name: 'Upgrade to Silver' }];
+        menuItems = [{ userId: item.groupUserId, action: 'UPG-SILVER', name: 'Upgrade to Silver' }];
         break;
     }
     return (
@@ -239,8 +231,8 @@ function UserManagement() {
         console.log(props.requestId);
       },
     });
-  const setUserButtons = (item: UserManageItemModel): JSX.Element => {
-    if (item.userId === '1') {
+  const setUserButtons = (item: GroupUserShortDao): JSX.Element => {
+    if (item.groupUserId === '1') {
       return (
         <Button
           leftSection={<TbListDetails />}
@@ -376,22 +368,37 @@ function UserManagement() {
       <TableTd> {setApprovalButtons(item)} </TableTd>
     </TableTr>
   ));
-  const userTableRow = userManageItemModels.map((item) => (
-    <TableTr key={item.userId}>
-      <TableTd>
-        <Group>
-          <Avatar src={null}>{getNameInitials(item.firstName, item.lastName)}</Avatar>
-          <Text>{item.firstName + UIString.space + item.lastName}</Text>
-        </Group>
-      </TableTd>
-      <TableTd>{item.userId}</TableTd>
-      <TableTd>{dayjs(item.joiningDate).format(DateFormatConstants.dashboard)}</TableTd>
-      <TableTd>{setRoleBadge(item)}</TableTd>
-      <TableTd> {setUserButtons(item)} </TableTd>
-    </TableTr>
-  ));
+  const userTableRow = (): JSX.Element => {
+    if (usersListVM.isSuccess) {
+      return (
+        <div>
+          {usersListVM.data.usersList.map((item) => (
+            <TableTr key={item.groupUserId}>
+              <TableTd>
+                <Group>
+                  <Avatar src={null}>{getNameInitials(item.userDetails.username)}</Avatar>
+                  <Text>{item.userDetails.username}</Text>
+                </Group>
+              </TableTd>
+              <TableTd>{item.groupUserId}</TableTd>
+              <TableTd>{dayjs(generateRandomDate()).format(DateFormatConstants.dashboard)}</TableTd>
+              <TableTd>{setRoleBadge(item)}</TableTd>
+              <TableTd> {setUserButtons(item)} </TableTd>
+            </TableTr>
+          ))}
+          ;
+        </div>
+      );
+    }
+    return <div />;
+  };
   return (
     <Container fluid>
+      <LoadingOverlay
+        visible={usersListVM.isLoading}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+      />
       <Stack>
         <TopNavBar />
         <Group>
@@ -420,7 +427,7 @@ function UserManagement() {
                   : approvalCols.map((item) => <TableTh>{item}</TableTh>)}
               </TableTr>
             </TableThead>
-            <TableTbody>{isUserTab ? userTableRow : approvalTableRow}</TableTbody>
+            <TableTbody>{isUserTab ? userTableRow() : approvalTableRow}</TableTbody>
           </Table>
           <Group mt="md" justify="flex-end">
             <Pagination total={10} radius="md" color={ColorDao.primaryColor} />

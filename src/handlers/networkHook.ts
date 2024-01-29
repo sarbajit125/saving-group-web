@@ -2,10 +2,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { LoginRequestType, RegisterRequestType, createGroupRequestType } from './schemaHandler';
-import { fireCreateGroup, fireGroupLobby, fireJoinGroup, fireSearchGroup, fireUserDetails, loginUser, registerUser } from './axiosHandler';
+import { fireCreateGroup, fireGroupDetails, fireGroupLobby, fireGroupUserList, fireJoinGroup, fireSearchGroup, fireUserDetails, loginUser, registerUser } from './axiosHandler';
 import { APIConstants } from '../constants/coreLibrary';
-import { GroupItemUIDao } from '../models/uiModels';
-import { convertDataToRoleEnum } from '../constants/utilityConstant';
 
 export const cookies = new Cookies();
 
@@ -45,16 +43,6 @@ export const userDetailQuery = () =>
 export const useGroupLobbyQuery = () => useQuery({
   queryKey: ['user/group'],
   queryFn: () => fireGroupLobby(),
-  select(data) {
-      const uiModel: GroupItemUIDao[] = data.groupList.map((item) => ({
-        groupCode: item.groupCode,
-        groupImage: null,
-        groupName: item.groupName,
-        memberCount: item.memberCount,
-        role: convertDataToRoleEnum(item.role),
-      }));
-      return uiModel;
-  },
 });
 
 export const useCreateGroupMutation = () => useMutation({
@@ -77,4 +65,14 @@ export const useSearchGroupQuery = (groupId: string) => useQuery({
   queryKey: [`group/search/${groupId}`],
   queryFn: () => fireSearchGroup(groupId),
   enabled: false,
+});
+
+export const useGroupHomeQuery = (groupId: string) => useQuery({
+  queryKey: [`group/home/${groupId}`],
+  queryFn: () => fireGroupDetails(groupId),
+});
+
+export const useGroupMemberListQuery = (groupId: string) => useQuery({
+  queryKey: [`group/userslist/${groupId}`],
+  queryFn: () => fireGroupUserList(groupId),
 });

@@ -2,19 +2,19 @@ import { Stack, Group, Avatar, Box, Button, Divider, SimpleGrid, Card, Text } fr
 import { CiUser } from 'react-icons/ci';
 import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 import { RiShieldUserLine, RiMailLine } from 'react-icons/ri';
-import { UserManageItemModel } from '../../models/uiModels';
-import { formattedCurrency, getNameInitials, UIString } from '../../constants/coreLibrary';
+import { formattedCurrency, getNameInitials } from '../../constants/coreLibrary';
 import { ColorDao } from '../../constants/colorConstant';
+import { GroupUserShortDao } from '../../models/responseModels';
 
 function UserDetails({ item }: UserDetailsProps) {
   return (
     <Stack p="md">
       <Group>
         <Avatar size="lg" src={null}>
-          {getNameInitials(item.firstName, item.lastName)}
+          {getNameInitials(item.userDetails.username)}
         </Avatar>
         <Box>
-          <Text fw="bolder" size="md">{item.firstName + UIString.space + item.lastName}</Text>
+          <Text fw="bolder" size="md">{item.userDetails.username}</Text>
           <Text fw="lighter" size="xs">{item.role}</Text>
           <Button mt="sm" size="compact-sm" color={ColorDao.primaryColor}>Send Email</Button>
         </Box>
@@ -27,7 +27,7 @@ function UserDetails({ item }: UserDetailsProps) {
             <CiUser fontSize="2em" />
             <Box>
               <Text size="md" fw="bold">First Name</Text>
-              <Text size="sm">{item.firstName}</Text>
+              <Text size="sm">{item.userDetails.username}</Text>
             </Box>
           </Group>
         </Card>
@@ -36,7 +36,7 @@ function UserDetails({ item }: UserDetailsProps) {
             <CiUser fontSize="2em" />
             <Box>
               <Text size="md" fw="bold">Last Name</Text>
-              <Text size="sm">{item.lastName}</Text>
+              <Text size="sm">{item.userDetails.username}</Text>
             </Box>
           </Group>
         </Card>
@@ -45,7 +45,7 @@ function UserDetails({ item }: UserDetailsProps) {
           <RiShieldUserLine fontSize="2em" />
             <Box>
               <Text size="md" fw="bold">User Id</Text>
-              <Text size="sm">{item.userId}</Text>
+              <Text size="sm">{item.userDetails.userId}</Text>
             </Box>
           </Group>
         </Card>
@@ -63,7 +63,7 @@ function UserDetails({ item }: UserDetailsProps) {
           <GiReceiveMoney fontSize="2em" />
             <Box>
               <Text size="md" fw="bold">Amount Contributed</Text>
-              <Text size="sm">{formattedCurrency('INR', 2300)}</Text>
+              <Text size="sm">{formattedCurrency('INR', item.contributedAmount)}</Text>
             </Box>
           </Group>
         </Card>
@@ -72,7 +72,7 @@ function UserDetails({ item }: UserDetailsProps) {
           <GiPayMoney fontSize="2em" />
             <Box>
               <Text size="md" fw="bold">Amount Withdrawn</Text>
-              <Text size="sm">{formattedCurrency('INR', 2300)}</Text>
+              <Text size="sm">{formattedCurrency('INR', item.withdrawnAmount)}</Text>
             </Box>
           </Group>
         </Card>
@@ -86,5 +86,5 @@ function UserDetails({ item }: UserDetailsProps) {
 export default UserDetails;
 
 export interface UserDetailsProps {
-  item: UserManageItemModel;
+  item: GroupUserShortDao;
 }

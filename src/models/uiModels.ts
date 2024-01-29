@@ -13,22 +13,6 @@ export enum GroupRoles {
     Silver = 'SILVER',
     Regular = 'REGULAR'
 }
-
-export interface GroupItemUIDao {
-    groupCode: string,
-    groupName: string,
-    role: GroupRoles,
-    groupImage: string | null,
-    memberCount: number
-}
-
-export interface InviteItemUIDao {
-    groupCode: string,
-    groupName: string,
-    invitedBy: string,
-    groupImage: string | null,
-}
-
 export enum GoalCategoryFilter {
     ALL_GOAL = 'ALL-GOAL',
     ONGOING = 'ONGOING-GOAL',
@@ -37,14 +21,6 @@ export enum GoalCategoryFilter {
 export interface GoalCategoryItem {
     name: string,
     id: GoalCategoryFilter
-}
-
-export interface GoalItemDao {
-    id: string,
-    name: string,
-    amount: number,
-    isCompleted: boolean
-
 }
 
 export enum GroupNotificationFilter {

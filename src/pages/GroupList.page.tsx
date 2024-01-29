@@ -21,7 +21,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import SideNavBar from '../components/SideNavBar/SideNavBar';
 import { navLinksArr } from '../constants/NavLinksConstant';
-import { InviteItemUIDao } from '../models/uiModels';
 import { ColorDao } from '../constants/colorConstant';
 import {
   useGroupLobbyQuery,
@@ -40,27 +39,6 @@ function GroupList() {
       searchGroupVM.refetch();
     }
   }, [enteredGroupCode]);
-  const dummyInviteList: InviteItemUIDao[] = [
-    {
-      groupCode: 'ABC1236',
-      groupImage:
-        'https://images.unsplash.com/photo-1525824236856-8c0a31dfe3be?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHdhdGVyZmFsbHxlbnwwfHwwfHx8MA%3D%3D',
-      groupName: 'Vizaag',
-      invitedBy: 'Harshal Sehgal',
-    },
-    {
-      groupCode: 'CDF12345',
-      groupImage: null,
-      groupName: 'Archies',
-      invitedBy: 'Harshal Sehgal',
-    },
-    {
-      groupCode: 'CDF129805',
-      groupImage: null,
-      groupName: 'Vizaag',
-      invitedBy: 'Harshal Sehgal',
-    },
-  ];
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <Grid>
@@ -74,7 +52,7 @@ function GroupList() {
       </GridCol>
       <GridCol span={6}>
         <Group p="md" mt="xl" mr="md" ml="md" justify="space-between">
-          <Text>{lobbyVM.isSuccess ? `Groups(${lobbyVM.data.length})` : 'Group'}</Text>
+          <Text>{lobbyVM.isSuccess ? `Groups(${lobbyVM.data.groupList.length})` : 'Group'}</Text>
           <Group p="md">
             <IoGridOutline fontSize="1.5em" />
             <IoListOutline fontSize="1.5em" />
@@ -99,7 +77,7 @@ function GroupList() {
             </Center>
           </Card>
           {lobbyVM.isSuccess
-            ? lobbyVM.data.map((item) => (
+            ? lobbyVM.data.groupList.map((item) => (
                 <Card
                   shadow="sm"
                   padding="lg"
@@ -116,7 +94,7 @@ function GroupList() {
                 >
                   <Center h={200}>
                     <Stack>
-                      <Avatar src={item.groupImage} size="lg" style={{ alignSelf: 'center' }}>
+                      <Avatar src={item.groupImg} size="lg" style={{ alignSelf: 'center' }}>
                         <PiUsersLight fontSize="4em" />
                       </Avatar>
                       <Box>
@@ -176,17 +154,17 @@ function GroupList() {
           </Modal>
         </Group>
         <Stack mr="sm" ml="sm">
-          {dummyInviteList.map((item, index) => (
+          {lobbyVM.isSuccess ? lobbyVM.data.inviteList.map((item, index) => (
             <Group mt="md" justify="space-between" key={index}>
               <Group>
-                <Avatar src={item.groupImage} alt="invite-request" size="lg">
+                <Avatar src={item.groupImg} alt="invite-request" size="lg">
                   <PiUsersLight fontSize="2em" />
                 </Avatar>
                 <Box>
                   <Text size="sm" fw="bold">
                     {item.groupName}
                   </Text>
-                  <Text size="xs">Invited By: {item.invitedBy}</Text>
+                  <Text size="xs">Invited By: {item.groupCode}</Text>
                   <Text size="xs">5 Friends 41,000 members</Text>
                 </Box>
               </Group>
@@ -199,7 +177,7 @@ function GroupList() {
                 </Button>
               </Group>
             </Group>
-          ))}
+          )) : null}
         </Stack>
       </GridCol>
     </Grid>

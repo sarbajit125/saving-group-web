@@ -8,6 +8,8 @@ import {
   HomeResp,
   GroupLobbyDTO,
   GroupSearchDTO,
+  GroupHomeDTO,
+  GroupMemberListResp,
 } from '../models/responseModels';
 import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
@@ -96,6 +98,26 @@ export const fireSearchGroup = async (groupId: string) => {
   try {
     const response = await axiosInstance.get<GroupSearchDTO>('/group/home', {
       params: { groupId, type: 'SEARCH' },
+    });
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireGroupDetails = async (groupId: string) => {
+  try {
+    const response = await axiosInstance.get<GroupHomeDTO>('/group/home', {
+      params: { groupId },
+    });
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireGroupUserList = async (groupCode: string) => {
+  try {
+    const response = await axiosInstance.get<GroupMemberListResp>('/group/member-management', {
+      params: { groupCode },
     });
     return response.data;
   } catch (error) {

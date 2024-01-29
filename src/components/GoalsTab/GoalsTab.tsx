@@ -5,8 +5,9 @@ import { IoAdd } from 'react-icons/io5';
 import { FaRegCalendarDays } from 'react-icons/fa6';
 import dayjs from 'dayjs';
 import { ColorDao } from '../../constants/colorConstant';
-import { GoalCategoryFilter, GoalCategoryItem, GoalItemDao } from '../../models/uiModels';
+import { GoalCategoryFilter, GoalCategoryItem } from '../../models/uiModels';
 import { DateFormatConstants, formattedCurrency } from '../../constants/coreLibrary';
+import { GroupGoalDTO } from '../../models/responseModels';
 
 function GoalsTab(props: GoalTabProps) {
   const goalTopArr: GoalCategoryItem[] = [
@@ -26,17 +27,17 @@ function GoalsTab(props: GoalTabProps) {
   const [selectedGoalFilter, setSelectedGoalFilter] = useState<GoalCategoryFilter>(
     goalTopArr[0].id
   );
-  const [selectedGoals, setSelectedGoals] = useState<GoalItemDao[]>([]);
+  const [selectedGoals, setSelectedGoals] = useState<GroupGoalDTO[]>([]);
   useEffect(() => {
     switch (selectedGoalFilter) {
       case GoalCategoryFilter.ALL_GOAL:
         setSelectedGoals(props.goals);
         break;
       case GoalCategoryFilter.ONGOING:
-        setSelectedGoals(props.goals.filter((goal) => goal.isCompleted));
+        setSelectedGoals(props.goals.filter((goal) => goal.contributedAmount < goal.targetAmount));
         break;
       case GoalCategoryFilter.COMPLETED:
-        setSelectedGoals(props.goals.filter((goal) => !goal.isCompleted));
+        setSelectedGoals(props.goals.filter((goal) => goal.contributedAmount >= goal.targetAmount));
         break;
     }
   }, [selectedGoalFilter]);
@@ -60,18 +61,17 @@ function GoalsTab(props: GoalTabProps) {
       </Group>
       <Group>
         {selectedGoals.map((item) => (
-          <Card shadow="sm" padding="md" radius="md" withBorder id={item.id}>
+          <Card shadow="sm" padding="md" radius="md" withBorder id={item.goalId}>
             <Group>
               <Avatar src={null} size="md">
                 <GoGoal fontStyle="1.5em" />
               </Avatar>
               <Box>
                 <Text c={ColorDao.greyColor} size="md" fw="lighter">
-                  {' '}
-                  {item.name}
+                  {item.goalDesc}
                 </Text>
                 <Text size="lg" fw="bold">
-                  {formattedCurrency('INR', item.amount)}
+                  {formattedCurrency(props.groupCurrency, item.contributedAmount)}
                 </Text>
               </Box>
             </Group>
@@ -93,12 +93,12 @@ function GoalsTab(props: GoalTabProps) {
       <Group justify="space-between" mt="md" p="sm">
         <Group>
           <Box>
-            <Text>{formattedCurrency('INR', props.totalDeposited)}</Text>
+            <Text>{formattedCurrency(props.groupCurrency, props.totalDeposited)}</Text>
             <Text>Total deposited</Text>
           </Box>
           <Divider orientation="vertical" />
           <Box>
-            <Text>{formattedCurrency('INR', props.totalWithdrawan)}</Text>
+            <Text>{formattedCurrency(props.groupCurrency, props.totalWithdrawan)}</Text>
             <Text>Total withdrawn</Text>
           </Box>
         </Group>
@@ -114,7 +114,9 @@ function GoalsTab(props: GoalTabProps) {
             <Box>
               {props.completionDate !== undefined ? (
                 <Text>{dayjs(props.creationDate).format(DateFormatConstants.dashboard)}</Text>
-              ) : <Text>Not set</Text>}
+              ) : (
+                <Text>Not set</Text>
+              )}
               <Text>Completion date</Text>
             </Box>
           </Group>
@@ -127,9 +129,10 @@ function GoalsTab(props: GoalTabProps) {
 export default GoalsTab;
 
 export interface GoalTabProps {
-  goals: GoalItemDao[];
+  goals: GroupGoalDTO[];
   totalDeposited: number;
   totalWithdrawan: number;
+  groupCurrency: string;
   creationDate: Date;
   completionDate?: Date;
 }

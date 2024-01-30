@@ -1,5 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { LoginRequestType, createGroupRequestType } from './schemaHandler';
+import { LoginRequestType, createGroupRequestType, sendInviteRequest } from './schemaHandler';
 import {
   RootSuccessResponse,
   RefreshTokenResponseDao,
@@ -10,6 +10,7 @@ import {
   GroupSearchDTO,
   GroupHomeDTO,
   GroupMemberListResp,
+  FetchFavListResp,
 } from '../models/responseModels';
 import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
@@ -119,6 +120,22 @@ export const fireGroupUserList = async (groupCode: string) => {
     const response = await axiosInstance.get<GroupMemberListResp>('/group/member-management', {
       params: { groupCode },
     });
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireSendInvite = async (request: sendInviteRequest) => {
+  try {
+    const response = await axiosInstance.post<RootSuccessResponse>('/group/send-invite', request);
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireFetchFavorites = async () => {
+  try {
+    const response = await axiosInstance.get<FetchFavListResp>('user/favorites');
     return response.data;
   } catch (error) {
     throw apiErrorHandler(error);

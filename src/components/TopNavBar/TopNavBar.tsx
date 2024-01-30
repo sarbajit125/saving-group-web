@@ -16,7 +16,7 @@ import { MdOutlineDeleteForever } from 'react-icons/md';
 import { useNavigate } from '@tanstack/react-router';
 import { ColorDao } from '../../constants/colorConstant';
 
-function TopNavBar({ groupId }: TopNavBarProps) {
+function TopNavBar({ groupId, showSendInvite, sendInvitCallback }: TopNavBarProps) {
   const navigate = useNavigate();
   const menuItems: MenuRightItem[] = [
     {
@@ -59,6 +59,15 @@ function TopNavBar({ groupId }: TopNavBarProps) {
         >
           User management
         </Button>
+        {showSendInvite ? (
+          <Button
+            variant="transparent"
+            c={ColorDao.onTextColor}
+            onClick={() => sendInvitCallback()}
+          >
+            Send Invite
+          </Button>
+        ) : null}
       </Group>
       <Group p="sm" mr="sm" gap="xs">
         <Avatar size="md">
@@ -96,6 +105,8 @@ function TopNavBar({ groupId }: TopNavBarProps) {
 export default TopNavBar;
 export interface TopNavBarProps {
   groupId: string;
+  showSendInvite: boolean;
+  sendInvitCallback: () => void;
 }
 interface MenuRightItem {
   id: string;

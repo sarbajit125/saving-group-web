@@ -17,7 +17,11 @@ function GroupDashboard() {
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
-      <TopNavBar groupId={groupId} />
+      <TopNavBar
+        groupId={groupId}
+        showSendInvite={false}
+        sendInvitCallback={() => console.log('Send Invite')}
+      />
       <Grid>
         <GridCol span={8}>
           {groupHomeVM.isSuccess ? (

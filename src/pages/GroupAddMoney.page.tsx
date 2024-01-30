@@ -70,7 +70,13 @@ function GroupAddMoney() {
     });
   return (
     <Stack>
-      <TopNavBar />
+      <TopNavBar
+        groupId=""
+        showSendInvite={false}
+        sendInvitCallback={function (): void {
+        throw new Error('Function not implemented.');
+      }}
+      />
       <Paper shadow="xs" p="xl" mt="md" w="80%">
         <Grid>
           <GridCol span={2}>

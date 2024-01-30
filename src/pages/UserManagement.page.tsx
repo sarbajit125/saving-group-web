@@ -1,7 +1,9 @@
 import {
   Avatar,
   Badge,
+  Box,
   Button,
+  Checkbox,
   Container,
   Divider,
   Group,
@@ -11,8 +13,10 @@ import {
   MenuItem,
   MenuLabel,
   MenuTarget,
+  Modal,
   Pagination,
   Paper,
+  Popover,
   Stack,
   Table,
   TableTbody,
@@ -21,14 +25,17 @@ import {
   TableThead,
   TableTr,
   Text,
+  TextInput,
 } from '@mantine/core';
 import dayjs from 'dayjs';
 import { TbListDetails } from 'react-icons/tb';
 import { FcApprove, FcDisapprove } from 'react-icons/fc';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GiCardExchange } from 'react-icons/gi';
 import { FaHandshakeAltSlash } from 'react-icons/fa';
 import { modals } from '@mantine/modals';
+import { useDisclosure } from '@mantine/hooks';
+import { useQueryClient } from '@tanstack/react-query';
 import TopNavBar from '../components/TopNavBar/TopNavBar';
 import {
   GroupApprovalItemUIModel,
@@ -38,19 +45,33 @@ import {
   GroupRoles,
   ManageRoleUIModel,
   RequestConfirmationProps,
+  SendInviteUserDao,
 } from '../models/uiModels';
 import { DateFormatConstants, UIString, getNameInitials } from '../constants/coreLibrary';
 import { ColorDao } from '../constants/colorConstant';
 import UserDetails from '../components/UserDetails/UserDetails';
 import RequestDetails from '../components/UserDetails/RequestDetails';
-import { useGroupMemberListQuery } from '../handlers/networkHook';
+import {
+  useFetchFavoritesQuery,
+  useGroupMemberListQuery,
+  useSendInviteMutation,
+  userDetailQuery,
+} from '../handlers/networkHook';
 import { GroupUserShortDao } from '../models/responseModels';
 import { groupManagement } from '../Router';
+import { checkMemberInFavList, dummyFavList } from '../constants/utilityConstant';
 
 function UserManagement() {
   const [isUserTab, setIsUserTab] = useState<boolean>(true);
   const { groupId } = groupManagement.useParams();
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
   const usersListVM = useGroupMemberListQuery(groupId);
+  const homeVM = userDetailQuery();
+  const fetchFavVM = useFetchFavoritesQuery();
+  const sendInviteVM = useSendInviteMutation();
+  const [opened, { open, close }] = useDisclosure(false);
+  const [favList, setFavList] = useState<SendInviteUserDao[]>([]);
   const generateRandomId = (): string => Math.random().toString(36).substring(2, 15);
   const generateRandomGroupRole = (): GroupRoles => {
     const roles = Object.keys(GroupRoles).map((key) => GroupRoles[key as keyof typeof GroupRoles]);
@@ -81,7 +102,18 @@ function UserManagement() {
     role: generateRandomGroupRole(),
     decision: generateRandomApprovalType(),
   });
-
+  // Set favorite list for send invite flow
+  useEffect(() => {
+    if (usersListVM.isSuccess && fetchFavVM.isSuccess) {
+      setFavList(checkMemberInFavList(fetchFavVM.data, usersListVM.data.usersList));
+    }
+  }, [usersListVM.isSuccess, fetchFavVM.isSuccess]);
+  // call user list api after send invite success
+  useEffect(() => {
+    if (sendInviteVM.isSuccess) {
+      queryClient.invalidateQueries({ queryKey: [`group/userslist/${groupId}`] });
+    }
+  }, [sendInviteVM.isSuccess]);
   const approvalCols: string[] = [
     'Request Id',
     'Request Type',
@@ -370,10 +402,42 @@ function UserManagement() {
       <TableTd> {setApprovalButtons(item)} </TableTd>
     </TableTr>
   ));
+  const setSendInviteRow = (): JSX.Element => (
+    <Stack h={140} style={{ overflow: 'scroll' }}>
+      {favList.map((user) => (
+        <Group key={user.userId} justify="space-between">
+          <Group>
+            <Avatar src={user.userImg}>{getNameInitials(user.userName)}</Avatar>
+            <Box>
+              <Text size="sm" fw="bold">
+                {user.userName}
+              </Text>
+              <Text size="xs">{user.email}</Text>
+            </Box>
+          </Group>
+          {user.type === 'NONE' ? (
+            <Checkbox
+              checked={user.isSelected}
+              p="md"
+              mr="md"
+              onChange={() => {
+                const newFavList = favList.map((item) =>
+                  item.userId === user.userId ? { ...item, isSelected: !user.isSelected } : item
+                );
+                setFavList(newFavList);
+              }}
+            />
+          ) : (
+            <Badge>{user.type}</Badge>
+          )}
+        </Group>
+      ))}
+    </Stack>
+  );
   const userTableRow = (): JSX.Element => {
     if (usersListVM.isSuccess) {
       return (
-        <div>
+        <TableTbody>
           {usersListVM.data.usersList.map((item) => (
             <TableTr key={item.groupUserId}>
               <TableTd>
@@ -389,7 +453,7 @@ function UserManagement() {
             </TableTr>
           ))}
           ;
-        </div>
+        </TableTbody>
       );
     }
     return <div />;
@@ -401,8 +465,60 @@ function UserManagement() {
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
+      <Modal opened={opened} onClose={close} title="Send Invite">
+        <Stack>
+          <Group justify="space-between">
+            <TextInput placeholder="Enter Username" />
+            <Button
+              color={ColorDao.primaryColor}
+              size="compact-md"
+              mr="md"
+              disabled={favList.filter((user) => user.isSelected).length === 0}
+              onClick={() => {
+                sendInviteVM.mutate({
+                  groupCode: groupId,
+                  userIds: favList.filter((user) => user.isSelected).map((item) => item.userId),
+                  initiatedBy: homeVM.isSuccess ? homeVM.data.userDetails.userId : UIString.empty,
+                });
+                close();
+              }}
+            >
+              Send Invite
+            </Button>
+          </Group>
+          <Text size="sm" mt="md">
+            {`Favorite list ${favList.filter((user) => user.isSelected).length} / ${
+              favList.length
+            }`}
+          </Text>
+          {setSendInviteRow()}
+          <Box display="inline">
+            <Text size="sm" mt="md" fw="normal" span>
+              Share code manually
+            </Text>
+            <Popover width={200} position="bottom" withArrow shadow="md">
+              <Popover.Target>
+                <Button
+                  size="compact-sm"
+                  ml="sm"
+                  variant="outline"
+                  color={ColorDao.primaryColor}
+                  onClick={() => {
+                    navigator.clipboard.writeText(groupId);
+                  }}
+                >
+                  {groupId}
+                </Button>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Text size="xs">group code copied to clipboard</Text>
+              </Popover.Dropdown>
+            </Popover>
+          </Box>
+        </Stack>
+      </Modal>
       <Stack>
-        <TopNavBar groupId={groupId} />
+        <TopNavBar groupId={groupId} showSendInvite sendInvitCallback={() => open()} />
         <Group>
           <Button
             variant={isUserTab ? 'filled' : 'subtle'}
@@ -429,7 +545,7 @@ function UserManagement() {
                   : approvalCols.map((item) => <TableTh>{item}</TableTh>)}
               </TableTr>
             </TableThead>
-            <TableTbody>{isUserTab ? userTableRow() : approvalTableRow}</TableTbody>
+            {isUserTab ? userTableRow() : approvalTableRow}
           </Table>
           <Group mt="md" justify="flex-end">
             <Pagination total={10} radius="md" color={ColorDao.primaryColor} />

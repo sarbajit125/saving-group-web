@@ -68,6 +68,13 @@ export enum InstrumentType {
     wallet = 'WALLET',
     card = 'CARD',
 }
+export enum UserGroupStatus {
+    active = 'ACTIVE',
+    inActive = 'INACTIVE',
+    suspended = 'SUSPENDED',
+    pending = 'PENDING',
+}
+
 export interface ApproverItem extends ApprovalPartyDetails {
     decision: ApprovalType
 }
@@ -127,4 +134,12 @@ export interface FeesUIModel {
     isAmount: boolean,
     key: string
     value: string | number,
+}
+export interface SendInviteUserDao {
+    userId: string,
+    userName: string,
+    userImg: string | null,
+    email: string,
+    type: 'INVITED' | 'MEMBER' | 'NONE',
+    isSelected: boolean,
 }

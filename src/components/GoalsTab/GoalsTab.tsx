@@ -61,7 +61,7 @@ function GoalsTab(props: GoalTabProps) {
       </Group>
       <Group>
         {selectedGoals.map((item) => (
-          <Card shadow="sm" padding="md" radius="md" withBorder id={item.goalId}>
+          <Card shadow="sm" padding="md" radius="md" withBorder id={item.goalId} h={71}>
             <Group>
               <Avatar src={null} size="md">
                 <GoGoal fontStyle="1.5em" />
@@ -77,7 +77,7 @@ function GoalsTab(props: GoalTabProps) {
             </Group>
           </Card>
         ))}
-        <Card shadow="sm" padding="md" radius="md" withBorder id="AddGOAL">
+        <Card shadow="sm" padding="md" radius="md" withBorder id="AddGOAL" h={71} >
           <Center>
             <Group>
               <Avatar src={null} size="md">

@@ -40,8 +40,14 @@ export const createGroupSchema = z.object({
   targetAmount: z.number().lte(50000, 'Amount cannot be greater than 50000').safe().nullable(),
   targetDate: z.date().nullable(),
 });
+export const sendInviteRequestSchema = z.object({
+  groupCode: z.string({ required_error: 'Group code missing from request' }),
+  userIds: z.string().array(),
+  initiatedBy: z.string({ required_error: 'Initiator id missing' }),
+});
 // Types
 export type LoginRequestType = z.infer<typeof loginRequestSchema>;
 export type RegisterRequestType = z.infer<typeof registerUISchema>;
 export type createGroupRequestType = z.infer<typeof createGroupSchema>;
 export type allowedCurrencyEnums = z.infer<typeof currencyZodEnum>;
+export type sendInviteRequest = z.infer<typeof sendInviteRequestSchema>;

@@ -31,6 +31,8 @@ import RecentTransactionTable, {
 } from '../components/TransactionTable/TransactionTable';
 import { StatusType, getNameInitials } from '../constants/coreLibrary';
 import { userDetailQuery } from '../handlers/networkHook';
+import { useEffect } from 'react';
+import { useUserStore } from '../store/userStore';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -140,6 +142,12 @@ export function HomePage() {
     }
   };
   const homeVM = userDetailQuery();
+  const homeStore = useUserStore();
+  useEffect(() => {
+    if (homeVM.isSuccess) {
+      homeStore.setUserDetails(homeVM.data.userDetails);
+    }
+  }, [homeVM.isSuccess]);
   return (
     <>
       {homeVM.isLoading ? (

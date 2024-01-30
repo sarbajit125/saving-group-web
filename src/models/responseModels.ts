@@ -107,3 +107,6 @@ export interface GroupHomeDTO extends RootSuccessResponse {
 export interface GroupMemberListResp extends RootSuccessResponse {
   usersList: GroupUserShortDao[]
 }
+export interface FetchFavListResp extends RootSuccessResponse {
+  favList: UserDetails[]
+}

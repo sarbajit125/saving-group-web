@@ -19,14 +19,18 @@ import { IoListOutline, IoGridOutline, IoAdd } from 'react-icons/io5';
 import { PiUsersLight } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import SideNavBar from '../components/SideNavBar/SideNavBar';
 import { navLinksArr } from '../constants/NavLinksConstant';
 import { ColorDao } from '../constants/colorConstant';
 import {
+  useApproveMutation,
   useGroupLobbyQuery,
   useJoinGroupMutation,
   useSearchGroupQuery,
 } from '../handlers/networkHook';
+import { RequestType } from '../models/uiModels';
+import { useUserStore } from '../store/userStore';
 
 function GroupList() {
   const [enteredGroupCode, setGroupCode] = useState<string>('');
@@ -34,16 +38,27 @@ function GroupList() {
   const lobbyVM = useGroupLobbyQuery();
   const joinVM = useJoinGroupMutation();
   const searchGroupVM = useSearchGroupQuery(enteredGroupCode);
+  const approveVM = useApproveMutation();
+  const userStore = useUserStore();
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
   useEffect(() => {
     if (enteredGroupCode.length !== 0) {
       searchGroupVM.refetch();
     }
   }, [enteredGroupCode]);
+  useEffect(() => {
+    if (approveVM.isSuccess || approveVM.isError) {
+      queryClient.invalidateQueries({ queryKey: ['user/group'] });
+    }
+  }, [approveVM.isSuccess, approveVM.isError]);
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <Grid>
       <LoadingOverlay
-        visible={lobbyVM.isLoading || joinVM.isPending || searchGroupVM.isLoading}
+        visible={
+          lobbyVM.isLoading || joinVM.isPending || searchGroupVM.isLoading || approveVM.isPending
+        }
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
@@ -154,30 +169,56 @@ function GroupList() {
           </Modal>
         </Group>
         <Stack mr="sm" ml="sm">
-          {lobbyVM.isSuccess ? lobbyVM.data.inviteList.map((item, index) => (
-            <Group mt="md" justify="space-between" key={index}>
-              <Group>
-                <Avatar src={item.groupImg} alt="invite-request" size="lg">
-                  <PiUsersLight fontSize="2em" />
-                </Avatar>
-                <Box>
-                  <Text size="sm" fw="bold">
-                    {item.groupName}
-                  </Text>
-                  <Text size="xs">Invited By: {item.groupCode}</Text>
-                  <Text size="xs">5 Friends 41,000 members</Text>
-                </Box>
-              </Group>
-              <Group>
-                <Button variant="outline" color={ColorDao.primaryColor}>
-                  Join
-                </Button>
-                <Button variant="outline" color={ColorDao.goldColor}>
-                  Decline
-                </Button>
-              </Group>
-            </Group>
-          )) : null}
+          {lobbyVM.isSuccess
+            ? lobbyVM.data.inviteList.map((item, index) => (
+                <Group mt="md" justify="space-between" key={index}>
+                  <Group>
+                    <Avatar src={item.groupImg} alt="invite-request" size="lg">
+                      <PiUsersLight fontSize="2em" />
+                    </Avatar>
+                    <Box>
+                      <Text size="sm" fw="bold">
+                        {item.groupName}
+                      </Text>
+                      <Text size="xs">Invited By: {item.groupCode}</Text>
+                      <Text size="xs">5 Friends 41,000 members</Text>
+                    </Box>
+                  </Group>
+                  <Group>
+                    <Button
+                      variant="outline"
+                      color={ColorDao.primaryColor}
+                      onClick={() =>
+                        approveVM.mutate({
+                          decision: 'Y',
+                          groupCode: item.groupCode,
+                          requestId: item.requestId || '',
+                          userId: userStore.userDetails.userId,
+                          requestType: RequestType.invite,
+                        })
+                      }
+                    >
+                      Join
+                    </Button>
+                    <Button
+                      variant="outline"
+                      color={ColorDao.goldColor}
+                      onClick={() =>
+                        approveVM.mutate({
+                          decision: 'N',
+                          groupCode: item.groupCode,
+                          requestId: item.requestId || '',
+                          userId: userStore.userDetails.userId,
+                          requestType: RequestType.invite,
+                        })
+                      }
+                    >
+                      Decline
+                    </Button>
+                  </Group>
+                </Group>
+              ))
+            : null}
         </Stack>
       </GridCol>
     </Grid>

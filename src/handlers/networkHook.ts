@@ -1,26 +1,31 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import {
   LoginRequestType,
   RegisterRequestType,
   createGroupRequestType,
+  removeRequestInterface,
+  requestInterface,
   sendInviteRequest,
 } from './schemaHandler';
 import {
+  fireApprovalHistory,
+  fireApprovalRequest,
   fireCreateGroup,
   fireFetchFavorites,
   fireGroupDetails,
   fireGroupLobby,
   fireGroupUserList,
   fireJoinGroup,
+  fireLeaveRequest,
   fireSearchGroup,
   fireSendInvite,
   fireUserDetails,
   loginUser,
   registerUser,
 } from './axiosHandler';
-import { APIConstants } from '../constants/coreLibrary';
+import { APIConstants, paginationPageSize } from '../constants/coreLibrary';
 import { SendInviteUserDao } from '../models/uiModels';
 
 export const cookies = new Cookies();
@@ -94,18 +99,18 @@ export const useGroupHomeQuery = (groupId: string) =>
     queryFn: () => fireGroupDetails(groupId),
   });
 
-export const useGroupMemberListQuery = (groupId: string) =>
+export const useGroupMemberListQuery = (groupId: string, pageNo: number) =>
   useQuery({
-    queryKey: [`group/userslist/${groupId}`],
-    queryFn: () => fireGroupUserList(groupId),
+    queryKey: [`group/userslist/${groupId}`, pageNo],
+    queryFn: () => fireGroupUserList(groupId, pageNo, paginationPageSize),
+    placeholderData: keepPreviousData,
   });
 
 export const useSendInviteMutation = () =>
   useMutation({
     mutationKey: ['group/send-invite'],
     mutationFn: (request: sendInviteRequest) => fireSendInvite(request),
-    onSuccess(data, variables) {
-      queryClient.invalidateQueries({ queryKey: [`group/userslist/${variables.groupCode}`] });
+    onSuccess(data) {
       toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
     },
   });
@@ -124,4 +129,26 @@ export const useFetchFavoritesQuery = () =>
       }));
       return sendInviteUIModel;
     },
+  });
+export const useApproveMutation = () =>
+  useMutation({
+    mutationKey: ['user/approve'],
+    mutationFn: (request: requestInterface) => fireApprovalRequest(request),
+    onSuccess(data) {
+      toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
+    },
+  });
+export const useLeaveMutation = () =>
+  useMutation({
+    mutationKey: ['group/leave'],
+    mutationFn: (request: removeRequestInterface) => fireLeaveRequest(request),
+    onSuccess(data) {
+      toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
+    },
+  });
+export const useApprovalListQuery = (groupId: string, showHistory: boolean, pageNo: number) =>
+  useQuery({
+    queryKey: [`group/approval-list/${groupId}`, pageNo],
+    queryFn: () => fireApprovalHistory(groupId, pageNo, paginationPageSize, showHistory),
+    placeholderData: keepPreviousData,
   });

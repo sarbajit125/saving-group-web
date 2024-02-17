@@ -1,5 +1,11 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { LoginRequestType, createGroupRequestType, sendInviteRequest } from './schemaHandler';
+import {
+  LoginRequestType,
+  createGroupRequestType,
+  removeRequestInterface,
+  requestInterface,
+  sendInviteRequest,
+} from './schemaHandler';
 import {
   RootSuccessResponse,
   RefreshTokenResponseDao,
@@ -11,6 +17,7 @@ import {
   GroupHomeDTO,
   GroupMemberListResp,
   FetchFavListResp,
+  ApprovalListResp,
 } from '../models/responseModels';
 import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
@@ -115,10 +122,10 @@ export const fireGroupDetails = async (groupId: string) => {
     throw apiErrorHandler(error);
   }
 };
-export const fireGroupUserList = async (groupCode: string) => {
+export const fireGroupUserList = async (groupCode: string, pageNo: number, pageSize: number) => {
   try {
     const response = await axiosInstance.get<GroupMemberListResp>('/group/member-management', {
-      params: { groupCode },
+      params: { groupCode, pageNo, pageSize },
     });
     return response.data;
   } catch (error) {
@@ -136,6 +143,37 @@ export const fireSendInvite = async (request: sendInviteRequest) => {
 export const fireFetchFavorites = async () => {
   try {
     const response = await axiosInstance.get<FetchFavListResp>('user/favorites');
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireApprovalRequest = async (request: requestInterface) => {
+  try {
+    const response = await axiosInstance.post<RootSuccessResponse>('/group/approve', request);
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireLeaveRequest = async (request: removeRequestInterface) => {
+  try {
+    const response = await axiosInstance.post<RootSuccessResponse>('/group/remove', request);
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireApprovalHistory = async (
+  groupCode: string,
+  pageNo: number,
+  pageSize: number,
+  showHistory: boolean
+): Promise<ApprovalListResp> => {
+  try {
+    const response = await axiosInstance.get<ApprovalListResp>('/group/approval-management', {
+      params: { groupCode, showHistory, pageNo, pageSize },
+    });
     return response.data;
   } catch (error) {
     throw apiErrorHandler(error);

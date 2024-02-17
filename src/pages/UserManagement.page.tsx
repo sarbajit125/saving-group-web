@@ -38,8 +38,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import TopNavBar from '../components/TopNavBar/TopNavBar';
 import {
-  GroupApprovalItemUIModel,
-  ApproverItem,
   ApprovalType,
   RequestType,
   GroupRoles,
@@ -47,71 +45,73 @@ import {
   RequestConfirmationProps,
   SendInviteUserDao,
 } from '../models/uiModels';
-import { DateFormatConstants, UIString, getNameInitials } from '../constants/coreLibrary';
+import {
+  DateFormatConstants,
+  UIString,
+  getNameInitials,
+  paginationPageSize,
+} from '../constants/coreLibrary';
 import { ColorDao } from '../constants/colorConstant';
 import UserDetails from '../components/UserDetails/UserDetails';
 import RequestDetails from '../components/UserDetails/RequestDetails';
 import {
+  useApprovalListQuery,
+  useApproveMutation,
   useFetchFavoritesQuery,
   useGroupMemberListQuery,
   useSendInviteMutation,
   userDetailQuery,
 } from '../handlers/networkHook';
-import { GroupUserShortDao } from '../models/responseModels';
+import { ApprovalListItem, GroupUserShortDao } from '../models/responseModels';
 import { groupManagement } from '../Router';
-import { checkMemberInFavList, dummyFavList } from '../constants/utilityConstant';
+import { checkMemberInFavList } from '../constants/utilityConstant';
+import { useUserStore } from '../store/userStore';
 
 function UserManagement() {
   const [isUserTab, setIsUserTab] = useState<boolean>(true);
+  const [page, setPage] = useState(1);
+  const [userGroupId, setUserGroupId] = useState<string>(UIString.empty);
   const { groupId } = groupManagement.useParams();
+  const homeStore = useUserStore();
   // Get QueryClient from the context
   const queryClient = useQueryClient();
-  const usersListVM = useGroupMemberListQuery(groupId);
+  const usersListVM = useGroupMemberListQuery(groupId, page);
+  const approvalListVM = useApprovalListQuery(groupId, false, page);
+  const approveDecisionVM = useApproveMutation();
   const homeVM = userDetailQuery();
   const fetchFavVM = useFetchFavoritesQuery();
   const sendInviteVM = useSendInviteMutation();
   const [opened, { open, close }] = useDisclosure(false);
   const [favList, setFavList] = useState<SendInviteUserDao[]>([]);
-  const generateRandomId = (): string => Math.random().toString(36).substring(2, 15);
-  const generateRandomGroupRole = (): GroupRoles => {
-    const roles = Object.keys(GroupRoles).map((key) => GroupRoles[key as keyof typeof GroupRoles]);
-    const randomIndex = Math.floor(Math.random() * roles.length);
-    return roles[randomIndex];
-  };
-  const generateRandomApprovalType = (): ApprovalType => {
-    const roles = Object.keys(ApprovalType).map(
-      (key) => ApprovalType[key as keyof typeof ApprovalType]
-    );
-    const randomIndex = Math.floor(Math.random() * roles.length);
-    return roles[randomIndex];
-  };
   const generateRandomDate = (): Date => {
     const startDate = new Date();
     const randomOffset = Math.floor(Math.random() * 10); // Random offset in days
     startDate.setDate(startDate.getDate() - randomOffset);
     return startDate;
   };
-  const generateRandomRequestType = (): RequestType => {
-    const requestTypes = Object.values(RequestType);
-    const randomIndex = Math.floor(Math.random() * requestTypes.length);
-    return requestTypes[randomIndex];
-  };
-  const generateRandomApprover = (): ApproverItem => ({
-    userId: generateRandomId(),
-    name: `User_${Math.floor(Math.random() * 100)}`,
-    role: generateRandomGroupRole(),
-    decision: generateRandomApprovalType(),
-  });
   // Set favorite list for send invite flow
   useEffect(() => {
     if (usersListVM.isSuccess && fetchFavVM.isSuccess) {
       setFavList(checkMemberInFavList(fetchFavVM.data, usersListVM.data.usersList));
     }
   }, [usersListVM.isSuccess, fetchFavVM.isSuccess]);
+  // Set CurretUser GroupId
+  useEffect(() => {
+    if (usersListVM.isSuccess) {
+      const findCurrentUser = usersListVM.data.usersList.find(
+        (user) => user.userDetails.userId === homeStore.userDetails.userId
+      );
+      if (findCurrentUser) {
+        setUserGroupId(findCurrentUser.groupUserId);
+      }
+    }
+  }, [usersListVM.isSuccess]);
   // call user list api after send invite success
   useEffect(() => {
     if (sendInviteVM.isSuccess) {
-      queryClient.invalidateQueries({ queryKey: [`group/userslist/${groupId}`] });
+      queryClient.invalidateQueries({
+        queryKey: [`group/userslist/${groupId}`, `group/approval-list/${groupId}`],
+      });
     }
   }, [sendInviteVM.isSuccess]);
   const approvalCols: string[] = [
@@ -123,57 +123,29 @@ function UserManagement() {
   ];
   const userCols: string[] = ['Name', 'User Id', 'Joining Date', 'Role', 'Actions'];
 
-  const generateRandomApprovalItem = (): GroupApprovalItemUIModel => {
-    const requestId = generateRandomId();
-    return {
-      requestId,
-      requestType: generateRandomRequestType(),
-      requestTimeStamp: generateRandomDate(),
-      initiatorDetails: {
-        userId: generateRandomId(),
-        name: `User_${Math.floor(Math.random() * 100)}`,
-        role: generateRandomGroupRole(),
-      },
-      approverArr: Array.from({ length: 3 }, generateRandomApprover),
-      initiatedOnDetails: {
-        userId: generateRandomId(),
-        name: `User_${Math.floor(Math.random() * 100)}`,
-        role: generateRandomGroupRole(),
-      },
-    };
-  };
-  const arrayOfGroupApprovalItems: GroupApprovalItemUIModel[] = Array.from(
-    { length: 10 },
-    generateRandomApprovalItem
-  );
-
-  const setRowMessage = (item: GroupApprovalItemUIModel): string => {
-    switch (item.requestType) {
+  const setRowMessage = (item: ApprovalListItem): string => {
+    switch (item.type) {
       case RequestType.join:
-        return `${item.initiatorDetails.name + UIString.space}wants to join the Group`;
+        return `${item.initiatorsName + UIString.space}wants to join the Group`;
       case RequestType.leave:
-        return `${item.initiatorDetails.name + UIString.space}wants to leave the Group`;
+        return `${item.initiatorsName + UIString.space}wants to leave the Group`;
       case RequestType.remove:
-        return `${item.initiatorDetails.name + UIString.space} wants to remove ${
-          item.initiatedOnDetails?.name ?? UIString.space
+        return `${item.initiatorsName + UIString.space} wants to remove ${
+          item.targetName ?? UIString.space
         } from the Group`;
       default:
         return UIString.empty;
     }
   };
-  const setRowBadge = (item: GroupApprovalItemUIModel): JSX.Element => {
-    const isUserApprover = item.approverArr.filter((approver) => approver.userId === '1');
-    if (isUserApprover.length > 0) {
-      if (
-        item.approverArr.filter(
-          (approver) => approver.userId === '1' && approver.decision === ApprovalType.pending
-        ).length > 0
-      ) {
+  const setRowBadge = (item: ApprovalListItem): JSX.Element => {
+    const isUserApprover = item.approvers.find((approver) => approver.groupId === userGroupId);
+    if (isUserApprover) {
+      if (isUserApprover.decision === ApprovalType.pending) {
         return <Badge color={ColorDao.goldBGColor}> Pending with You</Badge>;
       }
       return <Badge color={ColorDao.serviceColor2}> Pending with Others</Badge>;
     }
-    return <Badge color={ColorDao.serviceText2}> Pending</Badge>;
+    return <Badge color={ColorDao.serviceText2}> {item.status}</Badge>;
   };
   const setRoleBadge = (item: GroupUserShortDao): JSX.Element => {
     switch (item.role) {
@@ -196,7 +168,7 @@ function UserManagement() {
       radius: 'md',
     });
 
-  const openRequestDetail = (item: GroupApprovalItemUIModel) =>
+  const openRequestDetail = (item: ApprovalListItem) =>
     modals.openConfirmModal({
       title: `Approval request for Id: ${item.requestId}`,
       children: <RequestDetails item={item} />,
@@ -215,7 +187,7 @@ function UserManagement() {
         modals.close('Request-details');
       },
       onConfirm() {
-        console.log('Confirm');
+        modals.close('Request-details');
       },
     });
   const setDropdownMenus = (item: GroupUserShortDao): JSX.Element => {
@@ -262,11 +234,18 @@ function UserManagement() {
         modals.close('Request-confirmation');
       },
       onConfirm() {
-        console.log(props.requestId);
+        modals.close('Request-confirmation');
+        approveDecisionVM.mutate({
+          groupCode: groupId,
+          requestType: props.requestType,
+          decision: 'Y',
+          requestId: props.requestId,
+          userId: userGroupId,
+        });
       },
     });
   const setUserButtons = (item: GroupUserShortDao): JSX.Element => {
-    if (item.groupUserId === '1') {
+    if (item.groupUserId === userGroupId) {
       return (
         <Button
           leftSection={<TbListDetails />}
@@ -320,14 +299,10 @@ function UserManagement() {
       </Group>
     );
   };
-  const setApprovalButtons = (item: GroupApprovalItemUIModel): JSX.Element => {
-    const isUserApprover = item.approverArr.filter((approver) => approver.userId === '1');
-    if (isUserApprover.length > 0) {
-      if (
-        item.approverArr.filter(
-          (approver) => approver.userId === '1' && approver.decision === ApprovalType.pending
-        ).length > 0
-      ) {
+  const setApprovalButtons = (item: ApprovalListItem): JSX.Element => {
+    const isUserApprover = item.approvers.find((approver) => approver.groupId === userGroupId);
+    if (isUserApprover) {
+      if (isUserApprover.decision === ApprovalType.pending) {
         return (
           <Group>
             <Button
@@ -337,7 +312,7 @@ function UserManagement() {
                 setConfirmModal({
                   decision: 'ACCEPT',
                   requestId: item.requestId,
-                  requestType: item.requestType,
+                  requestType: item.type,
                 })
               }
             >
@@ -350,7 +325,7 @@ function UserManagement() {
                 setConfirmModal({
                   decision: 'REJECT',
                   requestId: item.requestId,
-                  requestType: item.requestType,
+                  requestType: item.type,
                 })
               }
             >
@@ -393,15 +368,6 @@ function UserManagement() {
       </Button>
     );
   };
-  const approvalTableRow = arrayOfGroupApprovalItems.map((item) => (
-    <TableTr key={item.requestId}>
-      <TableTd>{item.requestId}</TableTd>
-      <TableTd>{setRowMessage(item)}</TableTd>
-      <TableTd>{dayjs(item.requestTimeStamp).format(DateFormatConstants.dashboard)}</TableTd>
-      <TableTd> {setRowBadge(item)} </TableTd>
-      <TableTd> {setApprovalButtons(item)} </TableTd>
-    </TableTr>
-  ));
   const setSendInviteRow = (): JSX.Element => (
     <Stack h={140} style={{ overflow: 'scroll' }}>
       {favList.map((user) => (
@@ -458,10 +424,28 @@ function UserManagement() {
     }
     return <div />;
   };
+  const setApprovalTableRow = (): JSX.Element => {
+    if (approvalListVM.isSuccess && usersListVM.isSuccess) {
+      return (
+        <TableTbody>
+          {approvalListVM.data.approvalList.map((item) => (
+            <TableTr key={item.requestId}>
+              <TableTd>{item.requestId}</TableTd>
+              <TableTd>{setRowMessage(item)}</TableTd>
+              <TableTd>{dayjs(item.requestDate).format(DateFormatConstants.dashboard)}</TableTd>
+              <TableTd> {setRowBadge(item)} </TableTd>
+              <TableTd> {setApprovalButtons(item)} </TableTd>
+            </TableTr>
+          ))}
+        </TableTbody>
+      );
+    }
+    return <div />;
+  };
   return (
     <Container fluid>
       <LoadingOverlay
-        visible={usersListVM.isLoading}
+        visible={usersListVM.isLoading || approvalListVM.isLoading}
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
@@ -503,9 +487,7 @@ function UserManagement() {
                   ml="sm"
                   variant="outline"
                   color={ColorDao.primaryColor}
-                  onClick={() => {
-                    navigator.clipboard.writeText(groupId);
-                  }}
+                  onClick={() => navigator.clipboard.writeText(groupId)}
                 >
                   {groupId}
                 </Button>
@@ -523,7 +505,10 @@ function UserManagement() {
           <Button
             variant={isUserTab ? 'filled' : 'subtle'}
             color={ColorDao.primaryColor}
-            onClick={() => setIsUserTab(true)}
+            onClick={() => {
+              setIsUserTab(true);
+              setPage(1);
+            }}
           >
             User Management
           </Button>{' '}
@@ -531,7 +516,10 @@ function UserManagement() {
           <Button
             variant={isUserTab ? 'subtle' : 'filled'}
             color={ColorDao.primaryColor}
-            onClick={() => setIsUserTab(false)}
+            onClick={() => {
+              setIsUserTab(false);
+              setPage(1);
+            }}
           >
             Approval Management
           </Button>
@@ -545,11 +533,33 @@ function UserManagement() {
                   : approvalCols.map((item) => <TableTh>{item}</TableTh>)}
               </TableTr>
             </TableThead>
-            {isUserTab ? userTableRow() : approvalTableRow}
+            {isUserTab ? userTableRow() : setApprovalTableRow()}
           </Table>
-          <Group mt="md" justify="flex-end">
-            <Pagination total={10} radius="md" color={ColorDao.primaryColor} />
-          </Group>
+          {isUserTab &&
+          usersListVM.isSuccess &&
+          usersListVM.data.totalUserCount / paginationPageSize > 1 ? (
+            <Group mt="md" justify="flex-end">
+              <Pagination
+                total={usersListVM.data.totalUserCount / paginationPageSize}
+                radius="md"
+                color={ColorDao.primaryColor}
+                value={page}
+                onChange={setPage}
+              />
+            </Group>
+          ) : !isUserTab &&
+            approvalListVM.isSuccess &&
+            approvalListVM.data.totalCount / paginationPageSize > 1 ? (
+            <Group mt="md" justify="flex-end">
+              <Pagination
+                total={approvalListVM.data.totalCount / paginationPageSize}
+                radius="md"
+                value={page}
+                color={ColorDao.primaryColor}
+                onChange={setPage}
+              />
+            </Group>
+          ) : null}
         </Paper>
       </Stack>
     </Container>

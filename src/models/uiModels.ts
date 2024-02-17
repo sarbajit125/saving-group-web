@@ -43,11 +43,12 @@ export interface GroupNotificationUIModel {
 export enum RequestType {
     join = 'JOIN',
     leave = 'LEAVE',
-    remove = 'REMOVE'
+    remove = 'REMOVE',
+    invite = 'INVITE',
 }
 export enum ApprovalType {
-    approved = 'APPROVED',
-    rejected = 'REJECTED',
+    approved = 'Y',
+    rejected = 'N',
     pending = 'PENDING',
 }
 export enum TransactionType {

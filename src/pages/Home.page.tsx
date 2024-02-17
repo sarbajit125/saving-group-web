@@ -20,6 +20,7 @@ import { IoPersonOutline } from 'react-icons/io5';
 import { GiBank } from 'react-icons/gi';
 import { PiBankLight, PiPiggyBank } from 'react-icons/pi';
 import { useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import SideNavBar, { SideNavbarItem } from '../components/SideNavBar/SideNavBar';
 import WelcomeCard from '../components/WelcomeCard/welcomeCard';
 import { ServiceCardsDao } from '../models/uiModels';
@@ -31,7 +32,6 @@ import RecentTransactionTable, {
 } from '../components/TransactionTable/TransactionTable';
 import { StatusType, getNameInitials } from '../constants/coreLibrary';
 import { userDetailQuery } from '../handlers/networkHook';
-import { useEffect } from 'react';
 import { useUserStore } from '../store/userStore';
 
 export function HomePage() {

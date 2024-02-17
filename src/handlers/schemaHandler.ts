@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import { RequestType } from '../models/uiModels';
 // zod enums
 export const currencyZodEnum = z.enum(['INR', 'USD']);
-
+export const decisionZodEnum = z.enum(['Y', 'N']);
 export const loginRequestSchema = z.object({
   username: z
     .string()
@@ -45,9 +46,23 @@ export const sendInviteRequestSchema = z.object({
   userIds: z.string().array(),
   initiatedBy: z.string({ required_error: 'Initiator id missing' }),
 });
+export const approveRequestSchema = z.object({
+  groupCode: z.string(),
+  requestId: z.string(),
+  userId: z.string(),
+  requestType: z.nativeEnum(RequestType),
+  decision: decisionZodEnum,
+});
+export const removeRequestSchema = z.object({
+  initatedOn: z.string(),
+  groupCode: z.string(),
+  requestType: z.enum(['LEAVE', 'REMOVE']),
+});
 // Types
 export type LoginRequestType = z.infer<typeof loginRequestSchema>;
 export type RegisterRequestType = z.infer<typeof registerUISchema>;
 export type createGroupRequestType = z.infer<typeof createGroupSchema>;
 export type allowedCurrencyEnums = z.infer<typeof currencyZodEnum>;
 export type sendInviteRequest = z.infer<typeof sendInviteRequestSchema>;
+export type requestInterface = z.infer<typeof approveRequestSchema>;
+export type removeRequestInterface = z.infer<typeof removeRequestSchema>;

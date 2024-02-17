@@ -15,24 +15,35 @@ import { RiGalleryLine } from 'react-icons/ri';
 import { MdOutlineDeleteForever } from 'react-icons/md';
 import { useNavigate } from '@tanstack/react-router';
 import { ColorDao } from '../../constants/colorConstant';
+import { useLeaveMutation } from '../../handlers/networkHook';
 
 function TopNavBar({ groupId, showSendInvite, sendInvitCallback }: TopNavBarProps) {
   const navigate = useNavigate();
+  const leaveVM = useLeaveMutation();
   const menuItems: MenuRightItem[] = [
     {
       id: 'PROFILEPIC',
       name: 'Edit group profile picture',
       leftIcon: <RiGalleryLine />,
+      handleClick() {
+        console.log('DELETE');
+      },
     },
     {
       id: 'LEAVEGROUP',
       name: 'Leave Group',
       leftIcon: <IoExitOutline />,
+      handleClick() {
+        leaveVM.mutate({ groupCode: groupId, initatedOn: '', requestType: 'LEAVE' });
+      },
     },
     {
       id: 'DELETEGROUP',
       name: 'Delete Group',
       leftIcon: <MdOutlineDeleteForever />,
+      handleClick() {
+        console.log('DELETE');
+      },
     },
   ];
   return (
@@ -87,11 +98,7 @@ function TopNavBar({ groupId, showSendInvite, sendInvitCallback }: TopNavBarProp
             <MenuLabel>Role: Founder</MenuLabel>
             <MenuDivider />
             {menuItems.map((item) => (
-              <MenuItem
-                leftSection={item.leftIcon}
-                id={item.id}
-                onClick={() => console.log(item.id)}
-              >
+              <MenuItem leftSection={item.leftIcon} id={item.id} onClick={() => item.handleClick()}>
                 {item.name}
               </MenuItem>
             ))}
@@ -112,4 +119,5 @@ interface MenuRightItem {
   id: string;
   name: string;
   leftIcon?: JSX.Element;
+  handleClick: () => void;
 }

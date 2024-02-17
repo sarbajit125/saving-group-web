@@ -50,3 +50,5 @@ export const getNameInitials = (firstName: string, lastName?: string): string =>
 export enum APIConstants {
   refreshTokenKey = 'refresh_token'
 }
+
+export const paginationPageSize = 5;

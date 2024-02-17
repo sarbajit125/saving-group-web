@@ -1,3 +1,5 @@
+import { RequestType } from './uiModels';
+
 export class RootErrorResponse extends Error {
   status: string;
   statusCode: number;
@@ -106,7 +108,32 @@ export interface GroupHomeDTO extends RootSuccessResponse {
 }
 export interface GroupMemberListResp extends RootSuccessResponse {
   usersList: GroupUserShortDao[]
+  totalUserCount: number;
 }
 export interface FetchFavListResp extends RootSuccessResponse {
   favList: UserDetails[]
+}
+export interface ApproverDetailsDao {
+  groupId: string;
+  decision: string;
+  approverName: string,
+  approverRole: string,
+  approvalDate: Date | null;
+}
+export interface ApprovalListItem {
+  requestId: string;
+  status: string;
+  type: RequestType;
+  approvers: ApproverDetailsDao[];
+  requestDate: Date;
+  initiatedBy: String;
+  initiatorsName: String;
+  initiatorsRole: String | null;
+  targetName: string | null,
+  targetUserId: string | null,
+  targetRole: string | null,
+}
+export interface ApprovalListResp extends RootSuccessResponse {
+  approvalList: ApprovalListItem[];
+  totalCount: number;
 }

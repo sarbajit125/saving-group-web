@@ -153,8 +153,6 @@ function UserManagement() {
         return <Badge color={ColorDao.goldColor}> Gold</Badge>;
       case GroupRoles.Silver:
         return <Badge color={ColorDao.silverColor}> Silver</Badge>;
-      case GroupRoles.Regular:
-        return <Badge color={ColorDao.serviceText2}> Regular</Badge>;
       default:
         return <Badge color={ColorDao.serviceText2}> Regular</Badge>;
     }
@@ -245,7 +243,7 @@ function UserManagement() {
       },
     });
   const setUserButtons = (item: GroupUserShortDao): JSX.Element => {
-    if (item.groupUserId === userGroupId) {
+    if (item.groupUserId === userGroupId || item.role === GroupRoles.Gold) {
       return (
         <Button
           leftSection={<TbListDetails />}

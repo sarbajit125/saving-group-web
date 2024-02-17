@@ -39,7 +39,7 @@ export const createGroupSchema = z.object({
   groupDesc: z.string().max(40, 'Group desc cannot exceed 50 characters').trim().nullable(),
   groupCurrency: currencyZodEnum,
   targetAmount: z.number().lte(50000, 'Amount cannot be greater than 50000').safe().nullable(),
-  targetDate: z.date().nullable(),
+  targetDate: z.date().optional(),
 });
 export const sendInviteRequestSchema = z.object({
   groupCode: z.string({ required_error: 'Group code missing from request' }),

@@ -86,7 +86,7 @@ export const fireGroupLobby = async () => {
 
 export const fireCreateGroup = async (request: createGroupRequestType) => {
   try {
-    const response = await axiosInstance.post<RootSuccessResponse>('/user/create-group', request);
+    const response = await axiosInstance.post<RootSuccessResponse>('/group/create', request);
     return response.data;
   } catch (error) {
     throw apiErrorHandler(error);

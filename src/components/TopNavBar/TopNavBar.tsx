@@ -70,6 +70,31 @@ function TopNavBar({ groupId, showSendInvite, sendInvitCallback }: TopNavBarProp
         >
           User management
         </Button>
+        <Button
+          variant="transparent"
+          c={ColorDao.onTextColor}
+          onClick={() =>
+            navigate({ to: '/user/group/user-management/$groupId', params: { groupId } })
+          }
+        >
+          Transaction
+        </Button>
+        <Button
+          variant="transparent"
+          c={ColorDao.onTextColor}
+          onClick={() =>
+            navigate({ to: '/user/group/user-management/$groupId', params: { groupId } })
+          }
+        >
+          History
+        </Button>
+        <Button
+          variant="transparent"
+          c={ColorDao.onTextColor}
+          onClick={() => navigate({ to: '/user/group/lobby' })}
+        >
+          Exit
+        </Button>
         {showSendInvite ? (
           <Button
             variant="transparent"

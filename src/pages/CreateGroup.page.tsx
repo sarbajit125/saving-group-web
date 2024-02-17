@@ -35,7 +35,7 @@ const CreateGroupPage = () => {
       groupDesc: '',
       groupCurrency: 'INR',
       targetAmount: 0,
-      targetDate: null,
+      targetDate: undefined,
     },
     validateInputOnChange: true,
     validate: zodResolver(createGroupSchema),

@@ -122,13 +122,24 @@ function UserManagement() {
   }, [usersListVM.isSuccess]);
   // call user list api after send invite success
   useEffect(() => {
-    if (sendInviteVM.isSuccess || changeRoleVM.isSuccess || approveDecisionVM.isSuccess) {
-      console.log("Sital")
+    if (
+      sendInviteVM.isSuccess ||
+      changeRoleVM.isSuccess ||
+      approveDecisionVM.isSuccess ||
+      removeVM.isSuccess
+    ) {
+      console.log('Sital');
       queryClient.invalidateQueries({
-        queryKey: [`group/userslist/${groupId}/${page}`, `group/approval-list/${groupId}/${page}`],
+        queryKey: [`group/userslist/${groupId}/${page}`],
       });
+      queryClient.invalidateQueries({ queryKey: [`group/approval-list/${groupId}/${page}`] });
     }
-  }, [sendInviteVM.isSuccess, changeRoleVM.isSuccess, approveDecisionVM.isSuccess]);
+  }, [
+    sendInviteVM.isSuccess,
+    changeRoleVM.isSuccess,
+    approveDecisionVM.isSuccess,
+    removeVM.isSuccess,
+  ]);
   const approvalCols: string[] = [
     'Request Id',
     'Request Type',

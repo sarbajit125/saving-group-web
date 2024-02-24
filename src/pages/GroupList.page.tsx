@@ -106,6 +106,12 @@ function GroupList() {
                       params: { groupId: item.groupCode },
                     })
                   }
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)'; // Increase the size on hover
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)'; // Restore the original size on mouse leave
+                  }}
                 >
                   <Center h={200}>
                     <Stack>

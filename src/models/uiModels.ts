@@ -111,6 +111,7 @@ export interface RequestConfirmationProps {
     requestType: RequestType,
     decision: 'ACCEPT' | 'REJECT' | 'CONFIRM',
     requestId: string,
+    isRemove?: boolean
 }
 
 export interface PaymentInstrument {
@@ -143,4 +144,17 @@ export interface SendInviteUserDao {
     email: string,
     type: 'INVITED' | 'MEMBER' | 'NONE',
     isSelected: boolean,
+}
+
+export interface CurrentGroupDetailsDao {
+    groupCode: string,
+    role: string,
+    groupUserId: string
+}
+
+export interface MemberActionRowItem {
+    title: string,
+    type: 'user-detail' | 'change-role' | 'remove-member'
+    action: () => void,
+    itemId: string,
 }

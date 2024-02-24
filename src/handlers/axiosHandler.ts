@@ -5,6 +5,7 @@ import {
   removeRequestInterface,
   requestInterface,
   sendInviteRequest,
+  updateRoleRequestInterface,
 } from './schemaHandler';
 import {
   RootSuccessResponse,
@@ -174,6 +175,14 @@ export const fireApprovalHistory = async (
     const response = await axiosInstance.get<ApprovalListResp>('/group/approval-management', {
       params: { groupCode, showHistory, pageNo, pageSize },
     });
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+export const fireChangeRole = async (request: updateRoleRequestInterface) => {
+  try {
+    const response = await axiosInstance.post<RootSuccessResponse>('/group/changeRole', request);
     return response.data;
   } catch (error) {
     throw apiErrorHandler(error);

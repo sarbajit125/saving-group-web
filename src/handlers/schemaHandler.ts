@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { RequestType } from '../models/uiModels';
+import { GroupRoles, RequestType } from '../models/uiModels';
 // zod enums
 export const currencyZodEnum = z.enum(['INR', 'USD']);
 export const decisionZodEnum = z.enum(['Y', 'N']);
@@ -57,6 +57,27 @@ export const removeRequestSchema = z.object({
   initatedOn: z.string(),
   groupCode: z.string(),
   requestType: z.enum(['LEAVE', 'REMOVE']),
+  requestedBy: z.string(),
+});
+export const updateRolesRequestSchema = z.object({
+  groupCode: z.string({ required_error: 'Group code missing from request' }),
+  targetGroupUserId: z.string({ required_error: 'Target userId from request' }),
+  targetRole: z.nativeEnum(GroupRoles),
+  initiatorGroupUserId: z.string({
+    required_error: 'Initiator userId from request',
+  }),
+});
+export const addGoalRequestSchema = z.object({
+  groupCode: z.string({ required_error: 'Group code missing from request' }),
+  goalDesc: z
+    .string({ required_error: 'Goal description cannot be empty' })
+    .max(10, 'Description cannot exceed 10 characters')
+    .trim(),
+  targetAmount: z
+    .number()
+    .positive('Target amount must be greater than zero')
+    .lte(50000, 'Amount cannot be greater than 50000')
+    .safe(),
 });
 // Types
 export type LoginRequestType = z.infer<typeof loginRequestSchema>;
@@ -66,3 +87,5 @@ export type allowedCurrencyEnums = z.infer<typeof currencyZodEnum>;
 export type sendInviteRequest = z.infer<typeof sendInviteRequestSchema>;
 export type requestInterface = z.infer<typeof approveRequestSchema>;
 export type removeRequestInterface = z.infer<typeof removeRequestSchema>;
+export type updateRoleRequestInterface = z.infer< typeof updateRolesRequestSchema>;
+export type addGoalRequest = z.infer<typeof addGoalRequestSchema>;

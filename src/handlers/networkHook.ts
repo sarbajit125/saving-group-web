@@ -8,10 +8,12 @@ import {
   removeRequestInterface,
   requestInterface,
   sendInviteRequest,
+  updateRoleRequestInterface,
 } from './schemaHandler';
 import {
   fireApprovalHistory,
   fireApprovalRequest,
+  fireChangeRole,
   fireCreateGroup,
   fireFetchFavorites,
   fireGroupDetails,
@@ -101,7 +103,7 @@ export const useGroupHomeQuery = (groupId: string) =>
 
 export const useGroupMemberListQuery = (groupId: string, pageNo: number) =>
   useQuery({
-    queryKey: [`group/userslist/${groupId}`, pageNo],
+    queryKey: [`group/userslist/${groupId}/${pageNo}`],
     queryFn: () => fireGroupUserList(groupId, pageNo, paginationPageSize),
     placeholderData: keepPreviousData,
   });
@@ -148,7 +150,15 @@ export const useLeaveMutation = () =>
   });
 export const useApprovalListQuery = (groupId: string, showHistory: boolean, pageNo: number) =>
   useQuery({
-    queryKey: [`group/approval-list/${groupId}`, pageNo],
+    queryKey: [`group/approval-list/${groupId}/${pageNo}`],
     queryFn: () => fireApprovalHistory(groupId, pageNo, paginationPageSize, showHistory),
     placeholderData: keepPreviousData,
+  });
+export const useChangeRoleMutation = () =>
+  useMutation({
+    mutationKey: ['/group/ChangeRole'],
+    mutationFn: (request: updateRoleRequestInterface) => fireChangeRole(request),
+    onSuccess(data) {
+      toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
+    },
   });

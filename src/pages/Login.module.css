@@ -26,3 +26,6 @@
     width: '100%';
     background-color: red;
 }
+.mantine-Card-root :hover {
+    background-color:#FF0000;
+}

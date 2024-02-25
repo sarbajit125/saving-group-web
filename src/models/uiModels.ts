@@ -158,3 +158,14 @@ export interface MemberActionRowItem {
     action: () => void,
     itemId: string,
 }
+
+export interface SideNavbarItem {
+    title: string;
+    serviceCode: string;
+  }
+export interface SideNavSectionItem {
+    sectionName: string;
+    serviceCode: string;
+    isSelected: boolean,
+    subItems: SideNavbarItem[]
+}

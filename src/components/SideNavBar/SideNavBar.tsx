@@ -6,6 +6,7 @@ import { MdOutlineAccountBalance } from 'react-icons/md';
 import { CiCreditCard1 } from 'react-icons/ci';
 import { GrUserSettings } from 'react-icons/gr';
 import { ColorDao } from '../../constants/colorConstant';
+import { SideNavbarItem } from '../../models/uiModels';
 
 function SideNavBar(props: SideNavbarProps) {
   const setIconForService = (code: string): JSX.Element => {
@@ -66,11 +67,6 @@ function SideNavBar(props: SideNavbarProps) {
 export interface SideNavbarProps {
   title: string;
   navlinks: SideNavbarItem[];
-}
-
-export interface SideNavbarItem {
-  title: string;
-  serviceCode: string;
 }
 
 export default SideNavBar;

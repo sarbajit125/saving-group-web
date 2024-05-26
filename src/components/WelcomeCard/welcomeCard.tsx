@@ -20,6 +20,12 @@ function WelcomeCard({ name, serviceList, serviceTapped }: WelcomeCardProps) {
               mr="md"
               style={{ backgroundColor: item.bgColor ?? 'white' }}
               onClick={() => serviceTapped(item.serviceCode)}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)'; // Increase the size on hover
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)'; // Restore the original size on mouse leave
+              }}
               key={item.serviceCode}
             >
               <CardSection p="md">{item.icon}</CardSection>

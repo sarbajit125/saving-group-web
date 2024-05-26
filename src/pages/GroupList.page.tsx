@@ -31,6 +31,7 @@ import {
 } from '../handlers/networkHook';
 import { RequestType } from '../models/uiModels';
 import { useUserStore } from '../store/userStore';
+import EmptyView from '@/components/EmptyView/EmptyView';
 
 function GroupList() {
   const [enteredGroupCode, setGroupCode] = useState<string>('');
@@ -175,8 +176,11 @@ function GroupList() {
           </Modal>
         </Group>
         <Stack mr="sm" ml="sm">
-          {lobbyVM.isSuccess
-            ? lobbyVM.data.inviteList.map((item, index) => (
+          {lobbyVM.isSuccess ? (
+            lobbyVM.data.inviteList.length === 0 ? (
+              <EmptyView />
+            ) : (
+              lobbyVM.data.inviteList.map((item, index) => (
                 <Group mt="md" justify="space-between" key={index}>
                   <Group>
                     <Avatar src={item.groupImg} alt="invite-request" size="lg">
@@ -224,7 +228,8 @@ function GroupList() {
                   </Group>
                 </Group>
               ))
-            : null}
+            )
+          ) : null}
         </Stack>
       </GridCol>
     </Grid>

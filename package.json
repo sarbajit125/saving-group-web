@@ -39,6 +39,7 @@
     "react-cookie": "^7.0.1",
     "react-credit-cards-2": "^1.0.1",
     "react-dom": "^18.2.0",
+    "react-easy-crop": "^5.0.7",
     "react-form-stepper": "^2.0.3",
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.18.0",

@@ -1,5 +1,6 @@
 import { GroupUserShortDao } from '../models/responseModels';
 import { GroupRoles, SendInviteUserDao, UserGroupStatus } from '../models/uiModels';
+import { ColorDao } from './colorConstant';
 
 export const convertDataToRoleEnum = (roleStr: string): GroupRoles => {
   switch (roleStr) {
@@ -58,4 +59,15 @@ export const checkMemberInFavList = (
         : 'NONE',
   }));
   return updatedFavList;
+};
+export const setColorBasedOnRole = (role: string): string => {
+  switch (role.toLowerCase()) {
+    case 'gold':
+      return ColorDao.goldColor;
+    case 'silver':
+      return ColorDao.silverColor;
+    default:
+      return ColorDao.primaryColor;
+  }
+  return ColorDao.primaryColor;
 };

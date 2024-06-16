@@ -2,9 +2,7 @@ import {
   AppShell,
   Avatar,
   Badge,
-  Box,
   Burger,
-  Button,
   Container,
   Grid,
   GridCol,
@@ -22,12 +20,13 @@ import GroupMonthGraph from '../components/GroupMonthGraph/GroupMonthGraph';
 import GroupGauge from '../components/GroupGauge/GroupGauge';
 import GroupNotification from '../components/GroupNotification/GroupNotification';
 import { useGroupHomeQuery } from '../handlers/networkHook';
-import { setColorBasedOnRole } from '../constants/utilityConstant';
+import { useUserStore } from '../store/userStore';
 
 function GroupDashboard() {
   const { groupId } = dashboardRoute.useParams();
   const groupHomeVM = useGroupHomeQuery(groupId);
   const [opened, { toggle }] = useDisclosure();
+  const userStore = useUserStore();
   return (
     <AppShell
       header={{ height: { base: 60, md: 70, lg: 80 } }}
@@ -46,7 +45,7 @@ function GroupDashboard() {
             <Text>{groupHomeVM.data?.groupName ?? ''}</Text>
           </Group>
           <Group gap={2}>
-            <Text fw={500}>Hi Sarbajit Biswal</Text>
+            <Text fw={500}>Hi {userStore.userDetails.username}</Text>
             <Badge variant="light" color="cyan">
               {groupHomeVM.data?.role ?? ''}
             </Badge>

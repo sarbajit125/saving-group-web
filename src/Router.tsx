@@ -18,6 +18,7 @@ import GroupDashboard from './pages/GroupDashbord.page';
 import UserManagement from './pages/UserManagement.page';
 import GroupAddMoney from './pages/GroupAddMoney.page';
 import CreateGroupPage from './pages/CreateGroup.page';
+import GroupLayout from './pages/_groupLayout';
 
 // Create a root route
 const rootRoute = rootRouteWithContext<RouterAuthContext>()({
@@ -64,6 +65,7 @@ const userRoute = new Route({
 const groupRoute = new Route({
   getParentRoute: () => userRoute,
   path: 'group',
+  component: GroupLayout,
 });
 // Group dashboard route
 export const dashboardRoute = new Route({

@@ -31,7 +31,7 @@ import {
 } from '../handlers/networkHook';
 import { RequestType } from '../models/uiModels';
 import { useUserStore } from '../store/userStore';
-import EmptyView from '@/components/EmptyView/EmptyView';
+import EmptyView from '../components/EmptyView/EmptyView';
 
 function GroupList() {
   const [enteredGroupCode, setGroupCode] = useState<string>('');

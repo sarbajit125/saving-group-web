@@ -10,14 +10,13 @@ import {
   NavLink,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Outlet, Link as TanLink } from '@tanstack/react-router';
-import { dashboardRoute } from '../Router';
+import { Outlet, Link as TanLink, useParams } from 'react-router-dom';
 import { useGroupHomeQuery } from '../handlers/networkHook';
 import { useUserStore } from '../store/userStore';
 
 const GroupLayout = () => {
-  const { groupId } = dashboardRoute.useParams();
-  const groupHomeVM = useGroupHomeQuery(groupId);
+  const { groupId } = useParams();
+  const groupHomeVM = useGroupHomeQuery(groupId || '');
   const [opened, { toggle }] = useDisclosure();
   const userStore = useUserStore();
 
@@ -48,7 +47,7 @@ const GroupLayout = () => {
       </AppShell.Header>
       <AppShell.Navbar p="md">
         <TanLink to="/user/group/create-group">
-            {({ isActive }) => <NavLink label="Create Group" active={isActive} />}
+             <NavLink label="Create Group" />
         </TanLink>
       </AppShell.Navbar>
       <AppShell.Main>

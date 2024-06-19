@@ -1002,7 +1002,7 @@
   resolved "https://registry.npmjs.org/@babel/regjsgen/-/regjsgen-0.8.0.tgz"
   integrity sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==
 
-"@babel/runtime@^7.12.5", "@babel/runtime@^7.13.10", "@babel/runtime@^7.16.7", "@babel/runtime@^7.17.8", "@babel/runtime@^7.20.13", "@babel/runtime@^7.23.2", "@babel/runtime@^7.3.1", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.12.5", "@babel/runtime@^7.13.10", "@babel/runtime@^7.17.8", "@babel/runtime@^7.20.13", "@babel/runtime@^7.23.2", "@babel/runtime@^7.3.1", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.23.5"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.23.5.tgz"
   integrity sha512-NdUTHcPe4C99WxPub+K9l9tK5/lV4UXIoaHSYgzco9BCyjKAAwzdBI+wWtYqHt7LJdbo74ZjRPJgzVweq1sz0w==
@@ -1095,10 +1095,10 @@
   resolved "https://registry.npmjs.org/@emotion/use-insertion-effect-with-fallbacks/-/use-insertion-effect-with-fallbacks-1.0.1.tgz"
   integrity sha512-jT/qyKZ9rzLErtrjGgdkMBn2OP8wl0G3sQlBb3YPryvKHsjvINUhVaPFfP+fpBcOkmrVOVEEHQFJ7nbj2TH2gw==
 
-"@esbuild/win32-x64@0.18.20":
+"@esbuild/darwin-arm64@0.18.20":
   version "0.18.20"
-  resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.18.20.tgz"
-  integrity sha512-kTdfRcSiDfQca/y9QIkng02avJ+NCaQvrMejlsB3RRv5sE9rRoeBPISaZpKxHELzRxZyLvNts1P27W3wV+8geQ==
+  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.18.20.tgz"
+  integrity sha512-bxRHW5kHU38zS2lPTPOyuyTm+S+eobPUnTNkdJEfAddYgEcll4xkT8DB9d2008DtTbl7uJag2HuE5NZAZgnNEA==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
@@ -1703,10 +1703,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@remix-run/router@1.13.1":
-  version "1.13.1"
-  resolved "https://registry.npmjs.org/@remix-run/router/-/router-1.13.1.tgz"
-  integrity sha512-so+DHzZKsoOcoXrILB4rqDkMDy7NLMErRdOxvzvOKb507YINKUP4Di+shbTZDhSE/pBZ+vr7XGIpcOO0VLSA+Q==
+"@remix-run/router@1.16.1":
+  version "1.16.1"
+  resolved "https://registry.npmjs.org/@remix-run/router/-/router-1.16.1.tgz"
+  integrity sha512-es2g3dq6Nb07iFxGk5GuHN20RwBZOsuDQN7izWIisUcv9r+d2C5jQxqmgkdebXgReWfiyUabcki6Fg77mSNrig==
 
 "@rollup/pluginutils@^5.0.2":
   version "5.1.0"
@@ -2350,11 +2350,6 @@
   dependencies:
     "@typescript-eslint/utils" "^5.54.0"
 
-"@tanstack/history@0.0.1-beta.248":
-  version "0.0.1-beta.248"
-  resolved "https://registry.npmjs.org/@tanstack/history/-/history-0.0.1-beta.248.tgz"
-  integrity sha512-zkCgf1k5bhFPMgecVXujfBl91BNpAm5BvKeyhR3Gv3lZKpqaJzXMP+aI1jyz7KnxuFMGjAX5t2w8Za3DyIGoZg==
-
 "@tanstack/query-core@5.12.1":
   version "5.12.1"
   resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.12.1.tgz"
@@ -2366,31 +2361,6 @@
   integrity sha512-BeWZu8zVFH20oRc+S/K9ADPgWjEzP/XQCGBNz5IbApUwPQAdwkQYbXODVL5AyAlWiSxhx+P2xlARPBApj2Yrog==
   dependencies:
     "@tanstack/query-core" "5.12.1"
-
-"@tanstack/react-router@0.0.1-beta.248":
-  version "0.0.1-beta.248"
-  resolved "https://registry.npmjs.org/@tanstack/react-router/-/react-router-0.0.1-beta.248.tgz"
-  integrity sha512-znMn2wNfJevYMJkjo0I5AXWbbZNjziK43h6Df9uxTBo/Oynsu9Iv8ODRTypHEY/E405bLUZYObtbDb7ZRx0iQQ==
-  dependencies:
-    "@babel/runtime" "^7.16.7"
-    "@tanstack/history" "0.0.1-beta.248"
-    "@tanstack/react-store" "^0.2.1"
-    "@tanstack/store" "^0.1.3"
-    tiny-invariant "^1.3.1"
-    tiny-warning "^1.0.3"
-
-"@tanstack/react-store@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/@tanstack/react-store/-/react-store-0.2.1.tgz"
-  integrity sha512-tEbMCQjbeVw9KOP/202LfqZMSNAVi6zYkkp1kBom8nFuMx/965Hzes3+6G6b/comCwVxoJU8Gg9IrcF8yRPthw==
-  dependencies:
-    "@tanstack/store" "0.1.3"
-    use-sync-external-store "^1.2.0"
-
-"@tanstack/store@^0.1.3", "@tanstack/store@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.npmjs.org/@tanstack/store/-/store-0.1.3.tgz"
-  integrity sha512-GnolmC8Fr4mvsHE1fGQmR3Nm0eBO3KnZjDU0a+P3TeQNM/dDscFGxtA7p31NplQNW3KwBw4t1RVFmz0VeKLxcw==
 
 "@testing-library/dom@^9.0.0", "@testing-library/dom@^9.3.3", "@testing-library/dom@>=7.21.4":
   version "9.3.3"
@@ -5050,6 +5020,11 @@ fs.realpath@^1.0.0:
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
+fsevents@^2.3.2, fsevents@~2.3.2:
+  version "2.3.3"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
+  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
+
 function-bind@^1.1.1, function-bind@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz"
@@ -7590,20 +7565,20 @@ react-remove-scroll@2.5.5:
     use-callback-ref "^1.3.0"
     use-sidecar "^1.1.2"
 
-react-router-dom@^6.18.0:
-  version "6.20.1"
-  resolved "https://registry.npmjs.org/react-router-dom/-/react-router-dom-6.20.1.tgz"
-  integrity sha512-npzfPWcxfQN35psS7rJgi/EW0Gx6EsNjfdJSAk73U/HqMEJZ2k/8puxfwHFgDQhBGmS3+sjnGbMdMSV45axPQw==
+react-router-dom@^6.23.1:
+  version "6.23.1"
+  resolved "https://registry.npmjs.org/react-router-dom/-/react-router-dom-6.23.1.tgz"
+  integrity sha512-utP+K+aSTtEdbWpC+4gxhdlPFwuEfDKq8ZrPFU65bbRJY+l706qjR7yaidBpo3MSeA/fzwbXWbKBI6ftOnP3OQ==
   dependencies:
-    "@remix-run/router" "1.13.1"
-    react-router "6.20.1"
+    "@remix-run/router" "1.16.1"
+    react-router "6.23.1"
 
-react-router@6.20.1:
-  version "6.20.1"
-  resolved "https://registry.npmjs.org/react-router/-/react-router-6.20.1.tgz"
-  integrity sha512-ccvLrB4QeT5DlaxSFFYi/KR8UMQ4fcD8zBcR71Zp1kaYTC5oJKYAp1cbavzGrogwxca+ubjkd7XjFZKBW8CxPA==
+react-router@6.23.1:
+  version "6.23.1"
+  resolved "https://registry.npmjs.org/react-router/-/react-router-6.23.1.tgz"
+  integrity sha512-fzcOaRF69uvqbbM7OhvQyBTFDVrrGlsFdS3AL+1KfIBtGETibHzi3FkoTRyiDJnWNc2VxrfvR+657ROHjaNjqQ==
   dependencies:
-    "@remix-run/router" "1.13.1"
+    "@remix-run/router" "1.16.1"
 
 react-style-singleton@^2.2.1:
   version "2.2.1"
@@ -8703,7 +8678,7 @@ tiny-invariant@^1.3.1:
   resolved "https://registry.npmjs.org/tiny-invariant/-/tiny-invariant-1.3.1.tgz"
   integrity sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw==
 
-tiny-warning@^1.0.2, tiny-warning@^1.0.3:
+tiny-warning@^1.0.2:
   version "1.0.3"
   resolved "https://registry.npmjs.org/tiny-warning/-/tiny-warning-1.0.3.tgz"
   integrity sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==
@@ -9115,7 +9090,7 @@ use-sidecar@^1.1.2:
     detect-node-es "^1.1.0"
     tslib "^2.0.0"
 
-use-sync-external-store@^1.2.0, use-sync-external-store@1.2.0:
+use-sync-external-store@1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==

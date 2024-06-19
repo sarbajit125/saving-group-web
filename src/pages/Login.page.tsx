@@ -20,7 +20,7 @@ import {
 import { useForm } from '@mantine/form';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { useEffect, useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate } from 'react-router-dom';
 import splash from '../assets/splash.png';
 import classes from './Login.module.css';
 import { loginRequestSchema } from '../handlers/schemaHandler';
@@ -38,7 +38,7 @@ export function LoginPage() {
     }
   }, [loginVM.isSuccess]);
   useEffect(() => {
-    authStore.isAuthenticated ? navigate({ to: '/user/home' }) : null;
+    authStore.isAuthenticated ? navigate('/user/home') : null;
   }, [authStore.isAuthenticated]);
   const form = useForm({
     initialValues: {
@@ -91,7 +91,7 @@ export function LoginPage() {
                     <Button disabled={!form.isValid()} type="submit" variant="filled">
                       LOGIN
                     </Button>
-                      <Button variant="outline" onClick={() => navigate({ to: '/register' })}>
+                      <Button variant="outline" onClick={() => navigate('/register')}>
                         CREATE ACCOUNT
                       </Button>
                   </Group>

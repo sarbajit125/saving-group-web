@@ -19,11 +19,11 @@ import { GoBell, GoCreditCard } from 'react-icons/go';
 import { IoPersonOutline } from 'react-icons/io5';
 import { GiBank } from 'react-icons/gi';
 import { PiBankLight, PiPiggyBank } from 'react-icons/pi';
-import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import SideNavBar, { SideNavbarItem } from '../components/SideNavBar/SideNavBar';
+import { useNavigate } from 'react-router-dom';
+import SideNavBar from '../components/SideNavBar/SideNavBar';
 import WelcomeCard from '../components/WelcomeCard/welcomeCard';
-import { ServiceCardsDao } from '../models/uiModels';
+import { ServiceCardsDao, SideNavbarItem } from '../models/uiModels';
 import { ColorDao } from '../constants/colorConstant';
 import DashboardGraph from '../components/DashboardGraph/DashboardGraph';
 import DashboardBanners from '../components/DashboardBanners/DashboardBanners';
@@ -135,7 +135,7 @@ export function HomePage() {
   const topServiceTapped = (serviceCode: string) => {
     switch (serviceCode) {
       case 'SAVE':
-        navigate({ to: '/user/group/lobby' });
+        navigate('/user/group/lobby');
         break;
       default:
         console.log(serviceCode);

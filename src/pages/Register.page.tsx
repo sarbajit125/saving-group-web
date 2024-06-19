@@ -15,7 +15,7 @@ import {
   LoadingOverlay,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import splash from '../assets/splash.png';
 import classes from './Login.module.css';
@@ -39,7 +39,7 @@ export function RegisterPage() {
 
   useEffect(() => {
     if (registerVM.isSuccess) {
-      navigate({ to: '/login' });
+      navigate('/login');
     }
   }, [registerVM.isSuccess]);
   return (
@@ -84,7 +84,7 @@ export function RegisterPage() {
                     />
                   </Stack>
                   <Group mt="xs" grow>
-                    <Button variant="outline" onClick={() => navigate({ to: '/login' })}>
+                    <Button variant="outline" onClick={() => navigate('/login')}>
                       {' '}
                       LOGIN{' '}
                     </Button>

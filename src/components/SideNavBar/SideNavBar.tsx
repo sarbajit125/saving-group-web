@@ -1,10 +1,10 @@
 import { Box, Stack, Center, Group, Text } from '@mantine/core';
-import { Link } from '@tanstack/react-router';
 import { TbPlaystationTriangle } from 'react-icons/tb';
 import { FiHome } from 'react-icons/fi';
 import { MdOutlineAccountBalance } from 'react-icons/md';
 import { CiCreditCard1 } from 'react-icons/ci';
 import { GrUserSettings } from 'react-icons/gr';
+import { Link } from 'react-router-dom';
 import { ColorDao } from '../../constants/colorConstant';
 import { SideNavbarItem } from '../../models/uiModels';
 

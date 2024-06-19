@@ -18,8 +18,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { IoListOutline, IoGridOutline, IoAdd } from 'react-icons/io5';
 import { PiUsersLight } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import SideNavBar from '../components/SideNavBar/SideNavBar';
 import { navLinksArr } from '../constants/NavLinksConstant';
 import { ColorDao } from '../constants/colorConstant';
@@ -81,7 +81,7 @@ function GroupList() {
             radius="md"
             h={200}
             withBorder
-            onClick={() => navigate({ to: '/user/group/create-group' })}
+            onClick={() => navigate('/user/group/create-group')}
           >
             <Center h={200}>
               <Stack>
@@ -101,11 +101,7 @@ function GroupList() {
                   h={200}
                   withBorder
                   key={item.groupCode}
-                  onClick={() =>
-                    navigate({
-                      to: '/user/group/dashboard/$groupId',
-                      params: { groupId: item.groupCode },
-                    })
+                  onClick={() => navigate(`/user/group/dashboard/${item.groupCode}`)
                   }
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'scale(1.05)'; // Increase the size on hover

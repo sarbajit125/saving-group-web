@@ -53,7 +53,7 @@ const routeTree: RouteObject[] = [
             element: <GroupLayout />,
             children: [
               {
-                path: 'dashboard',
+                path: 'dashboard/:groupId',
                 element: <GroupDashboard />,
               },
               {

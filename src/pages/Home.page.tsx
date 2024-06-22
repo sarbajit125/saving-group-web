@@ -135,7 +135,7 @@ export function HomePage() {
   const topServiceTapped = (serviceCode: string) => {
     switch (serviceCode) {
       case 'SAVE':
-        navigate('/user/group/lobby');
+        navigate('/user/group-lobby');
         break;
       default:
         console.log(serviceCode);

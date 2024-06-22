@@ -42,7 +42,7 @@ const CreateGroupPage = () => {
   });
   useEffect(() => {
     if (createGroupVM.isSuccess) {
-        navigate({ to: '/user/group/lobby' });
+        navigate({ to: '/user/group-lobby' });
     }
   }, [createGroupVM.isSuccess]);
   return (

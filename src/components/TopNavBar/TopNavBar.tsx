@@ -91,7 +91,7 @@ function TopNavBar({ groupId, showSendInvite, sendInvitCallback }: TopNavBarProp
         <Button
           variant="transparent"
           c={ColorDao.onTextColor}
-          onClick={() => navigate({ to: '/user/group/lobby' })}
+          onClick={() => navigate({ to: '/user/group-lobby' })}
         >
           Exit
         </Button>

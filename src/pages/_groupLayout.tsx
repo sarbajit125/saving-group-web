@@ -8,7 +8,13 @@ import {
   Text,
   Container,
   NavLink,
+  Button,
+  Stack,
+  Divider,
 } from '@mantine/core';
+import { IoSettings, IoReceipt, IoExit   } from 'react-icons/io5';
+import { MdGroups, MdGroupAdd  } from "react-icons/md";
+import { AiOutlineTransaction } from "react-icons/ai";
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet, Link as TanLink, useParams } from 'react-router-dom';
 import { useGroupHomeQuery } from '../handlers/networkHook';
@@ -46,9 +52,31 @@ const GroupLayout = () => {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        <TanLink to="/user/group/create-group">
-             <NavLink label="Create Group" />
-        </TanLink>
+        <Stack justify="space-between">
+          <Stack>
+            <Button variant="light" leftSection={<IoSettings />}>
+              Group settings{' '}
+            </Button>
+            <Button variant="light" leftSection={<MdGroups />}>
+              Member Management{' '}
+            </Button>
+            <Button variant="light" leftSection={<MdGroupAdd />}>
+              Approval Management{' '}
+            </Button>
+            <Button variant="light" leftSection={<AiOutlineTransaction />}>
+              Transaction History{' '}
+            </Button>
+            <Button variant="light" leftSection={<IoReceipt />}>
+              My Statement{' '}
+            </Button>
+          </Stack>
+          <Group>
+            <Divider />
+            <Button variant="light" rightSection={<IoExit />}>
+              Exit
+            </Button>
+          </Group>
+        </Stack>
       </AppShell.Navbar>
       <AppShell.Main>
         <Container fluid>

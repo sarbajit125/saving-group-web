@@ -45,8 +45,9 @@ const routeTree: RouteObject[] = [
             path: 'home',
             lazy: async () => {
               const Page = (await import('./pages/Home.page')).default;
+              const Result = Loadable(Page);
               return {
-                element: <Page />,
+                element: <Result />,
               };
             },
           },

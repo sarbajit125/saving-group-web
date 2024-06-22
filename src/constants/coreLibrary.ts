@@ -52,3 +52,15 @@ export enum APIConstants {
 }
 
 export const paginationPageSize = 5;
+
+export type RouteParams = {
+  groupId: string;
+};
+
+export function invariant(value: unknown): asserts value {
+  if (value) {
+    return;
+  }
+
+  throw new Error('Invariant violation');
+}

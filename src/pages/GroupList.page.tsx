@@ -101,7 +101,7 @@ function GroupList() {
                   h={200}
                   withBorder
                   key={item.groupCode}
-                  onClick={() => navigate(`/user/group/dashboard/${item.groupCode}`)
+                  onClick={() => navigate(`/user/group/${item.groupCode}/dashboard`)
                   }
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'scale(1.05)'; // Increase the size on hover

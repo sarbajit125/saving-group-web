@@ -13,10 +13,11 @@ import GroupMonthGraph from '../components/GroupMonthGraph/GroupMonthGraph';
 import GroupGauge from '../components/GroupGauge/GroupGauge';
 import GroupNotification from '../components/GroupNotification/GroupNotification';
 import { useGroupHomeQuery } from '../handlers/networkHook';
+import { RouteParams } from '../constants/coreLibrary';
 
 function GroupDashboard() {
-  const { groupId } = useParams();
-  const groupHomeVM = useGroupHomeQuery(groupId || '');
+  const { groupId } = useParams<RouteParams>() as RouteParams;
+  const groupHomeVM = useGroupHomeQuery(groupId);
   return (
         <Container fluid>
           <LoadingOverlay

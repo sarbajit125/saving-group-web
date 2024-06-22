@@ -19,7 +19,7 @@ import { GoBell, GoCreditCard } from 'react-icons/go';
 import { IoPersonOutline } from 'react-icons/io5';
 import { GiBank } from 'react-icons/gi';
 import { PiBankLight, PiPiggyBank } from 'react-icons/pi';
-import { useEffect } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideNavBar from '../components/SideNavBar/SideNavBar';
 import WelcomeCard from '../components/WelcomeCard/welcomeCard';
@@ -34,7 +34,7 @@ import { StatusType, getNameInitials } from '../constants/coreLibrary';
 import { userDetailQuery } from '../handlers/networkHook';
 import { useUserStore } from '../store/userStore';
 
-export function HomePage() {
+function HomePage() {
   const navigate = useNavigate();
   const linksArr: SideNavbarItem[] = [
     {
@@ -218,3 +218,4 @@ export function HomePage() {
     </>
   );
 }
+export default HomePage as FunctionComponent;

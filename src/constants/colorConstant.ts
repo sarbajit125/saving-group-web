@@ -1,5 +1,5 @@
 export enum ColorDao {
-    primaryColor = 'rgba(40, 67, 135,1)',
+    primaryColor = 'rgba(60,90,128,1)',
     textColor = 'black',
     onTextColor = 'white',
     serviceColor1 = 'rgba(237,255, 239, 0.3)',
@@ -15,5 +15,6 @@ export enum ColorDao {
     cyanBGColor = 'rgba(83, 213, 187, 0.1)',
     cyanColor = 'rgba(83, 213, 187, 1)',
     greyColor = 'rgba(147,147,147,1)',
-    silverColor = 'rgba(165,169,180,1)'
+    silverColor = 'rgba(165,169,180,1)',
+    bedazzledBlue = '#98c1d9'
 }

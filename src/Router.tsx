@@ -1,9 +1,8 @@
 import { RouteObject, createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
+import { Suspense } from 'react';
 import { LoginPage } from './pages/Login.page';
 import { RegisterPage } from './pages/Register.page';
 import { NotFoundPage } from './pages/NotFound.page';
-import { HomePage } from './pages/Home.page';
 import { useAuthStore } from './store/authStore';
 import GroupList from './pages/GroupList.page';
 import GroupDashboard from './pages/GroupDashbord.page';
@@ -11,6 +10,8 @@ import GroupLayout from './pages/_groupLayout';
 import GroupSettings from './pages/GroupSettings.page';
 import RootPage from './pages/Root';
 import LoadingScreen from './pages/Loading.page';
+import UserManagement from './pages/UserManagement.page';
+import GroupAddMoney from './pages/GroupAddMoney.page';
 
 const Loadable = (Component: any) => (props: JSX.IntrinsicAttributes) => (
   <Suspense fallback={<LoadingScreen />}>
@@ -42,23 +43,36 @@ const routeTree: RouteObject[] = [
         children: [
           {
             path: 'home',
-            element: <HomePage />,
+            lazy: async () => {
+              const Page = (await import('./pages/Home.page')).default;
+              return {
+                element: <Page />,
+              };
+            },
           },
           {
             path: 'group-lobby',
             element: <GroupList />,
           },
           {
-            path: 'group',
+            path: 'group/:groupId',
             element: <GroupLayout />,
             children: [
               {
-                path: 'dashboard/:groupId',
+                path: 'dashboard',
                 element: <GroupDashboard />,
               },
               {
                 path: 'settings',
                 element: <GroupSettings />,
+              },
+              {
+                path: 'member-management',
+                element: <UserManagement />,
+              },
+              {
+                path: 'transfer-money',
+                element: <GroupAddMoney />,
               },
             ],
           },

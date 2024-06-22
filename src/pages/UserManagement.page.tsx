@@ -36,6 +36,7 @@ import { FaHandshakeAltSlash } from 'react-icons/fa';
 import { modals } from '@mantine/modals';
 import { useDisclosure } from '@mantine/hooks';
 import { useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 import TopNavBar from '../components/TopNavBar/TopNavBar';
 import {
   ApprovalType,
@@ -49,6 +50,7 @@ import {
 } from '../models/uiModels';
 import {
   DateFormatConstants,
+  RouteParams,
   UIString,
   getNameInitials,
   paginationPageSize,
@@ -67,14 +69,13 @@ import {
   userDetailQuery,
 } from '../handlers/networkHook';
 import { ApprovalListItem, GroupUserShortDao } from '../models/responseModels';
-import { groupManagement } from '../Router';
 import { checkMemberInFavList } from '../constants/utilityConstant';
 import { useUserStore } from '../store/userStore';
 
 function UserManagement() {
   const [isUserTab, setIsUserTab] = useState<boolean>(true);
   const [page, setPage] = useState(1);
-  const { groupId } = groupManagement.useParams();
+  const { groupId } = useParams<RouteParams>() as RouteParams;
   const [currentUserDetails, setCurrentUser] = useState<CurrentGroupDetailsDao>({
     groupCode: groupId,
     groupUserId: UIString.empty,

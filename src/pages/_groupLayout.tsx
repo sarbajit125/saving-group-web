@@ -7,22 +7,22 @@ import {
   LoadingOverlay,
   Text,
   Container,
-  NavLink,
   Button,
   Stack,
   Divider,
 } from '@mantine/core';
-import { IoSettings, IoReceipt, IoExit   } from 'react-icons/io5';
-import { MdGroups, MdGroupAdd  } from "react-icons/md";
-import { AiOutlineTransaction } from "react-icons/ai";
+import { IoSettings, IoReceipt, IoExit } from 'react-icons/io5';
+import { MdGroups, MdGroupAdd } from 'react-icons/md';
+import { AiOutlineTransaction } from 'react-icons/ai';
 import { useDisclosure } from '@mantine/hooks';
-import { Outlet, Link as TanLink, useParams } from 'react-router-dom';
+import { Outlet, NavLink, useParams } from 'react-router-dom';
 import { useGroupHomeQuery } from '../handlers/networkHook';
 import { useUserStore } from '../store/userStore';
+import { RouteParams } from '../constants/coreLibrary';
 
 const GroupLayout = () => {
-  const { groupId } = useParams();
-  const groupHomeVM = useGroupHomeQuery(groupId || '');
+  const { groupId } = useParams<RouteParams>() as RouteParams;
+  const groupHomeVM = useGroupHomeQuery(groupId);
   const [opened, { toggle }] = useDisclosure();
   const userStore = useUserStore();
 
@@ -54,27 +54,61 @@ const GroupLayout = () => {
       <AppShell.Navbar p="md">
         <Stack justify="space-between">
           <Stack>
-            <Button variant="light" leftSection={<IoSettings />}>
-              Group settings{' '}
-            </Button>
-            <Button variant="light" leftSection={<MdGroups />}>
-              Member Management{' '}
-            </Button>
-            <Button variant="light" leftSection={<MdGroupAdd />}>
-              Approval Management{' '}
-            </Button>
-            <Button variant="light" leftSection={<AiOutlineTransaction />}>
-              Transaction History{' '}
-            </Button>
-            <Button variant="light" leftSection={<IoReceipt />}>
-              My Statement{' '}
-            </Button>
+            <NavLink to="/settings">
+              {({ isActive }) => (
+                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<IoSettings />}>
+                  Group settings
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to="/member-management">
+              {({ isActive }) => (
+                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<MdGroups />}>
+                  Member Management
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to="/setting">
+              {({ isActive }) => (
+                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<MdGroupAdd />}>
+                  Approval Management
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to="/setting">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? 'subtle' : 'light'}
+                  leftSection={<AiOutlineTransaction />}
+                >
+                  Transaction History
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to="/setting">
+              {({ isActive }) => (
+                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<IoReceipt />}>
+                  My Statement
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to="/transfer-money">
+              {({ isActive }) => (
+                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<IoReceipt />}>
+                 Send/Withdraw Money
+                </Button>
+              )}
+            </NavLink>
           </Stack>
           <Group>
             <Divider />
-            <Button variant="light" rightSection={<IoExit />}>
-              Exit
-            </Button>
+            <NavLink to="/user/group-lobby">
+              {({ isActive }) => (
+                <Button variant={isActive ? 'filled' : 'light'} rightSection={<IoExit />}>
+                   Exit
+                </Button>
+              )}
+            </NavLink>
           </Group>
         </Stack>
       </AppShell.Navbar>

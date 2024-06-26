@@ -1,4 +1,5 @@
-import { SideNavbarItem } from '../components/SideNavBar/SideNavBar';
+import { SideNavbarItem } from "../models/uiModels";
+
 
 export const navLinksArr: SideNavbarItem[] = [
     {
@@ -18,3 +19,15 @@ export const navLinksArr: SideNavbarItem[] = [
       title: 'Settings',
     },
   ];
+
+
+export const ROUTES = {
+  HOME: '/',
+  GROUP_LOBBY: '/user/group-lobby',
+  GROUP_SETTINGS: (groupId: string) => `/user/group/${groupId}/settings`,
+  GROUP_MEMBER_MANAGEMENT: (groupId: string) =>  `/user/group/${groupId}/management`,
+  GROUP_TRANSFER_SERVICE: (groupId: string) =>  `/user/group/${groupId}/transfer`,
+  GROUP_DASHBOARD: (groupId: string) =>  `/user/group/${groupId}/dashboard`,
+  LOGIN: '/auth/login',
+  REGISTER: '/auth/register',
+}

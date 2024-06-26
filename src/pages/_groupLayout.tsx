@@ -19,6 +19,7 @@ import { Outlet, NavLink, useParams } from 'react-router-dom';
 import { useGroupHomeQuery } from '../handlers/networkHook';
 import { useUserStore } from '../store/userStore';
 import { RouteParams } from '../constants/coreLibrary';
+import { ROUTES } from '../constants/NavLinksConstant';
 
 const GroupLayout = () => {
   const { groupId } = useParams<RouteParams>() as RouteParams;
@@ -30,7 +31,7 @@ const GroupLayout = () => {
     <AppShell
       header={{ height: { base: 60, md: 70, lg: 80 } }}
       navbar={{
-        width: { base: 200, md: 300, lg: 400 },
+        width: { base: 140, md: 240, lg: 290 },
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
       }}
@@ -54,31 +55,44 @@ const GroupLayout = () => {
       <AppShell.Navbar p="md">
         <Stack justify="space-between">
           <Stack>
-            <NavLink to="/settings">
+            <NavLink to={ROUTES.GROUP_SETTINGS(groupId)}>
               {({ isActive }) => (
-                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<IoSettings />}>
+                <Button
+                  fullWidth
+                  variant={isActive ? 'filled' : 'light'}
+                  leftSection={<IoSettings />}
+                >
                   Group settings
                 </Button>
               )}
             </NavLink>
-            <NavLink to="/member-management">
+            <NavLink to={ROUTES.GROUP_MEMBER_MANAGEMENT(groupId)}>
               {({ isActive }) => (
-                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<MdGroups />}>
+                <Button
+                  fullWidth
+                  variant={isActive ? 'filled' : 'light'}
+                  leftSection={<MdGroups />}
+                >
                   Member Management
                 </Button>
               )}
             </NavLink>
-            <NavLink to="/setting">
+            <NavLink to={ROUTES.GROUP_DASHBOARD(groupId)}>
               {({ isActive }) => (
-                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<MdGroupAdd />}>
-                  Approval Management
+                <Button
+                  fullWidth
+                  variant={isActive ? 'filled' : 'light'}
+                  leftSection={<MdGroupAdd />}
+                >
+                  Dashboard
                 </Button>
               )}
             </NavLink>
             <NavLink to="/setting">
               {({ isActive }) => (
                 <Button
-                  variant={isActive ? 'subtle' : 'light'}
+                  fullWidth
+                  variant={isActive ? 'filled' : 'light'}
                   leftSection={<AiOutlineTransaction />}
                 >
                   Transaction History
@@ -87,29 +101,37 @@ const GroupLayout = () => {
             </NavLink>
             <NavLink to="/setting">
               {({ isActive }) => (
-                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<IoReceipt />}>
+                <Button
+                  fullWidth
+                  variant={isActive ? 'filled' : 'light'}
+                  leftSection={<IoReceipt />}
+                >
                   My Statement
                 </Button>
               )}
             </NavLink>
-            <NavLink to="/transfer-money">
+            <NavLink to={ROUTES.GROUP_TRANSFER_SERVICE(groupId)}>
               {({ isActive }) => (
-                <Button variant={isActive ? 'subtle' : 'light'} leftSection={<IoReceipt />}>
-                 Send/Withdraw Money
+                <Button
+                  fullWidth
+                  variant={isActive ? 'filled' : 'light'}
+                  leftSection={<IoReceipt />}
+                >
+                  Send/Withdraw Money
                 </Button>
               )}
             </NavLink>
           </Stack>
-          <Group>
+          <Stack>
             <Divider />
-            <NavLink to="/user/group-lobby">
+            <NavLink to={ROUTES.GROUP_LOBBY}>
               {({ isActive }) => (
-                <Button variant={isActive ? 'filled' : 'light'} rightSection={<IoExit />}>
-                   Exit
+                <Button fullWidth variant={isActive ? 'filled' : 'light'} rightSection={<IoExit />}>
+                  Exit
                 </Button>
               )}
             </NavLink>
-          </Group>
+          </Stack>
         </Stack>
       </AppShell.Navbar>
       <AppShell.Main>

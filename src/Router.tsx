@@ -3,7 +3,6 @@ import { Suspense } from 'react';
 import { LoginPage } from './pages/Login.page';
 import { RegisterPage } from './pages/Register.page';
 import { NotFoundPage } from './pages/NotFound.page';
-import { useAuthStore } from './store/authStore';
 import GroupList from './pages/GroupList.page';
 import GroupDashboard from './pages/GroupDashbord.page';
 import GroupLayout from './pages/_groupLayout';
@@ -39,6 +38,10 @@ const routeTree: RouteObject[] = [
         ],
       },
       {
+        path: 'test',
+        element: <GroupSettings />
+      },
+      {
         path: 'user',
         children: [
           {
@@ -68,11 +71,11 @@ const routeTree: RouteObject[] = [
                 element: <GroupSettings />,
               },
               {
-                path: 'member-management',
+                path: 'management',
                 element: <UserManagement />,
               },
               {
-                path: 'transfer-money',
+                path: 'transfer',
                 element: <GroupAddMoney />,
               },
             ],
@@ -84,8 +87,6 @@ const routeTree: RouteObject[] = [
 ];
 const router = createBrowserRouter(routeTree, {});
 export function AppRouter() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  console.log(isAuthenticated);
   return <RouterProvider router={router} />;
 }
 

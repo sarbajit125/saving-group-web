@@ -1,0 +1,36 @@
+/* GroupSettings.module.css */
+
+.pointerBox {
+    width: "80%";
+    height: 2rem;
+    display: inline-flex;
+    gap: 0px;
+}
+.arrow{
+    width: 1rem;
+    clip-path: polygon(100% 0, 100% 100%, 0 46%);
+    background-color: red;
+}
+.pointerText{ 
+    background-color: red;
+    flex-grow: 1;
+}
+.fobBox {
+    position: relative;
+    width: 80;
+    height: 80;
+}
+.fobImage {
+    position: block;
+    width: 80;
+    height: 80;
+    border-radius: 40;
+}
+.fobEdit {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25;
+    height: 25;
+    border-radius: 15;
+}

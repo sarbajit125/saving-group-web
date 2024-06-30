@@ -37,7 +37,6 @@ import { modals } from '@mantine/modals';
 import { useDisclosure } from '@mantine/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import TopNavBar from '../components/TopNavBar/TopNavBar';
 import {
   ApprovalType,
   RequestType,
@@ -555,7 +554,6 @@ function UserManagement() {
         </Stack>
       </Modal>
       <Stack>
-        <TopNavBar groupId={groupId} showSendInvite sendInvitCallback={() => open()} />
         <Group>
           <Button
             variant={isUserTab ? 'filled' : 'subtle'}

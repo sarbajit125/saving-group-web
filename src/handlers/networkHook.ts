@@ -11,6 +11,7 @@ import {
   updateRoleRequestInterface,
 } from './schemaHandler';
 import {
+  downloadDocId,
   fireApprovalHistory,
   fireApprovalRequest,
   fireChangeRole,
@@ -26,6 +27,7 @@ import {
   fireUserDetails,
   loginUser,
   registerUser,
+  uploadGroupImage,
 } from './axiosHandler';
 import { APIConstants, paginationPageSize } from '../constants/coreLibrary';
 import { SendInviteUserDao } from '../models/uiModels';
@@ -162,3 +164,17 @@ export const useChangeRoleMutation = () =>
       toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
     },
   });
+
+export const useUploadGroupMutation = (groupId: string) => useMutation({
+  mutationKey: ['group/uploadProfile'],
+  mutationFn: (filePath: string) => uploadGroupImage(filePath, groupId),
+  onSuccess(data) {
+    toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
+  },
+})
+
+export const useDownloadDocQuery = (docId: string,startDownload: boolean = false) => useQuery({
+  queryKey: [`docId/${docId}`],
+  enabled: startDownload,
+  queryFn: () => downloadDocId(docId)
+})

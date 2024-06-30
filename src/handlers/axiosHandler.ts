@@ -188,3 +188,34 @@ export const fireChangeRole = async (request: updateRoleRequestInterface) => {
     throw apiErrorHandler(error);
   }
 };
+export const uploadGroupImage = async (
+  filePath: string,
+  groupId: string
+): Promise<RootSuccessResponse> => {
+  try {
+    // Create an instance of FormData
+    const formData = new FormData();
+    const blobResponse = await fetch(filePath);
+    const imageBlob = await blobResponse.blob();
+    // Append the file to the form data
+    formData.append('image', imageBlob);
+    // Define the URL with query parameter
+    const url = `/group/upload-profile?groupId=${groupId}`;
+    const response = await axiosInstance.post<RootSuccessResponse>(url, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+
+export const downloadDocId =async (docId:string): Promise<string> => {
+  try {
+    const response = await axiosInstance.get(`/user/download/${docId}`, {responseType: 'blob'})
+    let imageURL = URL.createObjectURL(response.data)
+    return imageURL
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+}

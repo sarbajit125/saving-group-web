@@ -19,12 +19,12 @@ import { useForm, zodResolver } from '@mantine/form';
 import { DatePickerInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import splash from '../assets/splash.png';
 import classes from './Login.module.css';
 import { useCreateGroupMutation } from '../handlers/networkHook';
 import { createGroupRequestType, createGroupSchema } from '../handlers/schemaHandler';
 import { ColorDao } from '../constants/colorConstant';
+import { useNavigate } from 'react-router-dom';
 
 const CreateGroupPage = () => {
   const createGroupVM = useCreateGroupMutation();
@@ -42,7 +42,7 @@ const CreateGroupPage = () => {
   });
   useEffect(() => {
     if (createGroupVM.isSuccess) {
-        navigate({ to: '/user/group-lobby' });
+        navigate('/user/group-lobby');
     }
   }, [createGroupVM.isSuccess]);
   return (

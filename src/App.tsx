@@ -38,6 +38,7 @@ const queryClient = new QueryClient({
         return false;
       },
       retry: false,
+      staleTime: 120000,
     },
   },
   queryCache: new QueryCache({

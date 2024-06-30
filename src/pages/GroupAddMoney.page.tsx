@@ -24,7 +24,6 @@ import {
 import HeaderProgressBar from '../components/HeaderPogressBar/HeaderPogressBar';
 import WalletsSelection from '../components/WalletSelection/WalletsSelection';
 import TxnSummary from '../components/WalletSelection/TxnSummary';
-import TopNavBar from '../components/TopNavBar/TopNavBar';
 import { ColorDao } from '../constants/colorConstant';
 
 function GroupAddMoney() {
@@ -70,13 +69,6 @@ function GroupAddMoney() {
     });
   return (
     <Stack>
-      <TopNavBar
-        groupId=""
-        showSendInvite={false}
-        sendInvitCallback={function (): void {
-        throw new Error('Function not implemented.');
-      }}
-      />
       <Paper shadow="xs" p="xl" mt="md" w="80%">
         <Grid>
           <GridCol span={2}>

@@ -16,14 +16,19 @@ import { MdGroups, MdGroupAdd } from 'react-icons/md';
 import { AiOutlineTransaction } from 'react-icons/ai';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet, NavLink, useParams } from 'react-router-dom';
-import { useGroupHomeQuery } from '../handlers/networkHook';
+import { useDownloadDocQuery, useGroupHomeQuery } from '../handlers/networkHook';
 import { useUserStore } from '../store/userStore';
 import { RouteParams } from '../constants/coreLibrary';
 import { ROUTES } from '../constants/NavLinksConstant';
+import { isStringDefined } from '../constants/utilityConstant';
 
 const GroupLayout = () => {
   const { groupId } = useParams<RouteParams>() as RouteParams;
   const groupHomeVM = useGroupHomeQuery(groupId);
+  const downloadDocVM = useDownloadDocQuery(
+    groupHomeVM.data?.groupImageId ?? '',
+    isStringDefined(groupHomeVM.data?.groupImageId)
+  );
   const [opened, { toggle }] = useDisclosure();
   const userStore = useUserStore();
 
@@ -41,7 +46,7 @@ const GroupLayout = () => {
         <Group h="100%" px="md" justify="space-between">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <Group gap="xs">
-            <Avatar src="https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JvdXB8ZW58MHx8MHx8fDA%3D" />
+            <Avatar src={downloadDocVM.data} />
             <Text>{groupHomeVM.data?.groupName ?? ''}</Text>
           </Group>
           <Group gap={2}>

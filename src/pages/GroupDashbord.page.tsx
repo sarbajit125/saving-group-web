@@ -16,7 +16,7 @@ import { useGroupHomeQuery } from '../handlers/networkHook';
 import { RouteParams } from '../constants/coreLibrary';
 
 function GroupDashboard() {
-  const { groupId } = useParams<RouteParams>() as RouteParams;
+  const { groupId } = useParams<RouteParams>() as RouteParams
   const groupHomeVM = useGroupHomeQuery(groupId);
   return (
         <Container fluid>

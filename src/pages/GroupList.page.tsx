@@ -32,6 +32,7 @@ import {
 import { RequestType } from '../models/uiModels';
 import { useUserStore } from '../store/userStore';
 import EmptyView from '../components/EmptyView/EmptyView';
+import GroupListCard from '../components/GroupListCard/GroupListCard';
 
 function GroupList() {
   const [enteredGroupCode, setGroupCode] = useState<string>('');
@@ -93,38 +94,7 @@ function GroupList() {
             </Center>
           </Card>
           {lobbyVM.isSuccess
-            ? lobbyVM.data.groupList.map((item) => (
-                <Card
-                  shadow="sm"
-                  padding="lg"
-                  radius="md"
-                  h={200}
-                  withBorder
-                  key={item.groupCode}
-                  onClick={() => navigate(`/user/group/${item.groupCode}/dashboard`)
-                  }
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)'; // Increase the size on hover
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)'; // Restore the original size on mouse leave
-                  }}
-                >
-                  <Center h={200}>
-                    <Stack>
-                      <Avatar src={item.groupImg} size="lg" style={{ alignSelf: 'center' }}>
-                        <PiUsersLight fontSize="4em" />
-                      </Avatar>
-                      <Box>
-                        <Text fw="bold" style={{ textAlign: 'center' }}>
-                          {item.groupName}
-                        </Text>
-                        <Text style={{ textAlign: 'center' }}> Members: {item.memberCount}</Text>
-                      </Box>
-                    </Stack>
-                  </Center>
-                </Card>
-              ))
+            ? lobbyVM.data.groupList.map((item) => <GroupListCard item={item} />)
             : null}
         </SimpleGrid>
       </GridCol>

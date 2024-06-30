@@ -71,3 +71,7 @@ export const setColorBasedOnRole = (role: string): string => {
   }
   return ColorDao.primaryColor;
 };
+
+export const isStringDefined = (value: string | null | undefined): value is string => {
+  return value !== null && value !== undefined;
+};

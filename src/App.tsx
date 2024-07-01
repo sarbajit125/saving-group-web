@@ -52,7 +52,10 @@ const queryClient = new QueryClient({
               useAuthStore.setState({ bearerToken: response.access_token });
               query.fetch();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+              console.log(err);
+              useAuthStore.setState({ isAuthenticated: false });
+            });
         } else {
           toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
         }
@@ -72,7 +75,10 @@ const queryClient = new QueryClient({
               useAuthStore.setState({ bearerToken: response.access_token });
               mutation.execute(variables);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+              console.log(err);
+              useAuthStore.setState({ isAuthenticated: false });
+            });
         } else {
           toast.error(error.userMsg, { position: 'top-right', autoClose: 1000 });
         }

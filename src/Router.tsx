@@ -39,7 +39,7 @@ const routeTree: RouteObject[] = [
       },
       {
         path: 'test',
-        element: <GroupSettings />
+        element: <GroupSettings />,
       },
       {
         path: 'user',

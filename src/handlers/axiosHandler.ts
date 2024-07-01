@@ -210,12 +210,12 @@ export const uploadGroupImage = async (
   }
 };
 
-export const downloadDocId =async (docId:string): Promise<string> => {
+export const downloadDocId = async (docId:string): Promise<string> => {
   try {
-    const response = await axiosInstance.get(`/user/download/${docId}`, {responseType: 'blob'})
-    let imageURL = URL.createObjectURL(response.data)
-    return imageURL
+    const response = await axiosInstance.get(`/user/download/${docId}`, { responseType: 'blob' });
+    const imageURL = URL.createObjectURL(response.data);
+    return imageURL;
   } catch (error) {
     throw apiErrorHandler(error);
   }
-}
+};

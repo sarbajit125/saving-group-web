@@ -60,7 +60,7 @@ const GroupLayout = () => {
       <AppShell.Navbar p="md">
         <Stack justify="space-between">
           <Stack>
-            <NavLink to={ROUTES.GROUP_SETTINGS(groupId)}>
+            <NavLink to={ROUTES.GROUP_SETTINGS(groupId)} style={{ textDecoration: 'none' }}>
               {({ isActive }) => (
                 <Button
                   fullWidth
@@ -71,7 +71,7 @@ const GroupLayout = () => {
                 </Button>
               )}
             </NavLink>
-            <NavLink to={ROUTES.GROUP_MEMBER_MANAGEMENT(groupId)}>
+            <NavLink to={ROUTES.GROUP_MEMBER_MANAGEMENT(groupId)} style={{ textDecoration: 'none' }}>
               {({ isActive }) => (
                 <Button
                   fullWidth
@@ -82,7 +82,7 @@ const GroupLayout = () => {
                 </Button>
               )}
             </NavLink>
-            <NavLink to={ROUTES.GROUP_DASHBOARD(groupId)}>
+            <NavLink to={ROUTES.GROUP_DASHBOARD(groupId)} style={{ textDecoration: 'none' }}>
               {({ isActive }) => (
                 <Button
                   fullWidth
@@ -93,7 +93,7 @@ const GroupLayout = () => {
                 </Button>
               )}
             </NavLink>
-            <NavLink to="/setting">
+            <NavLink to="/setting" style={{ textDecoration: 'none' }}>
               {({ isActive }) => (
                 <Button
                   fullWidth
@@ -104,7 +104,7 @@ const GroupLayout = () => {
                 </Button>
               )}
             </NavLink>
-            <NavLink to="/setting">
+            <NavLink to="/setting" style={{ textDecoration: 'none' }}>
               {({ isActive }) => (
                 <Button
                   fullWidth
@@ -115,7 +115,7 @@ const GroupLayout = () => {
                 </Button>
               )}
             </NavLink>
-            <NavLink to={ROUTES.GROUP_TRANSFER_SERVICE(groupId)}>
+            <NavLink to={ROUTES.GROUP_TRANSFER_SERVICE(groupId)} style={{ textDecoration: 'none' }}>
               {({ isActive }) => (
                 <Button
                   fullWidth
@@ -129,7 +129,7 @@ const GroupLayout = () => {
           </Stack>
           <Stack>
             <Divider />
-            <NavLink to={ROUTES.GROUP_LOBBY}>
+            <NavLink to={ROUTES.GROUP_LOBBY} style={{ textDecoration: 'none' }}>
               {({ isActive }) => (
                 <Button fullWidth variant={isActive ? 'filled' : 'light'} rightSection={<IoExit />}>
                   Exit

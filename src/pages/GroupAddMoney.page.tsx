@@ -3,7 +3,9 @@ import {
   AccordionControl,
   AccordionItem,
   AccordionPanel,
+  Box,
   Button,
+  Divider,
   Grid,
   GridCol,
   Group,
@@ -11,10 +13,10 @@ import {
   Paper,
   PinInput,
   Stack,
+  Textarea,
 } from '@mantine/core';
 import { useState } from 'react';
 import { modals } from '@mantine/modals';
-import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 import {
   CardPaymentInstrument,
   FeesUIModel,
@@ -29,7 +31,7 @@ import { ColorDao } from '../constants/colorConstant';
 function GroupAddMoney() {
   const [transactionType, setTransactionType] = useState<TransactionType>(TransactionType.DEPOSIT);
   const [enteredAmount, setAmount] = useState<number>(0);
-  const [transactionProgress, setProgress] = useState<number>(0);
+  const [openedIndexes, setOpenedIndexes] = useState<string[]>(['0']);
   const [isCustomAmount, setIsCustom] = useState<boolean>(true);
   const [selectedInstrument, setSelected] = useState<
     CardPaymentInstrument | WalletPaymentInstrument | undefined
@@ -54,6 +56,21 @@ function GroupAddMoney() {
     }
     return model;
   };
+  const handleButtonClick = () => {
+    setOpenedIndexes((prevIndexes) => {
+      console.log('coming to here');
+      // Ensure the second accordion is opened
+      if (!prevIndexes.includes('1')) {
+        console.log('coming to 1');
+        return [...prevIndexes, '1'];
+      }
+      if (!prevIndexes.includes('2')) {
+        console.log('coming to 2');
+        return [...prevIndexes, '2'];
+      }
+      return prevIndexes;
+    });
+  };
   const openPINModal = () =>
     modals.open({
       id: 'PIN-MODAL',
@@ -68,39 +85,52 @@ function GroupAddMoney() {
       ),
     });
   return (
-    <Stack>
-      <Paper shadow="xs" p="xl" mt="md" w="80%">
+    <Paper shadow="xs" p="xl" mt="md" w="80%">
+      <Stack>
+        <Group>
+          <Button
+            variant={transactionType === TransactionType.DEPOSIT ? 'filled' : 'subtle'}
+            color={ColorDao.primaryColor}
+            onClick={() => {
+              setTransactionType(TransactionType.DEPOSIT);
+            }}
+          >
+            Deposit Money
+          </Button>
+          <Divider size="md" orientation="vertical" />
+          <Button
+            variant={transactionType === TransactionType.WITHDRAWAL ? 'filled' : 'subtle'}
+            color={ColorDao.primaryColor}
+            onClick={() => {
+              setTransactionType(TransactionType.WITHDRAWAL);
+            }}
+          >
+            Withdraw Money
+          </Button>
+        </Group>
+        <Divider size="sm" />
         <Grid>
           <GridCol span={2}>
-            <Button
-              variant="default"
-              onClick={() => setTransactionType(TransactionType.DEPOSIT)}
-              leftSection={<GiPayMoney fontSize="3em" />}
-              fullWidth
-              h="50%"
-              mb="md"
-              radius="sm"
-            >
-              Add money
-            </Button>
-            <Button
-              variant="default"
-              onClick={() => setTransactionType(TransactionType.WITHDRAWAL)}
-              leftSection={<GiReceiveMoney fontSize="3em" />}
-              fullWidth
-              h="50%"
-              mb="md"
-              radius="sm"
-            >
-              Withdraw money
-            </Button>
+            <Box>
+              <HeaderProgressBar
+                index="1"
+                name="Enter Amount"
+                isSelected={openedIndexes.includes('0')}
+              />
+              <HeaderProgressBar
+                index="2"
+                name="Select payment method"
+                isSelected={openedIndexes.includes('1')}
+              />
+              <HeaderProgressBar
+                index="3"
+                name="Payment details"
+                isSelected={openedIndexes.includes('2')}
+              />
+            </Box>
           </GridCol>
           <GridCol span={10}>
-            <HeaderProgressBar
-              items={['Add amount', 'Payments', 'Confirm payment']}
-              progress={transactionProgress}
-            />
-            <Accordion variant="separated" value={transactionProgress.toString()}>
+            <Accordion multiple value={openedIndexes} variant="filled" onChange={handleButtonClick}>
               <AccordionItem key={0} value="0">
                 <AccordionControl>{transactionType}</AccordionControl>
                 <AccordionPanel>
@@ -149,15 +179,23 @@ function GroupAddMoney() {
                         Custom amount
                       </Button>
                     </Group>
-                    <Group justify="flex-end">
-                      <Button
-                        onClick={() => setProgress(1)}
-                        disabled={enteredAmount === 0}
-                        color={ColorDao.primaryColor}
-                      >
-                        Continue
-                      </Button>
-                    </Group>
+                    <Textarea
+                      autosize
+                      label="Remark"
+                      placeholder="Enter remark(Optional)"
+                      maxRows={2}
+                    />
+                    {openedIndexes[openedIndexes.length - 1] === '0' ? (
+                      <Group justify="flex-end">
+                        <Button
+                          onClick={handleButtonClick}
+                          disabled={enteredAmount === 0}
+                          color={ColorDao.primaryColor}
+                        >
+                          Continue
+                        </Button>
+                      </Group>
+                    ) : null}
                   </Stack>
                 </AccordionPanel>
               </AccordionItem>
@@ -170,15 +208,17 @@ function GroupAddMoney() {
                       serviceType={transactionType}
                       selectedInstrument={(instrument) => setSelected(instrument)}
                     />
-                    <Group justify="flex-end">
-                      <Button
-                        onClick={() => setProgress(2)}
-                        disabled={selectedInstrument === undefined}
-                        color={ColorDao.primaryColor}
-                      >
-                        Continue
-                      </Button>
-                    </Group>
+                    {openedIndexes[openedIndexes.length - 1] === '1' ? (
+                      <Group justify="flex-end">
+                        <Button
+                          onClick={handleButtonClick}
+                          disabled={selectedInstrument === undefined}
+                          color={ColorDao.primaryColor}
+                        >
+                          Continue
+                        </Button>
+                      </Group>
+                    ) : null}
                   </Stack>
                 </AccordionPanel>
               </AccordionItem>
@@ -202,8 +242,8 @@ function GroupAddMoney() {
             </Accordion>
           </GridCol>
         </Grid>
-      </Paper>
-    </Stack>
+      </Stack>
+    </Paper>
   );
 }
 

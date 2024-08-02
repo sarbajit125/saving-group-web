@@ -122,16 +122,16 @@ export interface PaymentInstrument {
 }
 
 export interface WalletPaymentInstrument extends PaymentInstrument {
-    walletId: string,
-    walletType: WalletType,
-    isDefault: boolean,
-}
+    walletId: string;
+    walletType: WalletType;
+  }
 
 export interface CardPaymentInstrument extends PaymentInstrument {
-    cardType: CardType
-    cardHolderName: string,
-    cardExpiry: Date,
-}
+    cardType: CardType;
+    cardHolderName: string;
+    cardExpiry: Date;
+    cardValue: string;
+  }
 export interface FeesUIModel {
     isAmount: boolean,
     key: string

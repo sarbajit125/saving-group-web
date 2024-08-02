@@ -23,10 +23,18 @@ function SideNavBar(props: SideNavbarProps) {
         return <TbPlaystationTriangle />;
     }
   };
+  const serviceTapped = (serviceCode: string): string => {
+    switch (serviceCode) {
+      case 'HOME':
+        return '/user/home';
+      default:
+        return '/auth/login';
+    }
+  };
 
   const createItemforNav = (item: SideNavbarItem): JSX.Element => (
     <Link
-      to="/login"
+      to={serviceTapped(item.serviceCode)}
       key={item.serviceCode}
       id={item.title}
       style={{ textDecoration: 'none', color: ColorDao.greyColor }}

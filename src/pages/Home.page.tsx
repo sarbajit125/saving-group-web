@@ -21,6 +21,7 @@ import { GiBank } from 'react-icons/gi';
 import { PiBankLight, PiPiggyBank } from 'react-icons/pi';
 import { FunctionComponent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import SideNavBar from '../components/SideNavBar/SideNavBar';
 import WelcomeCard from '../components/WelcomeCard/welcomeCard';
 import { ServiceCardsDao, SideNavbarItem } from '../models/uiModels';
@@ -30,8 +31,8 @@ import DashboardBanners from '../components/DashboardBanners/DashboardBanners';
 import RecentTransactionTable, {
   RecentTransactionRowProps,
 } from '../components/TransactionTable/TransactionTable';
-import { StatusType, getNameInitials } from '../constants/coreLibrary';
-import { userDetailQuery } from '../handlers/networkHook';
+import { DateFormatConstants, StatusType, getNameInitials } from '../constants/coreLibrary';
+import { listInstrumentQuery, userDetailQuery } from '../handlers/networkHook';
 import { useUserStore } from '../store/userStore';
 
 function HomePage() {
@@ -142,6 +143,7 @@ function HomePage() {
     }
   };
   const homeVM = userDetailQuery();
+  const listInstrumentVM = listInstrumentQuery();
   const homeStore = useUserStore();
   useEffect(() => {
     if (homeVM.isSuccess) {
@@ -189,7 +191,18 @@ function HomePage() {
                 </Flex>
               </GridCol>
               <Stack mt="100">
-                <Cards number="4012888888881881" expiry="08/23" cvc="054" name="Vitaly Rtishchev" />
+                {listInstrumentVM.isSuccess ? (
+                  listInstrumentVM.data.cardList[0] !== undefined ? (
+                    <Cards
+                      number={listInstrumentVM.data.cardList[0].instrumentId}
+                      expiry={dayjs(listInstrumentVM.data.cardList[0].cardExpiry).format(
+                        DateFormatConstants.dashboard
+                      )}
+                      cvc="054"
+                      name={listInstrumentVM.data.cardList[0].cardHolderName}
+                    />
+                  ) : null
+                ) : null}
                 <Center
                   h={44}
                   w={290}

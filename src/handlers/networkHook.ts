@@ -17,6 +17,7 @@ import {
   fireChangeRole,
   fireCreateGroup,
   fireFetchFavorites,
+  fireFetchInstrumentList,
   fireGroupDetails,
   fireGroupLobby,
   fireGroupUserList,
@@ -171,10 +172,16 @@ export const useUploadGroupMutation = (groupId: string) => useMutation({
   onSuccess(data) {
     toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
   },
-})
+});
 
-export const useDownloadDocQuery = (docId: string,startDownload: boolean = false) => useQuery({
+export const useDownloadDocQuery = (docId: string, startDownload: boolean = false) => useQuery({
   queryKey: [`docId/${docId}`],
   enabled: startDownload,
-  queryFn: () => downloadDocId(docId)
-})
+  queryFn: () => downloadDocId(docId),
+});
+
+export const listInstrumentQuery = () => useQuery({
+  queryKey: ['list-instrument'],
+  queryFn: () => fireFetchInstrumentList(),
+  staleTime: 180000,
+});

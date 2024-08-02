@@ -1,4 +1,4 @@
-import { RequestType } from './uiModels';
+import { CardPaymentInstrument, InstrumentType, RequestType, WalletPaymentInstrument } from './uiModels';
 
 export class RootErrorResponse extends Error {
   status: string;
@@ -136,4 +136,15 @@ export interface ApprovalListItem {
 export interface ApprovalListResp extends RootSuccessResponse {
   approvalList: ApprovalListItem[];
   totalCount: number;
+}
+export interface PaymentInstrument {
+  instrumentId: string;
+  instrumentBalance: number | null;
+  instrumentCurrency: string;
+  instrumentType: InstrumentType;
+}
+
+export interface ListInstrumentResp extends RootSuccessResponse {
+  cardList: CardPaymentInstrument[];
+  walletList: WalletPaymentInstrument[];
 }

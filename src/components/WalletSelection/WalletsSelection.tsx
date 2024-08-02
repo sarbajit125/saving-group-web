@@ -11,10 +11,10 @@ import {
   RadioGroup,
   Stack,
   Text,
+  LoadingOverlay,
 } from '@mantine/core';
 import dayjs from 'dayjs';
 import { CiWallet } from 'react-icons/ci';
-import { v4 as uuidv4 } from 'uuid';
 import {
   CardPaymentInstrument,
   CardType,
@@ -23,39 +23,17 @@ import {
   WalletPaymentInstrument,
 } from '../../models/uiModels';
 import { DateFormatConstants } from '../../constants/coreLibrary';
-
-const getRandomCardType = () => {
-  const cardTypes = Object.values(CardType);
-  const randomIndex = Math.floor(Math.random() * cardTypes.length);
-  return cardTypes[randomIndex];
-};
-
-const getRandomDate = () => {
-  const currentDate = new Date();
-  const randomFutureDate = new Date(
-    currentDate.getFullYear() + 1,
-    currentDate.getMonth(),
-    currentDate.getDate()
-  );
-  return randomFutureDate;
-};
-const cardDummy: CardPaymentInstrument[] = Array.from({ length: 10 }, (_, index) => ({
-  instrumentId: uuidv4(),
-  instrumentBalance: Math.random() * 1000,
-  instrumentCurrency: 840, // Assuming USD as currency code
-  instrumentType: InstrumentType.card,
-  cardType: getRandomCardType(),
-  cardHolderName: `Card Holder ${index + 1}`,
-  cardExpiry: getRandomDate(),
-}));
+import { listInstrumentQuery } from '../../handlers/networkHook';
+import { ColorDao } from '../../constants/colorConstant';
 
 function WalletsSelection(props: WalletSelectionProps) {
-  const [typesList, setTypeList] = useState<InstrumentType[]>([]);
+  const [typesList, setTypeList] =
+  useState<InstrumentType[]>([InstrumentType.wallet, InstrumentType.card]);
   const [selectedType, setInstrumentType] = useState<string>(typesList[0]);
   const [selectedInstrument, setSelected] = useState<
     CardPaymentInstrument | WalletPaymentInstrument | undefined
   >();
-  const [cardList, setCardList] = useState<CardPaymentInstrument[]>(cardDummy);
+  const listInstrumentVM = listInstrumentQuery();
   useEffect(() => {
     props.selectedInstrument(selectedInstrument);
   }, [selectedInstrument]);
@@ -69,8 +47,6 @@ function WalletsSelection(props: WalletSelectionProps) {
         break;
     }
   }, [props.serviceType]);
-  
-  const walletList: WalletPaymentInstrument[] = [];
   const setCardImage = (cardType: CardType): string => {
     switch (cardType) {
       case CardType.VISA:
@@ -83,7 +59,7 @@ function WalletsSelection(props: WalletSelectionProps) {
         return 'https://logos-world.net/wp-content/uploads/2020/05/Visa-Logo.png';
     }
   };
-  const setForCards = () => (
+  const setForCards = (cardList: CardPaymentInstrument[]) => (
     <Stack h={100} style={{ overflow: 'auto' }}>
       {cardList.map((item) => (
         <Paper shadow="sm" radius="md" withBorder onClick={() => setSelected(item)}>
@@ -122,18 +98,18 @@ function WalletsSelection(props: WalletSelectionProps) {
       ))}
     </Stack>
   );
-  const setForWallets = () => (
+  const setForWallets = (walletList: WalletPaymentInstrument[]) => (
     <Stack>
       {walletList.map((item) => (
         <Card shadow="sm" padding="lg" radius="md" withBorder onClick={() => setSelected(item)}>
-          <Group justify="space-around">
+          <Group justify="space-between">
             <Group>
               <Avatar>
                 <CiWallet />
               </Avatar>
               <Box>
-                <Text>{item.instrumentId}</Text>
-                <Text>{`${item.walletType}- ${item.walletId}`}</Text>
+                <Text fw={700}>{item.instrumentId}</Text>
+                <Text size="sm" tt="capitalize">{`${item.walletType} Wallet`}</Text>
               </Box>
             </Group>
             <Checkbox
@@ -147,23 +123,35 @@ function WalletsSelection(props: WalletSelectionProps) {
       ))}
     </Stack>
   );
-  return (
-    <Stack>
-      <RadioGroup
-        value={selectedType}
-        onChange={setInstrumentType}
-        name="wallet-selection"
-        label="Choose payment method"
-      >
-        <Group>
-          {typesList.map((item) => (
-            <Radio value={item} label={item} />
-          ))}
-        </Group>
-      </RadioGroup>
-      {selectedType === InstrumentType.card ? setForCards() : setForWallets()}
-    </Stack>
-  );
+  if (listInstrumentVM.isLoading) {
+    <LoadingOverlay
+      visible
+      zIndex={1000}
+      overlayProps={{ radius: 'sm', blur: 2 }}
+    />;
+  }
+  if (listInstrumentVM.isSuccess) {
+    return (
+      <Stack>
+        <RadioGroup
+          value={selectedType}
+          onChange={setInstrumentType}
+          name="wallet-selection"
+          label="Choose payment method"
+          color={ColorDao.primaryColor}
+        >
+          <Group>
+            {typesList.map((item) => (
+              <Radio value={item} label={item} />
+            ))}
+          </Group>
+        </RadioGroup>
+        {selectedType === InstrumentType.card ?
+        setForCards(listInstrumentVM.data.cardList) :
+        setForWallets(listInstrumentVM.data.walletList)}
+      </Stack>
+    );
+  }
 }
 
 export default WalletsSelection;

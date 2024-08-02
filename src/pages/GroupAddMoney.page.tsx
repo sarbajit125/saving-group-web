@@ -32,7 +32,7 @@ function GroupAddMoney() {
   const [transactionType, setTransactionType] = useState<TransactionType>(TransactionType.DEPOSIT);
   const [enteredAmount, setAmount] = useState<number>(0);
   const [openedIndexes, setOpenedIndexes] = useState<string[]>(['0']);
-  const [isCustomAmount, setIsCustom] = useState<boolean>(true);
+  const [isCustomAmount, setIsCustom] = useState<boolean>(false);
   const [selectedInstrument, setSelected] = useState<
     CardPaymentInstrument | WalletPaymentInstrument | undefined
   >();
@@ -151,28 +151,28 @@ function GroupAddMoney() {
                     />
                     <Group>
                       <Button
-                        variant="outline"
+                        variant={enteredAmount === 100 ? 'filled' : 'outline'}
                         color={ColorDao.primaryColor}
                         onClick={() => setAmount(100)}
                       >
                         100
                       </Button>
                       <Button
-                        variant="outline"
+                        variant={enteredAmount === 500 ? 'filled' : 'outline'}
                         color={ColorDao.primaryColor}
                         onClick={() => setAmount(500)}
                       >
                         500
                       </Button>
                       <Button
-                        variant="outline"
+                        variant={enteredAmount === 1000 ? 'filled' : 'outline'}
                         color={ColorDao.primaryColor}
                         onClick={() => setAmount(1000)}
                       >
                         1000
                       </Button>
                       <Button
-                        variant="outline"
+                        variant={isCustomAmount ? 'filled' : 'outline'}
                         color={ColorDao.primaryColor}
                         onClick={() => setIsCustom(true)}
                       >

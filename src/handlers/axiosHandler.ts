@@ -19,6 +19,7 @@ import {
   GroupMemberListResp,
   FetchFavListResp,
   ApprovalListResp,
+  ListInstrumentResp,
 } from '../models/responseModels';
 import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
@@ -215,6 +216,15 @@ export const downloadDocId = async (docId:string): Promise<string> => {
     const response = await axiosInstance.get(`/user/download/${docId}`, { responseType: 'blob' });
     const imageURL = URL.createObjectURL(response.data);
     return imageURL;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+
+export const fireFetchInstrumentList = async (): Promise<ListInstrumentResp> => {
+  try {
+    const response = await axiosInstance.get<ListInstrumentResp>('list-instrument');
+    return response.data;
   } catch (error) {
     throw apiErrorHandler(error);
   }

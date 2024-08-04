@@ -1,6 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import {
   LoginRequestType,
+  addMoneyGroupRequest,
   createGroupRequestType,
   removeRequestInterface,
   requestInterface,
@@ -20,6 +21,7 @@ import {
   FetchFavListResp,
   ApprovalListResp,
   ListInstrumentResp,
+  GroupTxnDetails,
 } from '../models/responseModels';
 import { useAuthStore } from '../store/authStore';
 import { RegisterRequestModel } from '../models/requestModels';
@@ -211,7 +213,7 @@ export const uploadGroupImage = async (
   }
 };
 
-export const downloadDocId = async (docId:string): Promise<string> => {
+export const downloadDocId = async (docId: string): Promise<string> => {
   try {
     const response = await axiosInstance.get(`/user/download/${docId}`, { responseType: 'blob' });
     const imageURL = URL.createObjectURL(response.data);
@@ -224,6 +226,17 @@ export const downloadDocId = async (docId:string): Promise<string> => {
 export const fireFetchInstrumentList = async (): Promise<ListInstrumentResp> => {
   try {
     const response = await axiosInstance.get<ListInstrumentResp>('list-instrument');
+    return response.data;
+  } catch (error) {
+    throw apiErrorHandler(error);
+  }
+};
+
+export const fireAddMoneyGroup = async (
+  request: addMoneyGroupRequest
+): Promise<GroupTxnDetails> => {
+  try {
+    const response = await axiosInstance.post<GroupTxnDetails>('/group/add-money', request);
     return response.data;
   } catch (error) {
     throw apiErrorHandler(error);

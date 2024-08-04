@@ -4,6 +4,7 @@ import Cookies from 'universal-cookie';
 import {
   LoginRequestType,
   RegisterRequestType,
+  addMoneyGroupRequest,
   createGroupRequestType,
   removeRequestInterface,
   requestInterface,
@@ -12,6 +13,7 @@ import {
 } from './schemaHandler';
 import {
   downloadDocId,
+  fireAddMoneyGroup,
   fireApprovalHistory,
   fireApprovalRequest,
   fireChangeRole,
@@ -184,4 +186,9 @@ export const listInstrumentQuery = () => useQuery({
   queryKey: ['list-instrument'],
   queryFn: () => fireFetchInstrumentList(),
   staleTime: 180000,
+});
+
+export const addMoneyGroupMutation = () => useMutation({
+  mutationKey: ['group/add-money'],
+  mutationFn: (request: addMoneyGroupRequest) => fireAddMoneyGroup(request),
 });

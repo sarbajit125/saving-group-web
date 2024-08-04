@@ -169,3 +169,10 @@ export interface SideNavSectionItem {
     isSelected: boolean,
     subItems: SideNavbarItem[]
 }
+export enum RequestStatus {
+    success = 'SUCCESS',
+    pending = 'PENDING',
+    rejected = 'REJECTED',
+    approved = 'APPROVED',
+    failed = 'FAILED'
+}

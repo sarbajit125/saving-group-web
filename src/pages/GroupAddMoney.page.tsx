@@ -5,6 +5,7 @@ import {
   AccordionPanel,
   Box,
   Button,
+  Center,
   Divider,
   Grid,
   GridCol,
@@ -14,9 +15,13 @@ import {
   PinInput,
   Stack,
   Textarea,
+  Text,
+  LoadingOverlay,
 } from '@mantine/core';
 import { useState } from 'react';
 import { modals } from '@mantine/modals';
+import { useParams } from 'react-router-dom';
+import { VscError } from 'react-icons/vsc';
 import {
   CardPaymentInstrument,
   FeesUIModel,
@@ -27,33 +32,42 @@ import HeaderProgressBar from '../components/HeaderPogressBar/HeaderPogressBar';
 import WalletsSelection from '../components/WalletSelection/WalletsSelection';
 import TxnSummary from '../components/WalletSelection/TxnSummary';
 import { ColorDao } from '../constants/colorConstant';
+import { RouteParams } from '../constants/coreLibrary';
+import { addMoneyGroupMutation } from '../handlers/networkHook';
+import { useUserStore } from '../store/userStore';
 
 function GroupAddMoney() {
+  const { groupId } = useParams<RouteParams>() as RouteParams;
+  const addMoneyMutation = addMoneyGroupMutation();
+  const userData = useUserStore();
   const [transactionType, setTransactionType] = useState<TransactionType>(TransactionType.DEPOSIT);
   const [enteredAmount, setAmount] = useState<number>(0);
+  const [enteredRemark, setRemark] = useState<string | null>(null);
   const [openedIndexes, setOpenedIndexes] = useState<string[]>(['0']);
   const [isCustomAmount, setIsCustom] = useState<boolean>(false);
   const [selectedInstrument, setSelected] = useState<
     CardPaymentInstrument | WalletPaymentInstrument | undefined
   >();
+  const [enteredOTP, setOTPText] = useState<string>('');
   const setFeesTable = (): FeesUIModel[] => {
-    let model: FeesUIModel[] = [];
-    switch (transactionType) {
-      case TransactionType.DEPOSIT:
-        model.push({ isAmount: false, key: 'To', value: 'Group123' });
-        model.push({ isAmount: false, key: 'From', value: selectedInstrument?.instrumentId ?? '' });
-        model.push({ isAmount: true, key: 'Fees', value: 0.12 });
-        model.push({ isAmount: true, key: 'Net Amount', value: enteredAmount + 0.12 });
-        break;
-      case TransactionType.WITHDRAWAL:
-        model.push({ isAmount: false, key: 'From', value: 'Group123' });
-        model.push({ isAmount: false, key: 'To', value: selectedInstrument?.instrumentId ?? '' });
-        model.push({ isAmount: true, key: 'Fees', value: 0.12 });
-        model.push({ isAmount: true, key: 'Net Amount', value: enteredAmount + 0.12 });
-        break;
-      default:
-        model = [];
-    }
+    const model: FeesUIModel[] = [];
+    const taxPercentage: number = 0.12;
+    model.push({
+      isAmount: false,
+      key: transactionType === TransactionType.DEPOSIT ? 'To' : 'From',
+      value: groupId,
+    });
+    model.push({
+      isAmount: false,
+      key: transactionType === TransactionType.DEPOSIT ? 'From' : 'To',
+      value: selectedInstrument?.instrumentId ?? '',
+    });
+    model.push({ isAmount: true, key: 'Fees', value: enteredAmount * taxPercentage });
+    model.push({
+      isAmount: true,
+      key: 'Net Amount',
+      value: enteredAmount - enteredAmount * taxPercentage,
+    });
     return model;
   };
   const handleButtonClick = () => {
@@ -71,6 +85,44 @@ function GroupAddMoney() {
       return prevIndexes;
     });
   };
+  const pinModalTap = () => {
+    modals.close('PIN-MODAL');
+    if (enteredOTP === '1357' && selectedInstrument !== undefined) {
+      /// call add money API
+      addMoneyMutation.mutate({
+        currency: 'INR',
+        groupCode: groupId,
+        remarks: enteredRemark,
+        serviceCode: transactionType === TransactionType.DEPOSIT ? 'GROUP-ADD' : 'GROUP-WITHDRAW',
+        transactionAmount: enteredAmount,
+        transactionDate: new Date(),
+        sender: {
+          userId: userData.userDetails.userId,
+          paymentInstrument: selectedInstrument.instrumentId,
+        },
+      });
+    } else {
+      modals.close('PIN-MODAL');
+      /// Show invalid OTP Text
+      modals.open({
+        id: 'ERROR-MODAL',
+        title: 'Payment Failed',
+        size: 'auto',
+        radius: 'md',
+        children: (
+          <Stack justify="center" align="center">
+            <Center>
+              <VscError size={30} color={ColorDao.negativeColor} />
+            </Center>
+            <Text ta="center" fw={500}>OTP invalid. Please retry</Text>
+            <Button color={ColorDao.negativeColor} onClick={() => modals.close('ERROR-MODAL')}>
+              Ok
+            </Button>
+          </Stack>
+        ),
+      });
+    }
+  };
   const openPINModal = () =>
     modals.open({
       id: 'PIN-MODAL',
@@ -79,13 +131,28 @@ function GroupAddMoney() {
       radius: 'md',
       children: (
         <Stack>
-          <PinInput mask type="number" />
-          <Button>Proceed</Button>
+          <PinInput
+            mask
+            type="number"
+            inputType="tel"
+            inputMode="numeric"
+            value={enteredOTP}
+            onComplete={setOTPText}
+          />
+          <Button disabled={enteredOTP.length < 4} onClick={pinModalTap}>
+            Proceed
+          </Button>
         </Stack>
       ),
     });
   return (
     <Paper shadow="xs" p="xl" mt="md" w="80%">
+      <LoadingOverlay
+        visible={addMoneyMutation.isPending}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+      />
+      ;
       <Stack>
         <Group>
           <Button
@@ -184,6 +251,8 @@ function GroupAddMoney() {
                       label="Remark"
                       placeholder="Enter remark(Optional)"
                       maxRows={2}
+                      value={enteredRemark ?? undefined}
+                      onChange={(event) => setRemark(event.currentTarget.value)}
                     />
                     {openedIndexes[openedIndexes.length - 1] === '0' ? (
                       <Group justify="flex-end">

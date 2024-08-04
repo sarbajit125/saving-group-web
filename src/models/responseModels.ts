@@ -148,3 +148,36 @@ export interface ListInstrumentResp extends RootSuccessResponse {
   cardList: CardPaymentInstrument[];
   walletList: WalletPaymentInstrument[];
 }
+
+/// TXN RESPONSE
+
+export interface TXNRootResponse {
+  serviceCode: string
+  transactionAmount: number
+  transactionDate: Date
+  remark: string | null
+  status: string
+  transactionId: string
+  serviceRequestId: string
+  currency: string
+}
+
+export interface TXNUserResponse {
+  userId: string
+  name: string
+  entryType: string
+}
+
+export interface TXNUserInstrumentResp extends TXNUserResponse {
+  instrumentId: string
+  instrumentType: string
+  instrumentName: string
+}
+
+export interface GroupTxnResponse extends TXNRootResponse {
+  sender: TXNUserInstrumentResp
+  receiver: TXNUserInstrumentResp
+}
+export interface GroupTxnDetails extends RootSuccessResponse {
+  details: GroupTxnResponse
+}

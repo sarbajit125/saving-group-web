@@ -79,6 +79,24 @@ export const addGoalRequestSchema = z.object({
     .lte(50000, 'Amount cannot be greater than 50000')
     .safe(),
 });
+export const TXNServiceCodeEnum = z.enum(['GROUP-ADD', 'GROUP-WITHDRAW']);
+export const TXNUserRequestSchema = z.object({
+    userId: z.string(),
+    paymentInstrument: z.string(),
+});
+
+export const TXNRootReqSchema = z.object({
+    transactionAmount: z.number().positive().lte(1100, 'Amount cannot be greater than 1100').safe(),
+    currency: currencyZodEnum,
+    remarks: z.string().trim().max(100, 'Remark exceeding max limit').nullable(),
+    transactionDate: z.coerce.date(),
+    serviceCode: TXNServiceCodeEnum,
+});
+export const addMoneyGroupReqSchema = TXNRootReqSchema.extend({
+  sender: TXNUserRequestSchema,
+  groupCode: z.string(),
+});
+
 // Types
 export type LoginRequestType = z.infer<typeof loginRequestSchema>;
 export type RegisterRequestType = z.infer<typeof registerUISchema>;
@@ -89,3 +107,7 @@ export type requestInterface = z.infer<typeof approveRequestSchema>;
 export type removeRequestInterface = z.infer<typeof removeRequestSchema>;
 export type updateRoleRequestInterface = z.infer< typeof updateRolesRequestSchema>;
 export type addGoalRequest = z.infer<typeof addGoalRequestSchema>;
+export type TXNRootReqDAO = z.infer<typeof TXNRootReqSchema>;
+export type TXNUserRequestDAO = z.infer<typeof TXNUserRequestSchema>;
+export type TXNServiceCode = z.infer<typeof TXNServiceCodeEnum>;
+export type addMoneyGroupRequest = z.infer<typeof addMoneyGroupReqSchema>;

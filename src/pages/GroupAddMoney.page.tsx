@@ -18,13 +18,14 @@ import {
   Text,
   LoadingOverlay,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { modals } from '@mantine/modals';
 import { useParams } from 'react-router-dom';
 import { VscError } from 'react-icons/vsc';
 import {
   CardPaymentInstrument,
   FeesUIModel,
+  RequestStatus,
   TransactionType,
   WalletPaymentInstrument,
 } from '../models/uiModels';
@@ -35,6 +36,7 @@ import { ColorDao } from '../constants/colorConstant';
 import { RouteParams } from '../constants/coreLibrary';
 import { addMoneyGroupMutation } from '../handlers/networkHook';
 import { useUserStore } from '../store/userStore';
+import TxnStatusPage from '../components/WalletSelection/TxnResult';
 
 function GroupAddMoney() {
   const { groupId } = useParams<RouteParams>() as RouteParams;
@@ -48,7 +50,31 @@ function GroupAddMoney() {
   const [selectedInstrument, setSelected] = useState<
     CardPaymentInstrument | WalletPaymentInstrument | undefined
   >();
-  const [enteredOTP, setOTPText] = useState<string>('');
+  const [enteredOTP, setOTPText] = useState<string>('1357');
+
+  useEffect(() => {
+    if (addMoneyMutation.isSuccess) {
+      modals.open({
+        id: 'STATUS',
+        size: 'auto',
+        radius: 'md',
+        children: (
+          <TxnStatusPage
+            txnStatus={addMoneyMutation.data.status}
+            serviceCode={
+              transactionType === TransactionType.DEPOSIT ? 'GROUP-ADD' : 'GROUP-WITHDRAW'
+            }
+            transactionAmount={}
+            feeModel={[]}
+            okBtnAction={function (): void {
+              throw new Error('Function not implemented.');
+            }}
+          />
+        ),
+        withCloseButton: false,
+      });
+    }
+  }, [addMoneyMutation.isSuccess]);
   const setFeesTable = (): FeesUIModel[] => {
     const model: FeesUIModel[] = [];
     const taxPercentage: number = 0.12;
@@ -87,6 +113,7 @@ function GroupAddMoney() {
   };
   const pinModalTap = () => {
     modals.close('PIN-MODAL');
+    console.log(`EnteredOTP: ${enteredOTP}`);
     if (enteredOTP === '1357' && selectedInstrument !== undefined) {
       /// call add money API
       addMoneyMutation.mutate({
@@ -114,7 +141,9 @@ function GroupAddMoney() {
             <Center>
               <VscError size={30} color={ColorDao.negativeColor} />
             </Center>
-            <Text ta="center" fw={500}>OTP invalid. Please retry</Text>
+            <Text ta="center" fw={500}>
+              OTP invalid. Please retry
+            </Text>
             <Button color={ColorDao.negativeColor} onClick={() => modals.close('ERROR-MODAL')}>
               Ok
             </Button>
@@ -132,16 +161,15 @@ function GroupAddMoney() {
       children: (
         <Stack>
           <PinInput
-            mask
-            type="number"
+            type="alphanumeric"
+            length={4}
             inputType="tel"
-            inputMode="numeric"
-            value={enteredOTP}
-            onComplete={setOTPText}
+            onChange={(value) => {
+              console.log(`new value ${value}`);
+              return setOTPText(value);
+            }}
           />
-          <Button disabled={enteredOTP.length < 4} onClick={pinModalTap}>
-            Proceed
-          </Button>
+          <Button onClick={pinModalTap}>Proceed</Button>
         </Stack>
       ),
     });
@@ -301,7 +329,7 @@ function GroupAddMoney() {
                       feesModel={setFeesTable()}
                     />
                     <Group justify="flex-end">
-                      <Button color={ColorDao.primaryColor} onClick={() => openPINModal()}>
+                      <Button color={ColorDao.primaryColor} onClick={() => pinModalTap()}>
                         Make payment
                       </Button>
                     </Group>

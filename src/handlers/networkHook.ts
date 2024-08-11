@@ -191,4 +191,7 @@ export const listInstrumentQuery = () => useQuery({
 export const addMoneyGroupMutation = () => useMutation({
   mutationKey: ['group/add-money'],
   mutationFn: (request: addMoneyGroupRequest) => fireAddMoneyGroup(request),
+  onSuccess(data) {
+    toast.success(data.userMsg, { position: 'top-right', autoClose: 1000, closeOnClick: true });
+  },
 });
